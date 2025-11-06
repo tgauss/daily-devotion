@@ -11,6 +11,21 @@ interface StoryPageComponentProps {
 
 export function StoryPageComponent({ page, pageNumber, totalPages }: StoryPageComponentProps) {
   switch (page.type) {
+    case 'passage':
+      return (
+        <div className="max-w-2xl mx-auto px-6">
+          <h2 className="text-2xl md:text-3xl font-serif font-bold text-amber-950 mb-6 text-center">
+            {page.content.title}
+          </h2>
+          <div className="text-base md:text-lg text-stone-800 leading-relaxed font-serif bg-white/50 p-6 rounded-sm border border-amber-200 shadow-sm">
+            {page.content.text}
+          </div>
+          <p className="mt-6 text-center text-amber-700/60 text-sm font-serif italic">
+            The Holy Bible, English Standard Version
+          </p>
+        </div>
+      )
+
     case 'cover':
       return (
         <div className="max-w-2xl mx-auto px-6 text-center">

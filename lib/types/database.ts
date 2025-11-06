@@ -54,7 +54,7 @@ export interface QuizQuestion {
 }
 
 export interface StoryPage {
-  type: 'cover' | 'content' | 'takeaways' | 'cta'
+  type: 'cover' | 'content' | 'takeaways' | 'cta' | 'passage'
   content: {
     title?: string
     text?: string
@@ -79,6 +79,7 @@ export interface Lesson {
   id: string
   plan_item_id: string
   passage_canonical: string
+  passage_text: string | null
   translation: string
   ai_triptych_json: AiTriptych
   story_manifest_json: StoryManifest

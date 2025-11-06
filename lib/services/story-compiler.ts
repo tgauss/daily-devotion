@@ -15,6 +15,7 @@ export class StoryCompiler {
       reference: string
       translation: string
       quizUrl: string
+      passageText: string
     }
   ): StoryManifest {
     const pages: StoryPage[] = []
@@ -37,7 +38,31 @@ export class StoryCompiler {
       }
     })
 
-    // 3. Context pages (if provided)
+    // 3. Bible Passage Pages (split if needed)
+    // Split passage into chunks of ~600 characters (roughly 100-120 words)
+    const passageChunks = this.splitPassageText(metadata.passageText, 600)
+
+    if (passageChunks.length === 1) {
+      pages.push({
+        type: 'passage',
+        content: {
+          title: metadata.reference,
+          text: passageChunks[0],
+        }
+      })
+    } else {
+      passageChunks.forEach((chunk, index) => {
+        pages.push({
+          type: 'passage',
+          content: {
+            title: `${metadata.reference} (${index + 1}/${passageChunks.length})`,
+            text: chunk,
+          }
+        })
+      })
+    }
+
+    // 4. Context pages (if provided)
     if (lessonContent.context.historical) {
       pages.push({
         type: 'content',
@@ -58,7 +83,7 @@ export class StoryCompiler {
       })
     }
 
-    // 4. Message page (body) - split if too long
+    // 5. Message page (body) - split if too long
     const bodyParagraphs = lessonContent.body.split('\n\n')
     if (bodyParagraphs.length > 2) {
       // Split into multiple pages if more than 2 paragraphs
@@ -87,7 +112,7 @@ export class StoryCompiler {
       })
     }
 
-    // 5. Recap page (conclusion)
+    // 6. Recap page (conclusion)
     pages.push({
       type: 'content',
       content: {
@@ -96,7 +121,7 @@ export class StoryCompiler {
       }
     })
 
-    // 6. Key takeaways page
+    // 7. Key takeaways page
     pages.push({
       type: 'takeaways',
       content: {
@@ -105,7 +130,7 @@ export class StoryCompiler {
       }
     })
 
-    // 7. Reflection prompts page
+    // 8. Reflection prompts page
     pages.push({
       type: 'takeaways',
       content: {
@@ -114,7 +139,7 @@ export class StoryCompiler {
       }
     })
 
-    // 8. Discussion questions page (if multiple, may split)
+    // 9. Discussion questions page (if multiple, may split)
     if (lessonContent.discussion_questions.length > 3) {
       const midpoint = Math.ceil(lessonContent.discussion_questions.length / 2)
       pages.push({
@@ -141,7 +166,7 @@ export class StoryCompiler {
       })
     }
 
-    // 9. Quiz CTA page
+    // 10. Quiz CTA page
     pages.push({
       type: 'cta',
       content: {
@@ -162,6 +187,35 @@ export class StoryCompiler {
         translation: metadata.translation,
       }
     }
+  }
+
+  /**
+   * Split long passage text into readable chunks
+   */
+  private splitPassageText(text: string, maxChars: number = 600): string[] {
+    // If text is short enough, return as-is
+    if (text.length <= maxChars) {
+      return [text]
+    }
+
+    const chunks: string[] = []
+    const verses = text.split(/(?=\[\d+\])/g) // Split on verse numbers like [1], [2], etc.
+
+    let currentChunk = ''
+    for (const verse of verses) {
+      if ((currentChunk + verse).length > maxChars && currentChunk.length > 0) {
+        chunks.push(currentChunk.trim())
+        currentChunk = verse
+      } else {
+        currentChunk += verse
+      }
+    }
+
+    if (currentChunk.length > 0) {
+      chunks.push(currentChunk.trim())
+    }
+
+    return chunks.length > 0 ? chunks : [text]
   }
 
   /**
@@ -188,9 +242,10 @@ export class StoryCompiler {
             throw new Error('Cover page must have title')
           }
           break
+        case 'passage':
         case 'content':
           if (!page.content.title || !page.content.text) {
-            throw new Error('Content page must have title and text')
+            throw new Error('Content/Passage page must have title and text')
           }
           break
         case 'takeaways':

@@ -83,12 +83,13 @@ export async function POST(request: NextRequest) {
         // 3. Generate share slug
         const shareSlug = crypto.randomBytes(16).toString('hex')
 
-        // 4. Compile Web Story
+        // 4. Compile Web Story (including passage text)
         const storyManifest = storyCompiler.compile(lessonContent, {
           title: plan.title,
           reference: passage.canonical,
           translation: item.translation,
           quizUrl: `/quiz/${shareSlug}`,
+          passageText: passage.text,
         })
 
         // 5. Store lesson
@@ -97,6 +98,7 @@ export async function POST(request: NextRequest) {
           .insert({
             plan_item_id: item.id,
             passage_canonical: passage.canonical,
+            passage_text: passage.text,
             translation: item.translation,
             ai_triptych_json: lessonContent,
             story_manifest_json: storyManifest,
