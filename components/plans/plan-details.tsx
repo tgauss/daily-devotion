@@ -1,7 +1,7 @@
 'use client'
 
-import { useState } from 'react'
 import Link from 'next/link'
+import { BatchLessonGenerator } from './batch-lesson-generator'
 
 interface PlanDetailsProps {
   plan: any
@@ -9,34 +9,9 @@ interface PlanDetailsProps {
 }
 
 export function PlanDetails({ plan, userId }: PlanDetailsProps) {
-  const [generating, setGenerating] = useState<string | null>(null)
-
-  const handleGenerateLessons = async () => {
-    if (!confirm('Generate all lessons for this plan? This may take a few minutes.')) {
-      return
-    }
-
-    setGenerating(plan.id)
-
-    try {
-      const response = await fetch('/api/lessons/generate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          planId: plan.id,
-        }),
-      })
-
-      if (!response.ok) throw new Error('Failed to generate lessons')
-
-      alert('Lessons generated successfully!')
-      window.location.reload()
-    } catch (error) {
-      console.error('Error generating lessons:', error)
-      alert('Failed to generate lessons. Please try again.')
-    } finally {
-      setGenerating(null)
-    }
+  const handleGenerationComplete = () => {
+    // Reload the page to show newly generated lessons
+    window.location.reload()
   }
 
   const sortedItems = [...plan.plan_items].sort((a: any, b: any) => a.index - b.index)
@@ -72,15 +47,9 @@ export function PlanDetails({ plan, userId }: PlanDetailsProps) {
           </div>
         </div>
 
-        {/* Generate all lessons button */}
+        {/* Generate all lessons */}
         {plan.user_id === userId && (
-          <button
-            onClick={handleGenerateLessons}
-            disabled={generating !== null}
-            className="w-full px-6 py-3 bg-amber-700 hover:bg-amber-800 disabled:bg-amber-700/50 text-white font-semibold rounded-sm border border-amber-900 transition-colors font-serif"
-          >
-            {generating ? 'Generating Lessons...' : 'Generate All Lessons'}
-          </button>
+          <BatchLessonGenerator planId={plan.id} onComplete={handleGenerationComplete} />
         )}
       </div>
 
