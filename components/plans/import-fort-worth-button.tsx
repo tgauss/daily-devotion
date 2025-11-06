@@ -6,11 +6,13 @@ import { useRouter } from 'next/navigation'
 export function ImportFortWorthButton() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [successMessage, setSuccessMessage] = useState<string | null>(null)
   const router = useRouter()
 
   const handleImport = async () => {
     setLoading(true)
     setError(null)
+    setSuccessMessage(null)
 
     try {
       const response = await fetch('/api/plans/import-fort-worth', {
@@ -26,9 +28,17 @@ export function ImportFortWorthButton() {
 
       const result = await response.json()
 
-      // Redirect to the newly created plan
-      router.push(`/plans/${result.planId}`)
-      router.refresh()
+      // Show success message if lessons were copied
+      if (result.lessonsCopied > 0) {
+        setSuccessMessage(`${result.lessonsCopied} lessons pre-loaded! Redirecting...`)
+        setTimeout(() => {
+          router.push(`/plans/${result.planId}`)
+          router.refresh()
+        }, 1500)
+      } else {
+        router.push(`/plans/${result.planId}`)
+        router.refresh()
+      }
     } catch (err: any) {
       setError(err.message)
       setLoading(false)
@@ -59,6 +69,12 @@ export function ImportFortWorthButton() {
         </div>
       )}
 
+      {successMessage && (
+        <div className="mb-4 p-4 bg-green-50 border border-green-200 rounded-md text-green-800 text-sm font-sans">
+          ✅ {successMessage}
+        </div>
+      )}
+
       <button
         onClick={handleImport}
         disabled={loading}
@@ -67,7 +83,7 @@ export function ImportFortWorthButton() {
         {loading ? 'Importing...' : 'Import Plan'}
       </button>
 
-      {loading && (
+      {loading && !successMessage && (
         <p className="mt-4 text-sm text-charcoal/60 font-sans">
           Setting up your 244 readings... Just a moment.
         </p>
