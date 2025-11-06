@@ -9,10 +9,6 @@ export default async function PlanPage({ params }: { params: Promise<{ id: strin
     data: { user },
   } = await supabase.auth.getUser()
 
-  if (!user) {
-    redirect('/auth')
-  }
-
   // Fetch plan with items and lessons
   const { data: plan, error } = await supabase
     .from('plans')
@@ -26,12 +22,32 @@ export default async function PlanPage({ params }: { params: Promise<{ id: strin
     .eq('id', id)
     .single()
 
+  // If plan not found or query failed, redirect to dashboard (or auth if not logged in)
   if (error || !plan) {
+    console.error('[PlanPage] Plan fetch error:', error?.message || 'Plan not found')
+    if (!user) {
+      redirect('/auth')
+    }
     redirect('/dashboard')
   }
 
   // Check authorization
-  if (plan.user_id !== user.id && !plan.is_public) {
+  const isOwner = user && plan.user_id === user.id
+  const isPublic = plan.is_public
+
+  console.log('[PlanPage] Authorization check:', {
+    planId: plan.id,
+    isOwner,
+    isPublic,
+    hasUser: !!user,
+  })
+
+  // Allow access if: user owns the plan OR plan is public
+  if (!isOwner && !isPublic) {
+    // Private plan that user doesn't own
+    if (!user) {
+      redirect('/auth')
+    }
     redirect('/dashboard')
   }
 
@@ -56,7 +72,7 @@ export default async function PlanPage({ params }: { params: Promise<{ id: strin
           </a>
         </div>
 
-        <PlanDetails plan={plan} userId={user.id} />
+        <PlanDetails plan={plan} userId={user?.id || null} />
       </div>
     </div>
   )

@@ -5,7 +5,7 @@ import Link from 'next/link'
 
 interface PlanDetailsProps {
   plan: any
-  userId: string
+  userId: string | null
 }
 
 export function PlanDetails({ plan, userId }: PlanDetailsProps) {
