@@ -41,6 +41,8 @@ export async function middleware(request: NextRequest) {
     !user &&
     !request.nextUrl.pathname.startsWith('/auth') &&
     !request.nextUrl.pathname.startsWith('/s/') && // Allow public story viewing
+    !request.nextUrl.pathname.startsWith('/plans/') && // Allow public plan viewing
+    !request.nextUrl.pathname.startsWith('/quiz/') && // Allow public quiz access
     request.nextUrl.pathname !== '/'
   ) {
     return NextResponse.redirect(new URL('/auth', request.url))
