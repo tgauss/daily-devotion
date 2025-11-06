@@ -1,26 +1,55 @@
-# Daily Devotion - Bible Study Web App
+# MyDailyBread.faith - Bible Study Web App
 
-A mobile-first Bible study app that creates personalized reading plans, generates AI-powered lessons, and delivers content as beautiful tappable Web Stories.
+> *"Man shall not live by bread alone, but by every word that comes from the mouth of God."* — Matthew 4:4
 
-## Features
+A mobile-first Bible study platform that delivers personalized reading plans with AI-generated lessons, interactive quizzes, and beautiful Web Stories.
 
-- **📖 Study Plans**: Create guided, custom, or imported Bible reading plans
-- **🤖 AI-Powered Lessons**: Automatically generate engaging lesson content with context, takeaways, and discussion questions
-- **📱 Web Stories**: Read lessons as tappable, mobile-friendly stories
-- **✅ Quizzes**: Test comprehension with auto-generated multiple-choice quizzes
-- **📊 Progress Tracking**: Monitor your study progress and quiz scores
-- **🔔 Smart Nudges**: In-app reminders for overdue lessons
-- **🔗 Shareable Links**: Share lessons publicly via unique URLs
+**Live Site**: [https://mydailybread.faith](https://mydailybread.faith)
 
-## Tech Stack
+---
 
-- **Framework**: Next.js 15 with App Router
-- **Language**: TypeScript
-- **Styling**: Tailwind CSS
-- **Database**: Supabase (PostgreSQL + Auth + RLS)
-- **Bible API**: ESV API (free for non-commercial use)
-- **AI**: OpenAI GPT-4 for lesson generation
-- **Deployment**: Vercel
+## ✨ Features
+
+### Core Features
+- **📖 Reading Plans**: Guided, custom, or imported Bible reading plans
+- **🤖 AI-Generated Content**: Contextual lessons with takeaways, reflections, and discussion questions
+- **📱 Interactive Web Stories**: Swipeable, mobile-optimized reading experience
+- **✅ Comprehension Quizzes**: AI-generated multiple-choice questions with explanations
+- **📊 Progress Tracking**: Visual progress metrics and completion status
+- **🎯 Personalization**: Greetings and experiences tailored to user's name
+
+### Advanced Features
+- **🔗 Shareable Lessons**: Public URLs for individual lessons
+- **👥 Lesson Sharing**: Pre-generated lessons shared across users to reduce AI costs
+- **📅 Fort Worth Bible Plan**: 244-reading plan (Oct-Dec 2025) with instant setup
+- **🎓 Onboarding**: Interactive 5-step welcome guide for new users
+- **🔔 Smart Nudges**: In-app reminders for overdue lessons (coming soon: email)
+- **👨‍💼 Admin Panel**: Manual user creation with optional plan pre-loading
+
+---
+
+## 📚 Documentation
+
+Comprehensive documentation for developers and Claude Code sessions:
+
+- **[CLAUDE_CODE_CONTEXT.md](CLAUDE_CODE_CONTEXT.md)** - **START HERE** for new Claude Code sessions
+- **[ARCHITECTURE.md](ARCHITECTURE.md)** - System design and infrastructure
+- **[DATABASE.md](DATABASE.md)** - Complete database schema and migrations
+- **[CHANGELOG.md](CHANGELOG.md)** - Version history and updates
+- **[README.md](README.md)** - This file (project overview and quick start)
+
+---
+
+## 🛠️ Tech Stack
+
+- **Framework**: Next.js 16 (App Router, Turbopack)
+- **Language**: TypeScript 5
+- **Styling**: Tailwind CSS 3
+- **Database**: PostgreSQL 15 (Supabase)
+- **Authentication**: Supabase Auth
+- **Bible API**: ESV API (Crossway)
+- **AI**: OpenAI GPT-4
+- **Deployment**: Vercel Edge Network
 
 ## Getting Started
 
@@ -68,10 +97,14 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000
 ### 3. Set Up Database
 
 1. Go to your Supabase project's SQL Editor
-2. Copy and run the migration from `supabase/migrations/20250106_initial_schema.sql`
-3. This creates all tables, indexes, RLS policies, and triggers
+2. Run migrations in order:
+   - `20250106_initial_schema.sql` - Initial setup
+   - `20250107_add_category_to_plan_items.sql` - Category field
+   - `20250108_add_passage_text_to_lessons.sql` - Passage text
+   - `20250109_add_user_profile_fields.sql` - User profiles
+   - `20250109_backfill_existing_users.sql` - Sync existing users
 
-See `supabase/README.md` for detailed database documentation.
+See **[DATABASE.md](DATABASE.md)** for complete schema documentation.
 
 ### 4. Run Development Server
 
@@ -294,6 +327,14 @@ For issues or questions:
 - Bible content from ESV translation
 - AI generation powered by OpenAI
 - Built with Next.js and Supabase
+
+---
+
+## 🤖 Built with Claude Code
+
+This project was developed with assistance from [Claude Code](https://claude.com/claude-code), Anthropic's official CLI for Claude.
+
+**Co-Authored-By**: Claude <noreply@anthropic.com>
 
 ---
 
