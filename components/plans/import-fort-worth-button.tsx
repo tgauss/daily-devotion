@@ -80,12 +80,12 @@ export function ImportFortWorthButton() {
         disabled={loading}
         className="px-6 py-3 bg-olivewood hover:bg-olivewood/90 disabled:bg-olivewood/50 text-white font-medium rounded-md border border-olivewood/50 transition-all shadow-sm hover:shadow font-sans"
       >
-        {loading ? 'Importing...' : 'Import Plan'}
+        {loading ? 'Adding to your account...' : 'Add to My Reading Plans'}
       </button>
 
       {loading && !successMessage && (
         <p className="mt-4 text-sm text-charcoal/60 font-sans">
-          Setting up your 244 readings... Just a moment.
+          Setting up your reading plan... Just a moment.
         </p>
       )}
     </div>
