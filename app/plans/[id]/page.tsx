@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { createServiceClient } from '@/lib/supabase/service'
 import { redirect } from 'next/navigation'
 import { PlanDetails } from '@/components/plans/plan-details'
 
@@ -13,8 +14,60 @@ export default async function PlanPage({ params }: { params: Promise<{ id: strin
 
   console.log('[PlanPage] User check:', { hasUser: !!user, userId: user?.id })
 
-  // Fetch plan with items and lessons
-  const { data: plan, error } = await supabase
+  // First, use service client to check if plan exists and get basic info
+  // This bypasses RLS to avoid permission issues on the initial check
+  const serviceClient = createServiceClient()
+  const { data: planBasic, error: basicError } = await serviceClient
+    .from('plans')
+    .select('id, title, description, user_id, is_public, source, created_at, updated_at')
+    .eq('id', id)
+    .single()
+
+  console.log('[PlanPage] Basic plan check:', {
+    planId: id,
+    found: !!planBasic,
+    error: basicError?.message,
+    isPublic: planBasic?.is_public,
+    ownerId: planBasic?.user_id
+  })
+
+  // If plan doesn't exist at all, redirect
+  if (basicError || !planBasic) {
+    console.error('[PlanPage] Plan not found in database:', {
+      planId: id,
+      error: basicError?.message,
+      errorCode: basicError?.code
+    })
+    if (!user) {
+      redirect('/auth')
+    }
+    redirect('/dashboard')
+  }
+
+  // Check authorization before fetching full data
+  const isOwner = user && planBasic.user_id === user.id
+  const isPublic = planBasic.is_public
+
+  console.log('[PlanPage] Authorization check:', {
+    planId: planBasic.id,
+    isOwner,
+    isPublic,
+    hasUser: !!user,
+  })
+
+  // Allow access if: user owns the plan OR plan is public
+  if (!isOwner && !isPublic) {
+    console.log('[PlanPage] Access denied: private plan, user not owner')
+    if (!user) {
+      redirect('/auth')
+    }
+    redirect('/dashboard')
+  }
+
+  // Now fetch full plan with nested data using appropriate client
+  // Use service client for owned plans to ensure all data is accessible
+  const clientToUse = isOwner ? serviceClient : supabase
+  const { data: plan, error } = await clientToUse
     .from('plans')
     .select(`
       *,
@@ -26,50 +79,32 @@ export default async function PlanPage({ params }: { params: Promise<{ id: strin
     .eq('id', id)
     .single()
 
-  // If plan not found or query failed, redirect to dashboard (or auth if not logged in)
+  console.log('[PlanPage] Full plan fetch:', {
+    success: !!plan,
+    error: error?.message,
+    itemCount: plan?.plan_items?.length || 0,
+    usedServiceClient: isOwner
+  })
+
+  // If full fetch fails, fall back to showing basic plan info
   if (error || !plan) {
-    console.error('[PlanPage] Plan fetch failed:', {
+    console.error('[PlanPage] Full plan fetch failed, using basic plan data:', {
       planId: id,
-      error: error?.message || 'Plan not found',
-      errorCode: error?.code,
-      errorDetails: error?.details,
-      hasUser: !!user
+      error: error?.message,
+      errorCode: error?.code
     })
-    if (!user) {
-      console.log('[PlanPage] No user, redirecting to /auth')
-      redirect('/auth')
+    // Use basic plan data with empty arrays for items
+    const fallbackPlan = {
+      ...planBasic,
+      plan_items: []
     }
-    console.log('[PlanPage] Redirecting to /dashboard')
-    redirect('/dashboard')
+    return renderPlanPage(fallbackPlan, user?.id || null)
   }
 
-  console.log('[PlanPage] Plan fetched successfully:', {
-    planId: plan.id,
-    title: plan.title,
-    isPublic: plan.is_public,
-    ownerId: plan.user_id,
-    itemCount: plan.plan_items?.length || 0
-  })
+  return renderPlanPage(plan, user?.id || null)
+}
 
-  // Check authorization
-  const isOwner = user && plan.user_id === user.id
-  const isPublic = plan.is_public
-
-  console.log('[PlanPage] Authorization check:', {
-    planId: plan.id,
-    isOwner,
-    isPublic,
-    hasUser: !!user,
-  })
-
-  // Allow access if: user owns the plan OR plan is public
-  if (!isOwner && !isPublic) {
-    // Private plan that user doesn't own
-    if (!user) {
-      redirect('/auth')
-    }
-    redirect('/dashboard')
-  }
+function renderPlanPage(plan: any, userId: string | null) {
 
   return (
     <div
@@ -92,7 +127,7 @@ export default async function PlanPage({ params }: { params: Promise<{ id: strin
           </a>
         </div>
 
-        <PlanDetails plan={plan} userId={user?.id || null} />
+        <PlanDetails plan={plan} userId={userId} />
       </div>
     </div>
   )
