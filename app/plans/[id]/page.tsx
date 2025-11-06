@@ -5,7 +5,7 @@ import { PlanDetails } from '@/components/plans/plan-details'
 
 export default async function PlanPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
-  console.log('[PlanPage] Loading plan:', id)
+  console.log('[PlanPage] VERSION 2.0 - Loading plan:', id)
 
   const supabase = await createClient()
   const {
