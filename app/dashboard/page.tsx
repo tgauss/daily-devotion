@@ -5,6 +5,7 @@ import { PlansList } from '@/components/dashboard/plans-list'
 import { ProgressOverview } from '@/components/dashboard/progress-overview'
 import { NudgeCard } from '@/components/dashboard/nudge-card'
 import { ImportFortWorthButton } from '@/components/plans/import-fort-worth-button'
+import { WelcomeModal } from '@/components/onboarding/welcome-modal'
 
 export default async function DashboardPage() {
   const supabase = await createClient()
@@ -48,6 +49,8 @@ export default async function DashboardPage() {
         backgroundSize: '60px 60px'
       }}
     >
+      <WelcomeModal userEmail={user.email || ''} />
+
       <DashboardHeader user={user} />
 
       <main className="max-w-6xl mx-auto px-4 py-10 space-y-8">
