@@ -3,19 +3,26 @@ import { AuthForm } from '@/components/auth/auth-form'
 export default function AuthPage() {
   return (
     <div
-      className="min-h-screen flex items-center justify-center bg-[#f5f1e8] px-4"
+      className="min-h-screen flex items-center justify-center bg-sandstone px-4 py-12"
       style={{
         backgroundImage: `
-          linear-gradient(0deg, transparent 24%, rgba(139, 116, 82, .03) 25%, rgba(139, 116, 82, .03) 26%, transparent 27%, transparent 74%, rgba(139, 116, 82, .03) 75%, rgba(139, 116, 82, .03) 76%, transparent 77%, transparent),
-          linear-gradient(90deg, transparent 24%, rgba(139, 116, 82, .03) 25%, rgba(139, 116, 82, .03) 26%, transparent 27%, transparent 74%, rgba(139, 116, 82, .03) 75%, rgba(139, 116, 82, .03) 76%, transparent 77%, transparent)
+          linear-gradient(0deg, transparent 24%, rgba(165, 154, 126, .02) 25%, rgba(165, 154, 126, .02) 26%, transparent 27%, transparent 74%, rgba(165, 154, 126, .02) 75%, rgba(165, 154, 126, .02) 76%, transparent 77%, transparent),
+          linear-gradient(90deg, transparent 24%, rgba(165, 154, 126, .02) 25%, rgba(165, 154, 126, .02) 26%, transparent 27%, transparent 74%, rgba(165, 154, 126, .02) 75%, rgba(165, 154, 126, .02) 76%, transparent 77%, transparent)
         `,
-        backgroundSize: '50px 50px'
+        backgroundSize: '60px 60px'
       }}
     >
-      <div className="max-w-md w-full">
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-amber-950 mb-2 font-serif">Daily Devotion</h1>
-          <p className="text-amber-700 font-serif">Your personal Bible study companion</p>
+      <div className="max-w-md w-full space-y-8">
+        <div className="text-center">
+          <h1 className="text-5xl font-heading text-charcoal mb-3 tracking-tight">
+            MyDailyBread
+          </h1>
+          <p className="text-lg text-olivewood font-serif italic">
+            Daily nourishment for the soul
+          </p>
+          <p className="text-sm text-charcoal/70 font-sans mt-4">
+            Feed your faith one day at a time.
+          </p>
         </div>
         <AuthForm />
       </div>

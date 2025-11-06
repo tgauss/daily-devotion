@@ -36,16 +36,16 @@ export function ImportFortWorthButton() {
   }
 
   return (
-    <div className="bg-amber-50 border border-amber-200 rounded-sm p-6 shadow-md">
-      <div className="flex items-start justify-between mb-4">
+    <div className="bg-clay-rose/10 border border-clay-rose/30 rounded-lg p-6 shadow-md">
+      <div className="flex items-start justify-between mb-5">
         <div className="flex-1">
-          <h3 className="text-xl font-bold text-amber-950 mb-2 font-serif">
+          <h3 className="text-xl font-heading text-charcoal mb-2">
             Fort Worth Bible Church 2025
           </h3>
-          <p className="text-stone-700 mb-3 font-serif">
+          <p className="text-charcoal/70 mb-4 font-sans">
             Bible in a Year reading plan (Oct 30 - Dec 31, 2025)
           </p>
-          <ul className="text-sm text-stone-600 space-y-1 font-serif">
+          <ul className="text-sm text-charcoal/60 space-y-2 font-sans">
             <li>• 4 daily readings: Gospel, Early Church, Wisdom, History & Prophets</li>
             <li>• 61 days with 244 total readings</li>
             <li>• Public plan - shareable with your study group</li>
@@ -54,7 +54,7 @@ export function ImportFortWorthButton() {
       </div>
 
       {error && (
-        <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-sm text-red-800 text-sm font-serif">
+        <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-md text-red-800 text-sm font-sans">
           {error}
         </div>
       )}
@@ -62,14 +62,14 @@ export function ImportFortWorthButton() {
       <button
         onClick={handleImport}
         disabled={loading}
-        className="px-6 py-3 bg-amber-700 hover:bg-amber-800 disabled:bg-amber-700/50 text-white font-semibold rounded-sm border border-amber-900 transition-colors font-serif"
+        className="px-6 py-3 bg-olivewood hover:bg-olivewood/90 disabled:bg-olivewood/50 text-white font-medium rounded-md border border-olivewood/50 transition-all shadow-sm hover:shadow font-sans"
       >
         {loading ? 'Importing...' : 'Import Plan'}
       </button>
 
       {loading && (
-        <p className="mt-3 text-sm text-stone-600 font-serif">
-          Creating plan with 244 readings... This may take a moment.
+        <p className="mt-4 text-sm text-charcoal/60 font-sans">
+          Setting up your 244 readings... Just a moment.
         </p>
       )}
     </div>

@@ -61,16 +61,16 @@ export function ImportPlanForm({ userId, onBack }: ImportPlanFormProps) {
   }
 
   return (
-    <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 shadow-2xl">
-      <button onClick={onBack} className="text-blue-300 hover:text-blue-200 mb-6">
+    <div className="bg-white/90 backdrop-blur-lg rounded-lg p-8 shadow-lg border border-olivewood/20">
+      <button onClick={onBack} className="text-olivewood hover:text-olivewood/80 mb-8 font-sans transition-colors">
         ← Back
       </button>
 
-      <h2 className="text-2xl font-bold text-white mb-6">Import Plan</h2>
+      <h2 className="text-3xl font-bold text-charcoal mb-8 font-heading">Import Plan</h2>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} className="space-y-8">
         <div>
-          <label className="block text-sm font-medium text-white/80 mb-2">
+          <label className="block text-sm font-medium text-charcoal/80 mb-3 font-sans">
             Plan Title *
           </label>
           <input
@@ -78,43 +78,43 @@ export function ImportPlanForm({ userId, onBack }: ImportPlanFormProps) {
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             required
-            className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className="w-full px-5 py-4 bg-sandstone border border-olivewood/30 rounded-lg text-charcoal placeholder-charcoal/40 focus:outline-none focus:ring-2 focus:ring-olivewood/50 font-sans"
             placeholder="Imported Bible Plan"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-white/80 mb-2">
+          <label className="block text-sm font-medium text-charcoal/80 mb-3 font-sans">
             Description
           </label>
           <textarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             rows={3}
-            className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className="w-full px-5 py-4 bg-sandstone border border-olivewood/30 rounded-lg text-charcoal placeholder-charcoal/40 focus:outline-none focus:ring-2 focus:ring-olivewood/50 font-sans leading-relaxed"
             placeholder="What's this plan about?"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-white/80 mb-2">Theme</label>
+          <label className="block text-sm font-medium text-charcoal/80 mb-3 font-sans">Theme</label>
           <input
             type="text"
             value={theme}
             onChange={(e) => setTheme(e.target.value)}
-            className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className="w-full px-5 py-4 bg-sandstone border border-olivewood/30 rounded-lg text-charcoal placeholder-charcoal/40 focus:outline-none focus:ring-2 focus:ring-olivewood/50 font-sans"
             placeholder="e.g., Faith, Prayer, Hope"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-white/80 mb-2">
+          <label className="block text-sm font-medium text-charcoal/80 mb-3 font-sans">
             Schedule Type
           </label>
           <select
             value={scheduleType}
             onChange={(e) => setScheduleType(e.target.value as 'daily' | 'weekly')}
-            className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className="w-full px-5 py-4 bg-sandstone border border-olivewood/30 rounded-lg text-charcoal focus:outline-none focus:ring-2 focus:ring-olivewood/50 font-sans"
           >
             <option value="daily">Daily</option>
             <option value="weekly">Weekly</option>
@@ -122,7 +122,7 @@ export function ImportPlanForm({ userId, onBack }: ImportPlanFormProps) {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-white/80 mb-2">
+          <label className="block text-sm font-medium text-charcoal/80 mb-3 font-sans">
             Bible References * (one per line or comma-separated)
           </label>
           <textarea
@@ -130,10 +130,10 @@ export function ImportPlanForm({ userId, onBack }: ImportPlanFormProps) {
             onChange={(e) => setReferencesText(e.target.value)}
             rows={10}
             required
-            className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-400 font-mono text-sm"
+            className="w-full px-5 py-4 bg-sandstone border border-olivewood/30 rounded-lg text-charcoal placeholder-charcoal/40 focus:outline-none focus:ring-2 focus:ring-olivewood/50 font-mono text-sm"
             placeholder="John 3:16&#10;Genesis 1-2&#10;Psalm 23&#10;Matthew 5-7"
           />
-          <p className="mt-2 text-sm text-white/60">
+          <p className="mt-3 text-sm text-charcoal/60 font-sans">
             Example formats: "John 3:16", "Genesis 1-2", "Psalm 23"
           </p>
         </div>
@@ -141,7 +141,7 @@ export function ImportPlanForm({ userId, onBack }: ImportPlanFormProps) {
         <button
           type="submit"
           disabled={loading}
-          className="w-full px-6 py-3 bg-blue-500 hover:bg-blue-600 disabled:bg-blue-500/50 text-white font-semibold rounded-lg transition-colors"
+          className="w-full px-8 py-4 bg-olivewood hover:bg-olivewood/90 disabled:bg-olivewood/50 text-white font-semibold rounded-md transition-colors font-sans border border-olivewood/50"
         >
           {loading ? 'Creating Plan...' : 'Import Plan'}
         </button>

@@ -98,21 +98,21 @@ export function GuidedPlanForm({ userId, onBack }: GuidedPlanFormProps) {
   }
 
   return (
-    <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 shadow-2xl">
-      <button onClick={onBack} className="text-blue-300 hover:text-blue-200 mb-6">
+    <div className="bg-white/90 backdrop-blur-lg rounded-lg p-8 shadow-lg border border-olivewood/20">
+      <button onClick={onBack} className="text-olivewood hover:text-olivewood/80 mb-8 font-sans transition-colors">
         ← Back
       </button>
 
-      <h2 className="text-2xl font-bold text-white mb-6">Choose a Guided Plan</h2>
+      <h2 className="text-3xl font-bold text-charcoal mb-8 font-heading">Choose a Guided Plan</h2>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-6">
         {GUIDED_PLANS.map((plan) => (
           <label
             key={plan.id}
-            className={`block p-6 rounded-xl border-2 cursor-pointer transition-all ${
+            className={`block p-6 rounded-lg border-2 cursor-pointer transition-all ${
               selectedPlan === plan.id
-                ? 'border-blue-400 bg-blue-500/20'
-                : 'border-white/20 bg-white/5 hover:bg-white/10'
+                ? 'border-olivewood bg-golden-wheat/20 shadow-lg'
+                : 'border-olivewood/20 bg-white/50 hover:bg-sandstone/30 hover:border-olivewood/30'
             }`}
           >
             <input
@@ -123,16 +123,16 @@ export function GuidedPlanForm({ userId, onBack }: GuidedPlanFormProps) {
               onChange={(e) => setSelectedPlan(e.target.value)}
               className="sr-only"
             />
-            <h3 className="text-xl font-semibold text-white mb-2">{plan.title}</h3>
-            <p className="text-white/70 text-sm mb-2">{plan.description}</p>
-            <p className="text-blue-300 text-sm">{plan.references.length} lessons</p>
+            <h3 className="text-xl font-semibold text-charcoal mb-3 font-heading">{plan.title}</h3>
+            <p className="text-charcoal/70 text-sm mb-3 font-sans leading-relaxed">{plan.description}</p>
+            <p className="text-olivewood text-sm font-sans font-medium">{plan.references.length} lessons</p>
           </label>
         ))}
 
         <button
           type="submit"
           disabled={!selectedPlan || loading}
-          className="w-full px-6 py-3 bg-blue-500 hover:bg-blue-600 disabled:bg-blue-500/50 text-white font-semibold rounded-lg transition-colors"
+          className="w-full px-8 py-4 bg-olivewood hover:bg-olivewood/90 disabled:bg-olivewood/50 text-white font-semibold rounded-md transition-colors font-sans border border-olivewood/50"
         >
           {loading ? 'Creating Plan...' : 'Create Plan'}
         </button>

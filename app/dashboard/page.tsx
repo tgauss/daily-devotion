@@ -39,18 +39,18 @@ export default async function DashboardPage() {
 
   return (
     <div
-      className="min-h-screen bg-[#f5f1e8]"
+      className="min-h-screen bg-sandstone"
       style={{
         backgroundImage: `
-          linear-gradient(0deg, transparent 24%, rgba(139, 116, 82, .03) 25%, rgba(139, 116, 82, .03) 26%, transparent 27%, transparent 74%, rgba(139, 116, 82, .03) 75%, rgba(139, 116, 82, .03) 76%, transparent 77%, transparent),
-          linear-gradient(90deg, transparent 24%, rgba(139, 116, 82, .03) 25%, rgba(139, 116, 82, .03) 26%, transparent 27%, transparent 74%, rgba(139, 116, 82, .03) 75%, rgba(139, 116, 82, .03) 76%, transparent 77%, transparent)
+          linear-gradient(0deg, transparent 24%, rgba(165, 154, 126, .02) 25%, rgba(165, 154, 126, .02) 26%, transparent 27%, transparent 74%, rgba(165, 154, 126, .02) 75%, rgba(165, 154, 126, .02) 76%, transparent 77%, transparent),
+          linear-gradient(90deg, transparent 24%, rgba(165, 154, 126, .02) 25%, rgba(165, 154, 126, .02) 26%, transparent 27%, transparent 74%, rgba(165, 154, 126, .02) 75%, rgba(165, 154, 126, .02) 76%, transparent 77%, transparent)
         `,
-        backgroundSize: '50px 50px'
+        backgroundSize: '60px 60px'
       }}
     >
       <DashboardHeader user={user} />
 
-      <main className="max-w-6xl mx-auto px-4 py-8 space-y-8">
+      <main className="max-w-6xl mx-auto px-4 py-10 space-y-8">
         {/* Nudge card for overdue lessons */}
         <NudgeCard userId={user.id} />
 
@@ -61,12 +61,12 @@ export default async function DashboardPage() {
         <ImportFortWorthButton />
 
         {/* Plans list */}
-        <div className="bg-white/80 rounded-sm p-6 shadow-md border border-amber-200">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-amber-950 font-serif">Your Study Plans</h2>
+        <div className="bg-white/90 rounded-lg p-8 shadow-lg border border-olivewood/20">
+          <div className="flex items-center justify-between mb-8">
+            <h2 className="text-3xl font-heading text-charcoal">Your Plans</h2>
             <a
               href="/plans/create"
-              className="px-6 py-2 bg-amber-700 hover:bg-amber-800 text-white font-semibold rounded-sm border border-amber-900 transition-colors font-serif"
+              className="px-6 py-2.5 bg-olivewood hover:bg-olivewood/90 text-white font-medium rounded-md border border-olivewood/50 transition-all shadow-sm hover:shadow font-sans"
             >
               + New Plan
             </a>

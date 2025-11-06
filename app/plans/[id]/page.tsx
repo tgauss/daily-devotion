@@ -66,7 +66,7 @@ export default async function PlanPage({ params }: { params: Promise<{ id: strin
         <div className="mb-8">
           <a
             href="/dashboard"
-            className="text-amber-700 hover:text-amber-800 transition-colors font-serif"
+            className="text-olivewood hover:text-olivewood/80 transition-colors font-sans inline-flex items-center gap-2"
           >
             ← Back to Dashboard
           </a>

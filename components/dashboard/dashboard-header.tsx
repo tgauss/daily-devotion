@@ -19,15 +19,15 @@ export function DashboardHeader({ user }: DashboardHeaderProps) {
   }
 
   return (
-    <header className="bg-white/80 border-b border-amber-200">
-      <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+    <header className="bg-white/90 border-b border-olivewood/20 backdrop-blur-sm">
+      <div className="max-w-6xl mx-auto px-4 py-5 flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-amber-950 font-serif">Daily Devotion</h1>
-          <p className="text-sm text-amber-700 font-serif">{user.email}</p>
+          <h1 className="text-3xl font-heading text-charcoal">MyDailyBread</h1>
+          <p className="text-sm text-olivewood font-sans mt-0.5">{user.email}</p>
         </div>
         <button
           onClick={handleSignOut}
-          className="px-4 py-2 bg-amber-100 hover:bg-amber-200 text-amber-900 rounded-sm border border-amber-300 transition-colors font-serif"
+          className="px-5 py-2 bg-clay-rose/20 hover:bg-clay-rose/30 text-charcoal rounded-md border border-clay-rose/40 transition-all font-sans"
         >
           Sign Out
         </button>

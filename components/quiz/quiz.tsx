@@ -74,17 +74,17 @@ export function Quiz({ lesson, userId, existingProgress }: QuizProps) {
 
   if (existingProgress && existingProgress.quiz_score !== null && !showResults) {
     return (
-      <div className="bg-white/80 rounded-sm p-8 shadow-md border border-amber-200">
+      <div className="bg-white/90 rounded-lg p-8 shadow-lg border border-olivewood/20">
         <div className="text-center">
-          <h2 className="text-3xl font-bold text-amber-950 mb-4 font-serif">Quiz Already Completed</h2>
-          <p className="text-stone-700 mb-6 font-serif">
-            You've already taken this quiz and scored {existingProgress.quiz_score}%.
+          <h2 className="text-3xl font-heading text-charcoal mb-4">You've Already Reflected on This</h2>
+          <p className="text-olivewood mb-6 font-sans">
+            You scored {existingProgress.quiz_score}% on this reflection. Well done!
           </p>
           <button
             onClick={() => setShowResults(true)}
-            className="px-6 py-3 bg-amber-700 hover:bg-amber-800 text-white font-semibold rounded-sm border border-amber-900 transition-colors font-serif"
+            className="px-6 py-3 bg-olivewood hover:bg-olivewood/90 text-white font-medium rounded-lg border border-olivewood/50 transition-all shadow-sm hover:shadow font-sans"
           >
-            Review Answers
+            Review Your Responses
           </button>
         </div>
       </div>
@@ -112,24 +112,27 @@ export function Quiz({ lesson, userId, existingProgress }: QuizProps) {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="bg-white/80 rounded-sm p-6 shadow-md border border-amber-200">
-        <h1 className="text-2xl font-bold text-amber-950 mb-2 font-serif">{planTitle}</h1>
-        <p className="text-amber-700 font-serif">{lesson.passage_canonical}</p>
+      <div className="bg-white/90 rounded-lg p-6 shadow-lg border border-olivewood/20">
+        <h1 className="text-2xl font-heading text-charcoal mb-2">{planTitle}</h1>
+        <p className="text-olivewood font-sans">{lesson.passage_canonical}</p>
+        <p className="text-sm text-clay-rose mt-3 italic font-sans">A little reflection goes a long way</p>
       </div>
 
       {/* Progress */}
-      <div className="bg-white/80 rounded-sm p-4 shadow-md border border-amber-200">
+      <div className="bg-white/90 rounded-lg p-4 shadow-lg border border-olivewood/20">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-stone-700 text-sm font-serif">
+          <span className="text-charcoal text-sm font-sans">
             Question {currentQuestion + 1} of {questions.length}
           </span>
-          <span className="text-stone-700 text-sm font-serif">
-            {Object.keys(answers).length} answered
+          <span className="text-olivewood text-sm font-sans">
+            {currentQuestion < questions.length - 1
+              ? "You're making great progress"
+              : "You're almost through"}
           </span>
         </div>
-        <div className="h-2 bg-amber-100 rounded-sm overflow-hidden border border-amber-200">
+        <div className="h-2.5 bg-sandstone rounded-full overflow-hidden border border-olivewood/10">
           <div
-            className="h-full bg-amber-700 transition-all"
+            className="h-full bg-gradient-to-r from-olivewood to-golden-wheat transition-all"
             style={{ width: `${((currentQuestion + 1) / questions.length) * 100}%` }}
           />
         </div>
@@ -148,7 +151,7 @@ export function Quiz({ lesson, userId, existingProgress }: QuizProps) {
         <button
           onClick={handlePrevious}
           disabled={currentQuestion === 0}
-          className="px-6 py-3 bg-amber-100 hover:bg-amber-200 disabled:opacity-50 disabled:cursor-not-allowed text-amber-900 rounded-sm border border-amber-300 transition-colors font-serif"
+          className="px-6 py-3 bg-clay-rose/20 hover:bg-clay-rose/30 disabled:opacity-50 disabled:cursor-not-allowed text-charcoal rounded-lg border border-clay-rose/40 transition-all font-sans"
         >
           ← Previous
         </button>
@@ -157,17 +160,17 @@ export function Quiz({ lesson, userId, existingProgress }: QuizProps) {
           <button
             onClick={handleNext}
             disabled={!currentAnswer}
-            className="flex-1 px-6 py-3 bg-amber-700 hover:bg-amber-800 disabled:bg-amber-700/50 disabled:cursor-not-allowed text-white font-semibold rounded-sm border border-amber-900 transition-colors font-serif"
+            className="flex-1 px-6 py-3 bg-olivewood hover:bg-olivewood/90 disabled:bg-olivewood/50 disabled:cursor-not-allowed text-white font-medium rounded-lg border border-olivewood/50 transition-all shadow-sm hover:shadow font-sans"
           >
-            Next →
+            Continue →
           </button>
         ) : (
           <button
             onClick={handleSubmit}
             disabled={!allAnswered || submitting}
-            className="flex-1 px-6 py-3 bg-amber-700 hover:bg-amber-800 disabled:bg-amber-700/50 disabled:cursor-not-allowed text-white font-semibold rounded-sm border border-amber-900 transition-colors font-serif"
+            className="flex-1 px-6 py-3 bg-olivewood hover:bg-olivewood/90 disabled:bg-olivewood/50 disabled:cursor-not-allowed text-white font-medium rounded-lg border border-olivewood/50 transition-all shadow-sm hover:shadow font-sans"
           >
-            {submitting ? 'Submitting...' : 'Submit Quiz'}
+            {submitting ? 'Submitting...' : 'Complete Reflection'}
           </button>
         )}
       </div>

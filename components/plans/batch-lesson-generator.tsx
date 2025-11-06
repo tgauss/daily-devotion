@@ -91,13 +91,13 @@ export function BatchLessonGenerator({ planId, onComplete }: BatchLessonGenerato
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       {/* Control buttons */}
-      <div className="flex gap-3">
+      <div className="flex gap-4">
         <button
           onClick={startGeneration}
           disabled={isGenerating}
-          className="flex-1 px-6 py-3 bg-amber-700 hover:bg-amber-800 disabled:bg-amber-700/50 text-white font-semibold rounded-sm border border-amber-900 transition-colors font-serif"
+          className="flex-1 px-8 py-4 bg-olivewood hover:bg-olivewood/90 disabled:bg-olivewood/50 text-white font-semibold rounded-md border border-olivewood/50 transition-colors font-sans"
         >
           {isGenerating ? 'Generating...' : 'Generate All Lessons'}
         </button>
@@ -105,7 +105,7 @@ export function BatchLessonGenerator({ planId, onComplete }: BatchLessonGenerato
         {isGenerating && (
           <button
             onClick={stopGeneration}
-            className="px-6 py-3 bg-stone-600 hover:bg-stone-700 text-white font-semibold rounded-sm border border-stone-800 transition-colors font-serif"
+            className="px-8 py-4 bg-clay-rose hover:bg-clay-rose/90 text-white font-semibold rounded-md border border-clay-rose/50 transition-colors font-sans"
           >
             Stop
           </button>
@@ -114,14 +114,14 @@ export function BatchLessonGenerator({ planId, onComplete }: BatchLessonGenerato
 
       {/* Progress bar */}
       {progress.total > 0 && (
-        <div className="space-y-2">
-          <div className="flex justify-between text-sm text-stone-700 font-serif">
+        <div className="space-y-3">
+          <div className="flex justify-between text-sm text-charcoal/70 font-sans">
             <span>Progress: {progress.completed} / {progress.total}</span>
             <span>{Math.round((progress.completed / progress.total) * 100)}%</span>
           </div>
-          <div className="w-full bg-amber-100 rounded-sm h-3 border border-amber-200 overflow-hidden">
+          <div className="w-full bg-sandstone rounded-lg h-4 border border-olivewood/20 overflow-hidden">
             <div
-              className="h-full bg-amber-700 transition-all duration-300 border-r border-amber-900"
+              className="h-full bg-olivewood transition-all duration-300 border-r border-olivewood/50"
               style={{ width: `${(progress.completed / progress.total) * 100}%` }}
             />
           </div>
@@ -130,11 +130,11 @@ export function BatchLessonGenerator({ planId, onComplete }: BatchLessonGenerato
 
       {/* Error message */}
       {error && (
-        <div className="p-4 bg-red-50 border border-red-200 rounded-sm">
-          <p className="text-red-800 font-serif text-sm">
+        <div className="p-6 bg-red-50 border border-red-200 rounded-lg shadow-lg">
+          <p className="text-red-800 font-sans text-sm">
             <strong>Error:</strong> {error}
           </p>
-          <p className="text-red-700 font-serif text-xs mt-2">
+          <p className="text-red-700 font-sans text-xs mt-2">
             You can click "Generate All Lessons" again to retry from where it left off.
           </p>
         </div>
@@ -142,11 +142,11 @@ export function BatchLessonGenerator({ planId, onComplete }: BatchLessonGenerato
 
       {/* Activity log */}
       {logs.length > 0 && (
-        <div className="bg-stone-50 border border-stone-200 rounded-sm p-4 max-h-64 overflow-y-auto">
-          <h3 className="text-sm font-semibold text-stone-900 mb-2 font-serif">Activity Log</h3>
+        <div className="bg-sandstone border border-olivewood/20 rounded-lg p-6 max-h-64 overflow-y-auto shadow-lg">
+          <h3 className="text-sm font-semibold text-charcoal mb-3 font-sans">Activity Log</h3>
           <div className="space-y-1">
             {logs.map((log, idx) => (
-              <p key={idx} className="text-xs text-stone-700 font-mono">
+              <p key={idx} className="text-xs text-charcoal/70 font-mono">
                 {log}
               </p>
             ))}

@@ -16,8 +16,8 @@ export function QuizQuestion({
   onAnswer,
 }: QuizQuestionProps) {
   return (
-    <div className="bg-white/80 rounded-sm p-8 shadow-md border border-amber-200">
-      <h2 className="text-xl font-semibold text-amber-950 mb-6 font-serif">
+    <div className="bg-white/90 rounded-lg p-8 shadow-lg border border-olivewood/20">
+      <h2 className="text-xl font-sans font-medium text-charcoal mb-6 leading-relaxed">
         {questionNumber}. {question.q}
       </h2>
 
@@ -29,13 +29,13 @@ export function QuizQuestion({
             <button
               key={idx}
               onClick={() => onAnswer(choice)}
-              className={`w-full p-4 text-left rounded-sm border-2 transition-all ${
+              className={`w-full p-4 text-left rounded-lg border-2 transition-all ${
                 isSelected
-                  ? 'border-amber-700 bg-amber-100'
-                  : 'border-amber-200 bg-white/50 hover:bg-amber-50'
+                  ? 'border-golden-wheat bg-golden-wheat/20 shadow-sm'
+                  : 'border-olivewood/20 bg-white/50 hover:bg-clay-rose/10 hover:border-clay-rose/30'
               }`}
             >
-              <span className="text-stone-800 font-medium font-serif">{choice}</span>
+              <span className="text-charcoal font-sans">{choice}</span>
             </button>
           )
         })}

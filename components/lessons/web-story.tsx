@@ -49,21 +49,21 @@ export function WebStory({ manifest, onComplete, lessonId }: WebStoryProps) {
 
   return (
     <div
-      className="relative w-full h-screen bg-[#f5f1e8] overflow-hidden"
+      className="relative w-full h-screen bg-sandstone overflow-hidden"
       onKeyDown={handleKeyDown}
       tabIndex={0}
       style={{
         backgroundImage: `
-          linear-gradient(0deg, transparent 24%, rgba(139, 116, 82, .03) 25%, rgba(139, 116, 82, .03) 26%, transparent 27%, transparent 74%, rgba(139, 116, 82, .03) 75%, rgba(139, 116, 82, .03) 76%, transparent 77%, transparent),
-          linear-gradient(90deg, transparent 24%, rgba(139, 116, 82, .03) 25%, rgba(139, 116, 82, .03) 26%, transparent 27%, transparent 74%, rgba(139, 116, 82, .03) 75%, rgba(139, 116, 82, .03) 76%, transparent 77%, transparent)
+          linear-gradient(0deg, transparent 24%, rgba(165, 154, 126, .03) 25%, rgba(165, 154, 126, .03) 26%, transparent 27%, transparent 74%, rgba(165, 154, 126, .03) 75%, rgba(165, 154, 126, .03) 76%, transparent 77%, transparent),
+          linear-gradient(90deg, transparent 24%, rgba(165, 154, 126, .03) 25%, rgba(165, 154, 126, .03) 26%, transparent 27%, transparent 74%, rgba(165, 154, 126, .03) 75%, rgba(165, 154, 126, .03) 76%, transparent 77%, transparent)
         `,
         backgroundSize: '50px 50px'
       }}
     >
       {/* Progress bar */}
-      <div className="absolute top-0 left-0 right-0 h-1 bg-amber-200/50 z-20">
+      <div className="absolute top-0 left-0 right-0 h-1 bg-clay-rose/30 z-20">
         <div
-          className="h-full bg-amber-700 transition-all duration-300"
+          className="h-full bg-golden-wheat transition-all duration-300"
           style={{ width: `${((currentPage + 1) / totalPages) * 100}%` }}
         />
       </div>
@@ -109,18 +109,18 @@ export function WebStory({ manifest, onComplete, lessonId }: WebStoryProps) {
         {currentPage > 0 && (
           <button
             onClick={handlePrevious}
-            className="px-6 py-3 bg-amber-100 hover:bg-amber-200 text-amber-900 rounded-sm border border-amber-300 shadow-sm transition-all font-serif"
+            className="px-6 py-3 bg-white/90 hover:bg-white text-charcoal rounded-lg border border-clay-rose/40 shadow-sm transition-all font-sans text-sm"
           >
             ← Previous
           </button>
         )}
-        <span className="px-4 py-3 bg-white/80 text-amber-900/70 rounded-sm border border-amber-200 text-sm font-serif">
+        <span className="px-4 py-3 bg-white/70 text-charcoal/60 rounded-lg border border-clay-rose/30 text-sm font-sans">
           {currentPage + 1} / {totalPages}
         </span>
         {currentPage < totalPages - 1 && (
           <button
             onClick={handleNext}
-            className="px-6 py-3 bg-amber-100 hover:bg-amber-200 text-amber-900 rounded-sm border border-amber-300 shadow-sm transition-all font-serif"
+            className="px-6 py-3 bg-white/90 hover:bg-white text-charcoal rounded-lg border border-clay-rose/40 shadow-sm transition-all font-sans text-sm"
           >
             Next →
           </button>

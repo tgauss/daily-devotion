@@ -13,14 +13,14 @@ export function StoryPageComponent({ page, pageNumber, totalPages }: StoryPageCo
   switch (page.type) {
     case 'passage':
       return (
-        <div className="max-w-2xl mx-auto px-6">
-          <h2 className="text-2xl md:text-3xl font-serif font-bold text-amber-950 mb-6 text-center">
+        <div className="max-w-2xl mx-auto px-8">
+          <h2 className="text-2xl md:text-3xl font-heading font-bold text-charcoal mb-8 text-center">
             {page.content.title}
           </h2>
-          <div className="text-base md:text-lg text-stone-800 leading-relaxed font-serif bg-white/50 p-6 rounded-sm border border-amber-200 shadow-sm">
+          <div className="text-base md:text-lg text-charcoal leading-loose font-serif italic bg-white/60 p-8 md:p-10 rounded-lg border border-clay-rose/30 shadow-md">
             {page.content.text}
           </div>
-          <p className="mt-6 text-center text-amber-700/60 text-sm font-serif italic">
+          <p className="mt-8 text-center text-charcoal/50 text-sm font-serif italic">
             The Holy Bible, English Standard Version
           </p>
         </div>
@@ -28,26 +28,26 @@ export function StoryPageComponent({ page, pageNumber, totalPages }: StoryPageCo
 
     case 'cover':
       return (
-        <div className="max-w-2xl mx-auto px-6 text-center">
-          <h1 className="text-5xl md:text-7xl font-serif font-bold text-amber-950 mb-8 leading-tight">
+        <div className="max-w-2xl mx-auto px-8 text-center">
+          <h1 className="text-5xl md:text-7xl font-heading font-bold text-charcoal mb-12 leading-tight">
             {page.content.title}
           </h1>
           {page.content.text && (
-            <p className="text-2xl md:text-3xl text-amber-800 font-serif font-light">
+            <p className="text-2xl md:text-3xl text-olivewood font-sans font-light leading-relaxed">
               {page.content.text}
             </p>
           )}
-          <p className="mt-12 text-amber-700/60 text-sm font-serif">Tap or press → to continue</p>
+          <p className="mt-16 text-charcoal/40 text-sm font-sans">Tap or press → to continue</p>
         </div>
       )
 
     case 'content':
       return (
-        <div className="max-w-2xl mx-auto px-6">
-          <h2 className="text-3xl md:text-4xl font-serif font-bold text-amber-950 mb-8">
+        <div className="max-w-2xl mx-auto px-8">
+          <h2 className="text-3xl md:text-4xl font-heading font-bold text-charcoal mb-10">
             {page.content.title}
           </h2>
-          <div className="text-lg md:text-xl text-stone-800 leading-relaxed space-y-4 font-serif">
+          <div className="text-lg md:text-xl text-charcoal leading-relaxed space-y-6 font-sans">
             {page.content.text?.split('\n\n').map((paragraph, idx) => (
               <p key={idx}>{paragraph}</p>
             ))}
@@ -57,18 +57,18 @@ export function StoryPageComponent({ page, pageNumber, totalPages }: StoryPageCo
 
     case 'takeaways':
       return (
-        <div className="max-w-2xl mx-auto px-6">
-          <h2 className="text-3xl md:text-4xl font-serif font-bold text-amber-950 mb-8">
+        <div className="max-w-2xl mx-auto px-8">
+          <h2 className="text-3xl md:text-4xl font-heading font-bold text-charcoal mb-10">
             {page.content.title}
           </h2>
-          <ul className="space-y-4">
+          <ul className="space-y-6">
             {page.content.bullets?.map((bullet, idx) => (
               <li
                 key={idx}
-                className="flex items-start text-lg md:text-xl text-stone-800 leading-relaxed font-serif"
+                className="flex items-start text-lg md:text-xl text-charcoal leading-relaxed font-sans"
               >
-                <span className="flex-shrink-0 w-8 h-8 rounded-sm bg-amber-200/60 border border-amber-300 flex items-center justify-center mr-4 mt-1">
-                  <span className="text-amber-900 font-semibold font-serif">{idx + 1}</span>
+                <span className="flex-shrink-0 w-8 h-8 rounded-lg bg-golden-wheat/40 border border-golden-wheat flex items-center justify-center mr-5 mt-1">
+                  <span className="text-charcoal font-semibold font-sans text-sm">{idx + 1}</span>
                 </span>
                 <span>{bullet}</span>
               </li>
@@ -79,19 +79,19 @@ export function StoryPageComponent({ page, pageNumber, totalPages }: StoryPageCo
 
     case 'cta':
       return (
-        <div className="max-w-2xl mx-auto px-6 text-center">
-          <h2 className="text-4xl md:text-5xl font-serif font-bold text-amber-950 mb-6">
+        <div className="max-w-2xl mx-auto px-8 text-center">
+          <h2 className="text-4xl md:text-5xl font-heading font-bold text-charcoal mb-8">
             {page.content.title}
           </h2>
           {page.content.text && (
-            <p className="text-xl md:text-2xl text-stone-800 mb-12 leading-relaxed font-serif">
+            <p className="text-xl md:text-2xl text-charcoal mb-14 leading-relaxed font-sans">
               {page.content.text}
             </p>
           )}
           {page.content.cta && (
             <Link
               href={page.content.cta.href}
-              className="inline-block px-12 py-4 bg-amber-700 hover:bg-amber-800 text-white text-xl font-semibold font-serif rounded-sm border border-amber-900 transition-all shadow-md"
+              className="inline-block px-12 py-4 bg-olivewood hover:bg-olivewood/90 text-white text-xl font-semibold font-sans rounded-lg transition-all shadow-lg hover:shadow-xl"
             >
               {page.content.cta.text}
             </Link>
@@ -101,8 +101,8 @@ export function StoryPageComponent({ page, pageNumber, totalPages }: StoryPageCo
 
     default:
       return (
-        <div className="max-w-2xl mx-auto px-6 text-center">
-          <p className="text-white">Unknown page type</p>
+        <div className="max-w-2xl mx-auto px-8 text-center">
+          <p className="text-charcoal">Unknown page type</p>
         </div>
       )
   }

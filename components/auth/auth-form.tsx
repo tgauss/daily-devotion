@@ -54,14 +54,17 @@ export function AuthForm() {
   }
 
   return (
-    <div className="bg-white/80 rounded-sm p-8 shadow-md border border-amber-200">
-      <h2 className="text-2xl font-bold text-amber-950 mb-6 text-center font-serif">
-        {isLogin ? 'Welcome Back' : 'Create Account'}
+    <div className="bg-white/90 rounded-lg p-8 shadow-lg border border-olivewood/20">
+      <h2 className="text-2xl font-heading text-charcoal mb-2 text-center">
+        {isLogin ? 'Welcome back' : 'Begin your journey'}
       </h2>
+      <p className="text-sm text-charcoal/60 text-center mb-8 font-sans">
+        {isLogin ? "Ready for today's reading?" : "Start your daily practice"}
+      </p>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-5">
         <div>
-          <label htmlFor="email" className="block text-sm font-medium text-stone-700 mb-2 font-serif">
+          <label htmlFor="email" className="block text-sm font-medium text-charcoal mb-2 font-sans">
             Email
           </label>
           <input
@@ -70,13 +73,13 @@ export function AuthForm() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className="w-full px-4 py-3 bg-white border border-amber-200 rounded-sm text-stone-800 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-amber-700 focus:border-transparent font-serif"
+            className="w-full px-4 py-3 bg-white border border-olivewood/30 rounded-md text-charcoal placeholder-charcoal/40 focus:outline-none focus:ring-2 focus:ring-golden-wheat focus:border-transparent font-sans transition-all"
             placeholder="you@example.com"
           />
         </div>
 
         <div>
-          <label htmlFor="password" className="block text-sm font-medium text-stone-700 mb-2 font-serif">
+          <label htmlFor="password" className="block text-sm font-medium text-charcoal mb-2 font-sans">
             Password
           </label>
           <input
@@ -86,17 +89,17 @@ export function AuthForm() {
             onChange={(e) => setPassword(e.target.value)}
             required
             minLength={6}
-            className="w-full px-4 py-3 bg-white border border-amber-200 rounded-sm text-stone-800 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-amber-700 focus:border-transparent font-serif"
+            className="w-full px-4 py-3 bg-white border border-olivewood/30 rounded-md text-charcoal placeholder-charcoal/40 focus:outline-none focus:ring-2 focus:ring-golden-wheat focus:border-transparent font-sans transition-all"
             placeholder="••••••••"
           />
         </div>
 
         {message && (
           <div
-            className={`p-3 rounded-sm text-sm font-serif ${
+            className={`p-4 rounded-md text-sm font-sans ${
               message.type === 'error'
                 ? 'bg-red-50 text-red-800 border border-red-200'
-                : 'bg-amber-50 text-amber-800 border border-amber-200'
+                : 'bg-golden-wheat/10 text-charcoal border border-golden-wheat/30'
             }`}
           >
             {message.text}
@@ -106,9 +109,9 @@ export function AuthForm() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full px-4 py-3 bg-amber-700 hover:bg-amber-800 disabled:bg-amber-700/50 text-white font-semibold rounded-sm border border-amber-900 transition-colors font-serif"
+          className="w-full px-4 py-3 bg-olivewood hover:bg-olivewood/90 disabled:bg-olivewood/50 text-white font-medium rounded-md border border-olivewood/50 transition-all shadow-sm hover:shadow font-sans"
         >
-          {loading ? 'Loading...' : isLogin ? 'Sign In' : 'Sign Up'}
+          {loading ? 'Just a moment...' : isLogin ? 'Sign In' : 'Sign Up'}
         </button>
       </form>
 
@@ -118,9 +121,9 @@ export function AuthForm() {
             setIsLogin(!isLogin)
             setMessage(null)
           }}
-          className="text-amber-700 hover:text-amber-800 text-sm transition-colors font-serif"
+          className="text-olivewood hover:text-golden-wheat text-sm transition-colors font-sans"
         >
-          {isLogin ? "Don't have an account? Sign up" : 'Already have an account? Sign in'}
+          {isLogin ? "New here? Create an account" : 'Already have an account? Sign in'}
         </button>
       </div>
     </div>
