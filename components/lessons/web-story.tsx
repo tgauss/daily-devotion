@@ -69,12 +69,14 @@ export function WebStory({ manifest, onComplete, lessonId }: WebStoryProps) {
       </div>
 
       {/* Story page */}
-      <div className="absolute inset-0 flex items-center justify-center">
-        <StoryPageComponent
-          page={manifest.pages[currentPage]}
-          pageNumber={currentPage + 1}
-          totalPages={totalPages}
-        />
+      <div className="absolute inset-0 flex items-center justify-center overflow-y-auto">
+        <div className="w-full py-4">
+          <StoryPageComponent
+            page={manifest.pages[currentPage]}
+            pageNumber={currentPage + 1}
+            totalPages={totalPages}
+          />
+        </div>
       </div>
 
       {/* Navigation areas - disabled on CTA pages to allow button clicks */}
@@ -105,16 +107,16 @@ export function WebStory({ manifest, onComplete, lessonId }: WebStoryProps) {
       )}
 
       {/* Navigation buttons (mobile-friendly) */}
-      <div className="absolute bottom-8 left-0 right-0 flex justify-center gap-4 z-10 px-4">
+      <div className="fixed bottom-4 sm:bottom-8 left-0 right-0 flex justify-center items-center gap-2 sm:gap-4 z-30 px-4">
         {currentPage > 0 && (
           <button
             onClick={handlePrevious}
-            className="px-6 py-3 bg-white/90 hover:bg-white text-charcoal rounded-lg border border-clay-rose/40 shadow-sm transition-all font-sans text-sm"
+            className="px-4 sm:px-6 py-2 sm:py-3 bg-white/95 hover:bg-white text-charcoal rounded-lg border border-clay-rose/40 shadow-lg transition-all font-sans text-xs sm:text-sm font-medium"
           >
             ← Previous
           </button>
         )}
-        <span className="px-4 py-3 bg-white/70 text-charcoal/60 rounded-lg border border-clay-rose/30 text-sm font-sans">
+        <span className="px-3 sm:px-4 py-2 sm:py-3 bg-white/80 text-charcoal/60 rounded-lg border border-clay-rose/30 text-xs sm:text-sm font-sans font-medium">
           {currentPage + 1} / {totalPages}
         </span>
         {currentPage < totalPages - 1 && (
