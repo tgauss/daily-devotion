@@ -8,6 +8,9 @@ ADD COLUMN IF NOT EXISTS bio TEXT,
 ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW();
 
 -- Add trigger to update updated_at on profile changes
+-- Drop first if it exists to avoid conflicts
+DROP TRIGGER IF EXISTS update_users_updated_at ON public.users;
+
 CREATE TRIGGER update_users_updated_at
   BEFORE UPDATE ON public.users
   FOR EACH ROW
