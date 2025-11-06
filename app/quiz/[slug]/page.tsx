@@ -26,7 +26,6 @@ export default async function QuizPage({ params }: { params: Promise<{ slug: str
     .single()
 
   if (error || !lesson) {
-    console.error(`[QuizPage] Lesson not found: ${slug}`, error)
     notFound()
   }
 

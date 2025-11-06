@@ -45,15 +45,7 @@ export async function middleware(request: NextRequest) {
     pathname.startsWith('/quiz/') ||
     pathname === '/'
 
-  console.log('[Middleware]', {
-    pathname,
-    hasUser: !!user,
-    shouldAllow,
-    willRedirect: !user && !shouldAllow
-  })
-
   if (!user && !shouldAllow) {
-    console.log('[Middleware] Redirecting to /auth from:', pathname)
     return NextResponse.redirect(new URL('/auth', request.url))
   }
 

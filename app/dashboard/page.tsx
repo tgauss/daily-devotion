@@ -7,7 +7,6 @@ import { NudgeCard } from '@/components/dashboard/nudge-card'
 import { ImportFortWorthButton } from '@/components/plans/import-fort-worth-button'
 
 export default async function DashboardPage() {
-  console.log('[Dashboard] Loading dashboard page')
   const supabase = await createClient()
   const {
     data: { user },
