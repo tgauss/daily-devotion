@@ -12,10 +12,13 @@ export default async function StoryPage({ params }: { params: Promise<{ slug: st
     .from('lessons')
     .select('*')
     .eq('share_slug', slug)
-    .eq('published_at', null, { negate: true }) // Only published lessons
+    .not('published_at', 'is', null) // Only published lessons
     .single()
 
+  console.log(`[Story Page] Slug: ${slug}, Error:`, error, 'Lesson found:', !!lesson)
+
   if (error || !lesson) {
+    console.error(`[Story Page] Not found - slug: ${slug}, error:`, error)
     notFound()
   }
 

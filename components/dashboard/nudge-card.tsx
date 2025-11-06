@@ -52,19 +52,19 @@ export function NudgeCard({ userId }: NudgeCardProps) {
   const lessonSlug = overdueLesson.lessons?.[0]?.share_slug
 
   return (
-    <div className="bg-gradient-to-r from-orange-500/20 to-red-500/20 backdrop-blur-lg rounded-xl p-6 shadow-xl border border-orange-500/30">
+    <div className="bg-amber-100 rounded-sm p-6 shadow-md border border-amber-300">
       <div className="flex items-start justify-between">
         <div className="flex-1">
-          <h3 className="text-lg font-semibold text-white mb-2">
+          <h3 className="text-lg font-semibold text-amber-950 mb-2 font-serif">
             You have an overdue lesson
           </h3>
-          <p className="text-white/80 mb-4">
+          <p className="text-stone-700 mb-4 font-serif">
             {overdueLesson.plans.title} - {overdueLesson.references_text.join(', ')}
           </p>
           {lessonSlug && (
             <Link
               href={`/s/${lessonSlug}`}
-              className="inline-block px-6 py-2 bg-white text-orange-600 font-semibold rounded-lg hover:bg-white/90 transition-colors"
+              className="inline-block px-6 py-2 bg-amber-700 text-white font-semibold rounded-sm border border-amber-900 hover:bg-amber-800 transition-colors font-serif"
             >
               Continue Learning
             </Link>

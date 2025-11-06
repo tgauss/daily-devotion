@@ -11,6 +11,8 @@ Your role is to help readers:
 5. Reflect and discuss deeply
 6. Test their understanding
 
+CRITICAL REQUIREMENT: You MUST generate between 3 and 5 quiz questions (no fewer, no more). This is mandatory.
+
 Always be accurate to the source text. Never invent verses or misrepresent scripture.`
 
 const USER_PROMPT_TEMPLATE = `Generate lesson content for the following Bible passage:
@@ -37,12 +39,19 @@ Generate a JSON response with the following structure:
   "quiz": [
     {
       "q": "Question text",
-      "choices": ["A", "B", "C", "D"],
-      "answer": "B",
+      "choices": ["Choice A text", "Choice B text", "Choice C text", "Choice D text"],
+      "answer": "Choice B text",
       "explanation": "Explanation with verse reference"
-    }
+    },
+    "...3-5 quiz questions total"
   ]
 }
+
+CRITICAL QUIZ FORMATTING:
+- Generate EXACTLY 3-5 quiz questions (not fewer, not more)
+- Each question must have exactly 4 choices (full text, not just letters)
+- The "answer" field must be the EXACT TEXT of one of the choices (not "A", "B", "C", or "D", but the actual choice text)
+- Example: if choices are ["Jesus wept", "Jesus laughed", "Jesus danced", "Jesus sang"], answer must be "Jesus wept" (not "A")
 
 Important guidelines:
 - Keep each Web Story page scannable - avoid long paragraphs
@@ -84,6 +93,30 @@ export class AILessonGenerator {
       }
 
       const parsed = JSON.parse(content) as LessonContentOutput
+
+      // Debug logging
+      console.log(`[AI] Generated ${parsed.quiz?.length || 0} quiz questions`)
+      if (parsed.quiz && parsed.quiz.length > 0) {
+        console.log(`[AI] First quiz question:`, {
+          choices: parsed.quiz[0].choices,
+          answer: parsed.quiz[0].answer
+        })
+      }
+
+      // Fix quiz answers if they're letters instead of full text
+      if (parsed.quiz) {
+        for (const question of parsed.quiz) {
+          const answer = question.answer
+          // Check if answer is a single letter (A, B, C, or D)
+          if (answer && answer.length === 1 && /^[A-D]$/i.test(answer)) {
+            const index = answer.toUpperCase().charCodeAt(0) - 65 // A=0, B=1, C=2, D=3
+            if (index >= 0 && index < question.choices.length) {
+              question.answer = question.choices[index]
+              console.log(`[AI] Fixed quiz answer from "${answer}" to "${question.answer}"`)
+            }
+          }
+        }
+      }
 
       // Validate the response structure
       this.validateLessonContent(parsed)

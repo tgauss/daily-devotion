@@ -74,15 +74,15 @@ export function Quiz({ lesson, userId, existingProgress }: QuizProps) {
 
   if (existingProgress && existingProgress.quiz_score !== null && !showResults) {
     return (
-      <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 shadow-2xl">
+      <div className="bg-white/80 rounded-sm p-8 shadow-md border border-amber-200">
         <div className="text-center">
-          <h2 className="text-3xl font-bold text-white mb-4">Quiz Already Completed</h2>
-          <p className="text-white/80 mb-6">
+          <h2 className="text-3xl font-bold text-amber-950 mb-4 font-serif">Quiz Already Completed</h2>
+          <p className="text-stone-700 mb-6 font-serif">
             You've already taken this quiz and scored {existingProgress.quiz_score}%.
           </p>
           <button
             onClick={() => setShowResults(true)}
-            className="px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg transition-colors"
+            className="px-6 py-3 bg-amber-700 hover:bg-amber-800 text-white font-semibold rounded-sm border border-amber-900 transition-colors font-serif"
           >
             Review Answers
           </button>
@@ -112,24 +112,24 @@ export function Quiz({ lesson, userId, existingProgress }: QuizProps) {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 shadow-2xl">
-        <h1 className="text-2xl font-bold text-white mb-2">{planTitle}</h1>
-        <p className="text-blue-200">{lesson.passage_canonical}</p>
+      <div className="bg-white/80 rounded-sm p-6 shadow-md border border-amber-200">
+        <h1 className="text-2xl font-bold text-amber-950 mb-2 font-serif">{planTitle}</h1>
+        <p className="text-amber-700 font-serif">{lesson.passage_canonical}</p>
       </div>
 
       {/* Progress */}
-      <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-4 shadow-2xl">
+      <div className="bg-white/80 rounded-sm p-4 shadow-md border border-amber-200">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-white/80 text-sm">
+          <span className="text-stone-700 text-sm font-serif">
             Question {currentQuestion + 1} of {questions.length}
           </span>
-          <span className="text-white/80 text-sm">
+          <span className="text-stone-700 text-sm font-serif">
             {Object.keys(answers).length} answered
           </span>
         </div>
-        <div className="h-2 bg-white/10 rounded-full overflow-hidden">
+        <div className="h-2 bg-amber-100 rounded-sm overflow-hidden border border-amber-200">
           <div
-            className="h-full bg-blue-500 transition-all"
+            className="h-full bg-amber-700 transition-all"
             style={{ width: `${((currentQuestion + 1) / questions.length) * 100}%` }}
           />
         </div>
@@ -148,7 +148,7 @@ export function Quiz({ lesson, userId, existingProgress }: QuizProps) {
         <button
           onClick={handlePrevious}
           disabled={currentQuestion === 0}
-          className="px-6 py-3 bg-white/10 hover:bg-white/20 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-lg transition-colors"
+          className="px-6 py-3 bg-amber-100 hover:bg-amber-200 disabled:opacity-50 disabled:cursor-not-allowed text-amber-900 rounded-sm border border-amber-300 transition-colors font-serif"
         >
           ← Previous
         </button>
@@ -157,7 +157,7 @@ export function Quiz({ lesson, userId, existingProgress }: QuizProps) {
           <button
             onClick={handleNext}
             disabled={!currentAnswer}
-            className="flex-1 px-6 py-3 bg-blue-500 hover:bg-blue-600 disabled:bg-blue-500/50 disabled:cursor-not-allowed text-white font-semibold rounded-lg transition-colors"
+            className="flex-1 px-6 py-3 bg-amber-700 hover:bg-amber-800 disabled:bg-amber-700/50 disabled:cursor-not-allowed text-white font-semibold rounded-sm border border-amber-900 transition-colors font-serif"
           >
             Next →
           </button>
@@ -165,7 +165,7 @@ export function Quiz({ lesson, userId, existingProgress }: QuizProps) {
           <button
             onClick={handleSubmit}
             disabled={!allAnswered || submitting}
-            className="flex-1 px-6 py-3 bg-green-500 hover:bg-green-600 disabled:bg-green-500/50 disabled:cursor-not-allowed text-white font-semibold rounded-lg transition-colors"
+            className="flex-1 px-6 py-3 bg-amber-700 hover:bg-amber-800 disabled:bg-amber-700/50 disabled:cursor-not-allowed text-white font-semibold rounded-sm border border-amber-900 transition-colors font-serif"
           >
             {submitting ? 'Submitting...' : 'Submit Quiz'}
           </button>

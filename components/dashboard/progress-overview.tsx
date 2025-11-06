@@ -22,19 +22,19 @@ export function ProgressOverview({ progress }: ProgressOverviewProps) {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-      <div className="bg-white/10 backdrop-blur-lg rounded-xl p-6 shadow-xl">
-        <p className="text-sm text-white/60 mb-1">Lessons Completed</p>
-        <p className="text-4xl font-bold text-white">{totalCompleted}</p>
+      <div className="bg-white/80 rounded-sm p-6 shadow-md border border-amber-200">
+        <p className="text-sm text-stone-600 mb-1 font-serif">Lessons Completed</p>
+        <p className="text-4xl font-bold text-amber-950 font-serif">{totalCompleted}</p>
       </div>
 
-      <div className="bg-white/10 backdrop-blur-lg rounded-xl p-6 shadow-xl">
-        <p className="text-sm text-white/60 mb-1">Time Spent</p>
-        <p className="text-4xl font-bold text-white">{formatTime(totalTimeSpent)}</p>
+      <div className="bg-white/80 rounded-sm p-6 shadow-md border border-amber-200">
+        <p className="text-sm text-stone-600 mb-1 font-serif">Time Spent</p>
+        <p className="text-4xl font-bold text-amber-950 font-serif">{formatTime(totalTimeSpent)}</p>
       </div>
 
-      <div className="bg-white/10 backdrop-blur-lg rounded-xl p-6 shadow-xl">
-        <p className="text-sm text-white/60 mb-1">Avg Quiz Score</p>
-        <p className="text-4xl font-bold text-white">{Math.round(averageQuizScore)}%</p>
+      <div className="bg-white/80 rounded-sm p-6 shadow-md border border-amber-200">
+        <p className="text-sm text-stone-600 mb-1 font-serif">Avg Quiz Score</p>
+        <p className="text-4xl font-bold text-amber-950 font-serif">{Math.round(averageQuizScore)}%</p>
       </div>
     </div>
   )

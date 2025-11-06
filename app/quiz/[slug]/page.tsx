@@ -35,7 +35,16 @@ export default async function QuizPage({ params }: { params: Promise<{ slug: str
     .single()
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 py-12 px-4">
+    <div
+      className="min-h-screen bg-[#f5f1e8] py-12 px-4"
+      style={{
+        backgroundImage: `
+          linear-gradient(0deg, transparent 24%, rgba(139, 116, 82, .03) 25%, rgba(139, 116, 82, .03) 26%, transparent 27%, transparent 74%, rgba(139, 116, 82, .03) 75%, rgba(139, 116, 82, .03) 76%, transparent 77%, transparent),
+          linear-gradient(90deg, transparent 24%, rgba(139, 116, 82, .03) 25%, rgba(139, 116, 82, .03) 26%, transparent 27%, transparent 74%, rgba(139, 116, 82, .03) 75%, rgba(139, 116, 82, .03) 76%, transparent 77%, transparent)
+        `,
+        backgroundSize: '50px 50px'
+      }}
+    >
       <div className="max-w-3xl mx-auto">
         <Quiz
           lesson={lesson}

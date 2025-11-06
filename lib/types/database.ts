@@ -27,6 +27,7 @@ export interface PlanItem {
   index: number
   date_target: string | null
   references_text: string[]
+  category: string | null
   translation: string
   status: PlanItemStatus
   created_at: string

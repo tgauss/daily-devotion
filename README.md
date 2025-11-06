@@ -232,16 +232,30 @@ Modify `components/lessons/story-page.tsx` to customize:
 
 ## Deployment
 
+**Production URL**: https://mydailybread.faith
+
 ### Vercel (Recommended)
 
+For detailed deployment instructions, see:
+- **[Complete Deployment Guide](VERCEL_DEPLOYMENT.md)** - Step-by-step instructions with domain setup
+- **[Deployment Checklist](DEPLOYMENT_CHECKLIST.md)** - Quick checklist to ensure nothing is missed
+
+**Quick Steps**:
 1. Push to GitHub
 2. Import project in Vercel
-3. Add environment variables in Vercel dashboard
+3. Add environment variables (see `.env.example`)
 4. Deploy
+5. Configure custom domain `mydailybread.faith`
+6. Update Supabase redirect URLs
+
+**Important Notes**:
+- Lesson generation may timeout on Vercel (10s limit on Hobby tier)
+- Generate lessons locally, they'll appear in production (shared database)
+- Or upgrade to Vercel Pro for 60-second timeout
 
 ### Other Platforms
 
-Works on any platform supporting Next.js 15+ (Netlify, Railway, etc.)
+Works on any platform supporting Next.js 16+ (Netlify, Railway, etc.)
 
 ## Licensing and Terms
 

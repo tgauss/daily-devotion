@@ -54,14 +54,14 @@ export function AuthForm() {
   }
 
   return (
-    <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 shadow-2xl">
-      <h2 className="text-2xl font-bold text-white mb-6 text-center">
+    <div className="bg-white/80 rounded-sm p-8 shadow-md border border-amber-200">
+      <h2 className="text-2xl font-bold text-amber-950 mb-6 text-center font-serif">
         {isLogin ? 'Welcome Back' : 'Create Account'}
       </h2>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label htmlFor="email" className="block text-sm font-medium text-white/80 mb-2">
+          <label htmlFor="email" className="block text-sm font-medium text-stone-700 mb-2 font-serif">
             Email
           </label>
           <input
@@ -70,13 +70,13 @@ export function AuthForm() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
+            className="w-full px-4 py-3 bg-white border border-amber-200 rounded-sm text-stone-800 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-amber-700 focus:border-transparent font-serif"
             placeholder="you@example.com"
           />
         </div>
 
         <div>
-          <label htmlFor="password" className="block text-sm font-medium text-white/80 mb-2">
+          <label htmlFor="password" className="block text-sm font-medium text-stone-700 mb-2 font-serif">
             Password
           </label>
           <input
@@ -86,17 +86,17 @@ export function AuthForm() {
             onChange={(e) => setPassword(e.target.value)}
             required
             minLength={6}
-            className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
+            className="w-full px-4 py-3 bg-white border border-amber-200 rounded-sm text-stone-800 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-amber-700 focus:border-transparent font-serif"
             placeholder="••••••••"
           />
         </div>
 
         {message && (
           <div
-            className={`p-3 rounded-lg text-sm ${
+            className={`p-3 rounded-sm text-sm font-serif ${
               message.type === 'error'
-                ? 'bg-red-500/20 text-red-200 border border-red-500/30'
-                : 'bg-green-500/20 text-green-200 border border-green-500/30'
+                ? 'bg-red-50 text-red-800 border border-red-200'
+                : 'bg-amber-50 text-amber-800 border border-amber-200'
             }`}
           >
             {message.text}
@@ -106,7 +106,7 @@ export function AuthForm() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full px-4 py-3 bg-blue-500 hover:bg-blue-600 disabled:bg-blue-500/50 text-white font-semibold rounded-lg transition-colors"
+          className="w-full px-4 py-3 bg-amber-700 hover:bg-amber-800 disabled:bg-amber-700/50 text-white font-semibold rounded-sm border border-amber-900 transition-colors font-serif"
         >
           {loading ? 'Loading...' : isLogin ? 'Sign In' : 'Sign Up'}
         </button>
@@ -118,7 +118,7 @@ export function AuthForm() {
             setIsLogin(!isLogin)
             setMessage(null)
           }}
-          className="text-blue-300 hover:text-blue-200 text-sm transition-colors"
+          className="text-amber-700 hover:text-amber-800 text-sm transition-colors font-serif"
         >
           {isLogin ? "Don't have an account? Sign up" : 'Already have an account? Sign in'}
         </button>
