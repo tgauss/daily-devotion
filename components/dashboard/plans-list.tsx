@@ -33,6 +33,7 @@ export function PlansList({ plans }: PlansListProps) {
           <Link
             key={plan.id}
             href={`/plans/${plan.id}`}
+            onClick={() => console.log('[CLIENT] Clicking plan link:', plan.id, `/plans/${plan.id}`)}
             className="block p-6 bg-white hover:bg-white/80 rounded-lg border border-olivewood/20 hover:border-golden-wheat/40 transition-all shadow-sm hover:shadow-md"
           >
             <div className="flex items-start justify-between mb-4">
