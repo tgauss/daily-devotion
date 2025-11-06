@@ -4,10 +4,12 @@ import { useState, useEffect } from 'react'
 import { X } from 'lucide-react'
 
 interface WelcomeModalProps {
+  firstName?: string | null
   userEmail: string
 }
 
-export function WelcomeModal({ userEmail }: WelcomeModalProps) {
+export function WelcomeModal({ firstName, userEmail }: WelcomeModalProps) {
+  const displayName = firstName || userEmail.split('@')[0]
   const [isOpen, setIsOpen] = useState(false)
   const [currentStep, setCurrentStep] = useState(0)
 
@@ -44,7 +46,7 @@ export function WelcomeModal({ userEmail }: WelcomeModalProps) {
       content: (
         <div className="space-y-4">
           <p className="text-lg text-charcoal/80 font-sans">
-            We're delighted to have you here, <span className="font-semibold text-olivewood">{userEmail.split('@')[0]}</span>!
+            We're delighted to have you here, <span className="font-semibold text-olivewood">{displayName}</span>!
           </p>
           <p className="text-charcoal/70 font-sans">
             MyDailyBread is your personal companion for daily Bible reading and spiritual growth.

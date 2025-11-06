@@ -3,12 +3,14 @@
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 import type { User } from '@supabase/supabase-js'
+import type { User as ProfileUser } from '@/lib/types/database'
 
 interface DashboardHeaderProps {
   user: User
+  profile: ProfileUser | null
 }
 
-export function DashboardHeader({ user }: DashboardHeaderProps) {
+export function DashboardHeader({ user, profile }: DashboardHeaderProps) {
   const router = useRouter()
   const supabase = createClient()
 
@@ -18,12 +20,18 @@ export function DashboardHeader({ user }: DashboardHeaderProps) {
     router.refresh()
   }
 
+  const displayName = profile?.first_name
+    ? `${profile.first_name}${profile.last_name ? ' ' + profile.last_name : ''}`
+    : user.email?.split('@')[0] || 'User'
+
   return (
     <header className="bg-white/90 border-b border-olivewood/20 backdrop-blur-sm">
       <div className="max-w-6xl mx-auto px-4 py-5 flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-heading text-charcoal">MyDailyBread</h1>
-          <p className="text-sm text-olivewood font-sans mt-0.5">{user.email}</p>
+          <p className="text-sm text-olivewood font-sans mt-0.5">
+            Welcome back, {displayName}
+          </p>
         </div>
         <button
           onClick={handleSignOut}

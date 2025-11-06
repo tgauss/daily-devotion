@@ -17,6 +17,13 @@ export default async function DashboardPage() {
     redirect('/auth')
   }
 
+  // Fetch user profile
+  const { data: profile } = await supabase
+    .from('users')
+    .select('*')
+    .eq('id', user.id)
+    .single()
+
   // Fetch user's plans
   const { data: plans } = await supabase
     .from('plans')
@@ -49,9 +56,15 @@ export default async function DashboardPage() {
         backgroundSize: '60px 60px'
       }}
     >
-      <WelcomeModal userEmail={user.email || ''} />
+      <WelcomeModal
+        firstName={profile?.first_name}
+        userEmail={user.email || ''}
+      />
 
-      <DashboardHeader user={user} />
+      <DashboardHeader
+        user={user}
+        profile={profile}
+      />
 
       <main className="max-w-6xl mx-auto px-4 py-10 space-y-8">
         {/* Nudge card for overdue lessons */}
