@@ -4,10 +4,14 @@ import { PlanDetails } from '@/components/plans/plan-details'
 
 export default async function PlanPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
+  console.log('[PlanPage] Loading plan:', id)
+
   const supabase = await createClient()
   const {
     data: { user },
   } = await supabase.auth.getUser()
+
+  console.log('[PlanPage] User check:', { hasUser: !!user, userId: user?.id })
 
   // Fetch plan with items and lessons
   const { data: plan, error } = await supabase
@@ -24,12 +28,28 @@ export default async function PlanPage({ params }: { params: Promise<{ id: strin
 
   // If plan not found or query failed, redirect to dashboard (or auth if not logged in)
   if (error || !plan) {
-    console.error('[PlanPage] Plan fetch error:', error?.message || 'Plan not found')
+    console.error('[PlanPage] Plan fetch failed:', {
+      planId: id,
+      error: error?.message || 'Plan not found',
+      errorCode: error?.code,
+      errorDetails: error?.details,
+      hasUser: !!user
+    })
     if (!user) {
+      console.log('[PlanPage] No user, redirecting to /auth')
       redirect('/auth')
     }
+    console.log('[PlanPage] Redirecting to /dashboard')
     redirect('/dashboard')
   }
+
+  console.log('[PlanPage] Plan fetched successfully:', {
+    planId: plan.id,
+    title: plan.title,
+    isPublic: plan.is_public,
+    ownerId: plan.user_id,
+    itemCount: plan.plan_items?.length || 0
+  })
 
   // Check authorization
   const isOwner = user && plan.user_id === user.id

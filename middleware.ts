@@ -37,14 +37,23 @@ export async function middleware(request: NextRequest) {
   }
 
   // Redirect unauthenticated users from protected routes to auth
-  if (
-    !user &&
-    !request.nextUrl.pathname.startsWith('/auth') &&
-    !request.nextUrl.pathname.startsWith('/s/') && // Allow public story viewing
-    !request.nextUrl.pathname.startsWith('/plans/') && // Allow public plan viewing
-    !request.nextUrl.pathname.startsWith('/quiz/') && // Allow public quiz access
-    request.nextUrl.pathname !== '/'
-  ) {
+  const pathname = request.nextUrl.pathname
+  const shouldAllow =
+    pathname.startsWith('/auth') ||
+    pathname.startsWith('/s/') ||
+    pathname.startsWith('/plans/') ||
+    pathname.startsWith('/quiz/') ||
+    pathname === '/'
+
+  console.log('[Middleware]', {
+    pathname,
+    hasUser: !!user,
+    shouldAllow,
+    willRedirect: !user && !shouldAllow
+  })
+
+  if (!user && !shouldAllow) {
+    console.log('[Middleware] Redirecting to /auth from:', pathname)
     return NextResponse.redirect(new URL('/auth', request.url))
   }
 
