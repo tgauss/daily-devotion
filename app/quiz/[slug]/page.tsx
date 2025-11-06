@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { createServiceClient } from '@/lib/supabase/service'
 import { notFound, redirect } from 'next/navigation'
 import { Quiz } from '@/components/quiz/quiz'
 
@@ -15,14 +16,17 @@ export default async function QuizPage({ params }: { params: Promise<{ slug: str
     redirect('/auth')
   }
 
-  // Fetch lesson by share slug
-  const { data: lesson, error } = await supabase
+  // Fetch lesson by share slug using service client to avoid RLS issues with nested queries
+  // (lesson might be from a public plan owned by another user)
+  const serviceClient = createServiceClient()
+  const { data: lesson, error } = await serviceClient
     .from('lessons')
     .select('*, plan_items(*, plans(title))')
     .eq('share_slug', slug)
     .single()
 
   if (error || !lesson) {
+    console.error(`[QuizPage] Lesson not found: ${slug}`, error)
     notFound()
   }
 
