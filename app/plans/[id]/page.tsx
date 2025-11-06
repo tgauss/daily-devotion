@@ -53,20 +53,20 @@ export default async function PlanPage({ params }: { params: Promise<{ id: strin
 
   return (
     <div
-      className="min-h-screen bg-[#f5f1e8] py-12 px-4"
+      className="min-h-screen bg-sandstone py-12 px-4"
       style={{
         backgroundImage: `
-          linear-gradient(0deg, transparent 24%, rgba(139, 116, 82, .03) 25%, rgba(139, 116, 82, .03) 26%, transparent 27%, transparent 74%, rgba(139, 116, 82, .03) 75%, rgba(139, 116, 82, .03) 76%, transparent 77%, transparent),
-          linear-gradient(90deg, transparent 24%, rgba(139, 116, 82, .03) 25%, rgba(139, 116, 82, .03) 26%, transparent 27%, transparent 74%, rgba(139, 116, 82, .03) 75%, rgba(139, 116, 82, .03) 76%, transparent 77%, transparent)
+          linear-gradient(0deg, transparent 24%, rgba(165, 154, 126, .02) 25%, rgba(165, 154, 126, .02) 26%, transparent 27%, transparent 74%, rgba(165, 154, 126, .02) 75%, rgba(165, 154, 126, .02) 76%, transparent 77%, transparent),
+          linear-gradient(90deg, transparent 24%, rgba(165, 154, 126, .02) 25%, rgba(165, 154, 126, .02) 26%, transparent 27%, transparent 74%, rgba(165, 154, 126, .02) 75%, rgba(165, 154, 126, .02) 76%, transparent 77%, transparent)
         `,
-        backgroundSize: '50px 50px'
+        backgroundSize: '60px 60px'
       }}
     >
       <div className="max-w-4xl mx-auto">
-        <div className="mb-8">
+        <div className="mb-10">
           <a
             href="/dashboard"
-            className="text-olivewood hover:text-olivewood/80 transition-colors font-sans inline-flex items-center gap-2"
+            className="text-olivewood hover:text-golden-wheat transition-colors font-sans inline-flex items-center gap-2"
           >
             ← Back to Dashboard
           </a>
