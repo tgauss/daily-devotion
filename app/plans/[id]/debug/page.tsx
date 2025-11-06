@@ -2,25 +2,54 @@ import { createClient } from '@/lib/supabase/server'
 import { createServiceClient } from '@/lib/supabase/service'
 
 export default async function PlanDebugPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params
-  const supabase = await createClient()
-  const serviceSupabase = createServiceClient()
+  let id = 'ERROR'
+  let user = null
+  let planWithRLS = null
+  let rlsError = null
+  let planWithoutRLS = null
+  let serviceError = null
+  let errors: string[] = []
 
-  const { data: { user } } = await supabase.auth.getUser()
+  try {
+    const resolvedParams = await params
+    id = resolvedParams.id
+  } catch (e: any) {
+    errors.push(`Failed to get params: ${e.message}`)
+  }
 
-  // Try with regular client (with RLS)
-  const { data: planWithRLS, error: rlsError } = await supabase
-    .from('plans')
-    .select('*')
-    .eq('id', id)
-    .single()
+  try {
+    const supabase = await createClient()
+    const result = await supabase.auth.getUser()
+    user = result.data.user
+  } catch (e: any) {
+    errors.push(`Failed to get user: ${e.message}`)
+  }
 
-  // Try with service client (bypasses RLS)
-  const { data: planWithoutRLS, error: serviceError } = await serviceSupabase
-    .from('plans')
-    .select('*')
-    .eq('id', id)
-    .single()
+  try {
+    const supabase = await createClient()
+    const result = await supabase
+      .from('plans')
+      .select('*')
+      .eq('id', id)
+      .single()
+    planWithRLS = result.data
+    rlsError = result.error
+  } catch (e: any) {
+    errors.push(`Failed RLS query: ${e.message}`)
+  }
+
+  try {
+    const serviceSupabase = createServiceClient()
+    const result = await serviceSupabase
+      .from('plans')
+      .select('*')
+      .eq('id', id)
+      .single()
+    planWithoutRLS = result.data
+    serviceError = result.error
+  } catch (e: any) {
+    errors.push(`Failed service query: ${e.message}`)
+  }
 
   return (
     <div className="min-h-screen bg-sandstone p-8">
@@ -28,6 +57,17 @@ export default async function PlanDebugPage({ params }: { params: Promise<{ id: 
         <h1 className="text-2xl font-heading mb-6">Plan Debug Info</h1>
 
         <div className="space-y-6">
+          {errors.length > 0 && (
+            <div className="bg-red-50 border-2 border-red-500 p-4 rounded-lg">
+              <strong className="text-red-800 text-lg">Critical Errors:</strong>
+              <ul className="mt-2 list-disc list-inside">
+                {errors.map((err, idx) => (
+                  <li key={idx} className="text-red-700 text-sm">{err}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+
           <div>
             <strong>Plan ID:</strong> {id}
           </div>
@@ -38,6 +78,15 @@ export default async function PlanDebugPage({ params }: { params: Promise<{ id: 
 
           <div>
             <strong>User Email:</strong> {user?.email || 'N/A'}
+          </div>
+
+          <div>
+            <strong>Environment Check:</strong>
+            <ul className="text-sm mt-2">
+              <li>NEXT_PUBLIC_SUPABASE_URL: {process.env.NEXT_PUBLIC_SUPABASE_URL ? '✅ Set' : '❌ Missing'}</li>
+              <li>NEXT_PUBLIC_SUPABASE_ANON_KEY: {process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ? '✅ Set' : '❌ Missing'}</li>
+              <li>SUPABASE_SERVICE_ROLE_KEY: {process.env.SUPABASE_SERVICE_ROLE_KEY ? '✅ Set' : '❌ Missing'}</li>
+            </ul>
           </div>
 
           <hr className="my-6" />
