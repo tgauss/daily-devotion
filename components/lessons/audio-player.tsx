@@ -7,9 +7,10 @@ interface AudioPlayerProps {
   audioUrl: string
   autoPlay?: boolean
   className?: string
+  onAudioEnded?: () => void
 }
 
-export function AudioPlayer({ audioUrl, autoPlay = false, className = '' }: AudioPlayerProps) {
+export function AudioPlayer({ audioUrl, autoPlay = false, className = '', onAudioEnded }: AudioPlayerProps) {
   const audioRef = useRef<HTMLAudioElement>(null)
   const [isPlaying, setIsPlaying] = useState(false)
   const [error, setError] = useState(false)
@@ -20,7 +21,13 @@ export function AudioPlayer({ audioUrl, autoPlay = false, className = '' }: Audi
 
     const handlePlay = () => setIsPlaying(true)
     const handlePause = () => setIsPlaying(false)
-    const handleEnded = () => setIsPlaying(false)
+    const handleEnded = () => {
+      setIsPlaying(false)
+      // Auto-advance to next page when audio finishes
+      if (onAudioEnded) {
+        onAudioEnded()
+      }
+    }
     const handleError = () => {
       console.error('Audio playback error')
       setError(true)
@@ -46,7 +53,7 @@ export function AudioPlayer({ audioUrl, autoPlay = false, className = '' }: Audi
       audio.removeEventListener('ended', handleEnded)
       audio.removeEventListener('error', handleError)
     }
-  }, [autoPlay, error])
+  }, [autoPlay, error, onAudioEnded])
 
   // Reset error state when audio URL changes
   useEffect(() => {

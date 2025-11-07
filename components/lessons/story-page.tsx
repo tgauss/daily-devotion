@@ -3,7 +3,9 @@
 import { motion } from 'framer-motion'
 import { StoryPage } from '@/lib/types/database'
 import Link from 'next/link'
+import Image from 'next/image'
 import { AudioPlayer } from './audio-player'
+import { useRef, useState } from 'react'
 
 interface StoryPageComponentProps {
   page: StoryPage
@@ -11,9 +13,10 @@ interface StoryPageComponentProps {
   totalPages: number
   audioUrl?: string
   autoPlayAudio?: boolean
+  onAudioEnded?: () => void
 }
 
-export function StoryPageComponent({ page, pageNumber, totalPages, audioUrl, autoPlayAudio = false }: StoryPageComponentProps) {
+export function StoryPageComponent({ page, pageNumber, totalPages, audioUrl, autoPlayAudio = false, onAudioEnded }: StoryPageComponentProps) {
   // Subtle fade-in animation only
   const fadeIn = {
     initial: { opacity: 0 },
@@ -39,7 +42,7 @@ export function StoryPageComponent({ page, pageNumber, totalPages, audioUrl, aut
           {/* Audio player in top-right */}
           {audioUrl && (
             <div className="absolute top-0 right-4 sm:right-6 md:right-8 z-10">
-              <AudioPlayer audioUrl={audioUrl} autoPlay={autoPlayAudio} />
+              <AudioPlayer audioUrl={audioUrl} autoPlay={autoPlayAudio} onAudioEnded={onAudioEnded} />
             </div>
           )}
           <h2 className="text-xl sm:text-2xl md:text-3xl font-heading font-bold text-charcoal mb-6 md:mb-8 text-center">
@@ -71,7 +74,24 @@ export function StoryPageComponent({ page, pageNumber, totalPages, audioUrl, aut
         </motion.div>
       )
 
-    case 'cover':
+    case 'cover': {
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      const audioRef = useRef<HTMLAudioElement>(null)
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      const [isPlaying, setIsPlaying] = useState(false)
+
+      const handleAudioPlay = () => {
+        if (audioRef.current) {
+          if (isPlaying) {
+            audioRef.current.pause()
+            setIsPlaying(false)
+          } else {
+            audioRef.current.play()
+            setIsPlaying(true)
+          }
+        }
+      }
+
       return (
         <motion.div
           {...fadeIn}
@@ -86,11 +106,18 @@ export function StoryPageComponent({ page, pageNumber, totalPages, audioUrl, aut
           {/* Overlay for better text readability */}
           <div className="absolute inset-0 bg-charcoal/30" />
 
-          {/* Audio player in top-right */}
+          {/* Hidden audio player */}
           {audioUrl && (
-            <div className="absolute top-8 right-4 sm:right-6 md:right-8 z-20">
-              <AudioPlayer audioUrl={audioUrl} autoPlay={autoPlayAudio} />
-            </div>
+            <audio
+              ref={audioRef}
+              src={audioUrl}
+              onEnded={() => {
+                setIsPlaying(false)
+                if (onAudioEnded) onAudioEnded()
+              }}
+              onPlay={() => setIsPlaying(true)}
+              onPause={() => setIsPlaying(false)}
+            />
           )}
 
           <div className="relative max-w-2xl text-center z-10">
@@ -113,10 +140,33 @@ export function StoryPageComponent({ page, pageNumber, totalPages, audioUrl, aut
                 ))}
               </div>
             )}
+
+            {/* Prominent audio button */}
+            {audioUrl && (
+              <div className="mt-10 md:mt-12">
+                <button
+                  onClick={handleAudioPlay}
+                  className="inline-flex items-center gap-3 px-6 sm:px-8 py-3 sm:py-4 bg-golden-wheat hover:bg-golden-wheat/90 text-charcoal font-semibold font-sans rounded-lg transition-all shadow-lg hover:shadow-xl"
+                >
+                  <Image
+                    src="/icons/Audio-Book-Headphones--Listen-Freehand.svg"
+                    alt=""
+                    width={24}
+                    height={24}
+                    className="w-6 h-6"
+                  />
+                  <span className="text-base sm:text-lg">
+                    {isPlaying ? 'Pause Audio' : 'Read My Lesson Out Loud'}
+                  </span>
+                </button>
+              </div>
+            )}
+
             <p className="mt-12 md:mt-16 text-white/60 text-xs sm:text-sm font-sans drop-shadow-md">Tap or press → to continue</p>
           </div>
         </motion.div>
       )
+    }
 
     case 'content':
       return (
@@ -124,7 +174,7 @@ export function StoryPageComponent({ page, pageNumber, totalPages, audioUrl, aut
           {/* Audio player in top-right */}
           {audioUrl && (
             <div className="absolute top-0 right-4 sm:right-6 md:right-8 z-10">
-              <AudioPlayer audioUrl={audioUrl} autoPlay={autoPlayAudio} />
+              <AudioPlayer audioUrl={audioUrl} autoPlay={autoPlayAudio} onAudioEnded={onAudioEnded} />
             </div>
           )}
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-heading font-bold text-charcoal mb-6 md:mb-10">
@@ -144,7 +194,7 @@ export function StoryPageComponent({ page, pageNumber, totalPages, audioUrl, aut
           {/* Audio player in top-right */}
           {audioUrl && (
             <div className="absolute top-0 right-4 sm:right-6 md:right-8 z-10">
-              <AudioPlayer audioUrl={audioUrl} autoPlay={autoPlayAudio} />
+              <AudioPlayer audioUrl={audioUrl} autoPlay={autoPlayAudio} onAudioEnded={onAudioEnded} />
             </div>
           )}
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-heading font-bold text-charcoal mb-6 md:mb-10">
@@ -223,7 +273,7 @@ export function StoryPageComponent({ page, pageNumber, totalPages, audioUrl, aut
           {/* Audio player in top-right */}
           {audioUrl && (
             <div className="absolute top-0 right-4 sm:right-6 md:right-8 z-10">
-              <AudioPlayer audioUrl={audioUrl} autoPlay={autoPlayAudio} />
+              <AudioPlayer audioUrl={audioUrl} autoPlay={autoPlayAudio} onAudioEnded={onAudioEnded} />
             </div>
           )}
           <h2 className="text-2xl sm:text-4xl md:text-5xl font-heading font-bold text-charcoal mb-6 md:mb-8">

@@ -115,6 +115,7 @@ export function WebStory({ manifest, audioManifest, onComplete, lessonId }: WebS
                 totalPages={totalPages}
                 audioUrl={audioManifest?.pages.find(p => p.pageIndex === currentPage)?.audioUrl}
                 autoPlayAudio={currentPage > 0}
+                onAudioEnded={handleNext}
               />
             </motion.div>
           </AnimatePresence>
