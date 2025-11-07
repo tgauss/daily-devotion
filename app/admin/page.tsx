@@ -32,7 +32,10 @@ export default async function AdminPage() {
       created_at,
       plan_items(
         id,
-        status
+        status,
+        plan_item_lessons(
+          id
+        )
       )
     `)
     .eq('title', 'Fort Worth Bible Church 2025 - Bible in a Year (Oct-Dec)')

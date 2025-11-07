@@ -54,74 +54,101 @@ export async function POST(request: NextRequest) {
 
     for (const item of plan.plan_items) {
       try {
-        // Check if lesson already exists
-        const { data: existingLesson } = await serviceSupabase
-          .from('lessons')
-          .select('id')
+        // 1. Check if this plan_item already has a lesson mapping
+        const { data: existingMapping } = await serviceSupabase
+          .from('plan_item_lessons')
+          .select('lesson_id')
           .eq('plan_item_id', item.id)
           .single()
 
-        if (existingLesson) {
-          results.push({ itemId: item.id, status: 'exists' })
+        if (existingMapping) {
+          results.push({ itemId: item.id, status: 'already_mapped', lessonId: existingMapping.lesson_id })
           continue
         }
 
-        // 1. Fetch passage text
+        // 2. Fetch passage text to get canonical reference
         const passage = await passageAdapter.getPassageText(
           item.references_text[0],
           item.translation
         )
 
-        // 2. Generate AI content
-        const lessonContent = await aiGenerator.generateLessonContent({
-          translation: item.translation,
-          references: item.references_text,
-          passage_text: passage.text,
-          plan_theme: plan.theme,
-        })
-
-        // 3. Generate share slug
-        const shareSlug = crypto.randomBytes(16).toString('hex')
-
-        // 4. Compile Web Story (including passage text)
-        const storyManifest = storyCompiler.compile(lessonContent, {
-          title: plan.title,
-          reference: passage.canonical,
-          translation: item.translation,
-          quizUrl: `/quiz/${shareSlug}`,
-          passageText: passage.text,
-        })
-
-        // 5. Store lesson
-        const { data: lesson, error: lessonError } = await serviceSupabase
+        // 3. Check if canonical lesson already exists (key optimization!)
+        const { data: canonicalLesson } = await serviceSupabase
           .from('lessons')
-          .insert({
-            plan_item_id: item.id,
-            passage_canonical: passage.canonical,
-            passage_text: passage.text,
-            translation: item.translation,
-            ai_triptych_json: lessonContent,
-            story_manifest_json: storyManifest,
-            quiz_json: lessonContent.quiz,
-            share_slug: shareSlug,
-            published_at: new Date().toISOString(),
-          })
-          .select()
+          .select('id')
+          .eq('passage_canonical', passage.canonical)
+          .eq('translation', item.translation)
           .single()
 
-        if (lessonError) {
-          console.error('Error creating lesson:', lessonError)
-          results.push({ itemId: item.id, status: 'error', error: lessonError.message })
-          continue
+        let lessonId: string
+
+        if (canonicalLesson) {
+          // Canonical lesson exists - reuse it!
+          lessonId = canonicalLesson.id
+          results.push({ itemId: item.id, status: 'reused_canonical', lessonId })
+        } else {
+          // Generate new canonical lesson
+          // 4. Generate AI content
+          const lessonContent = await aiGenerator.generateLessonContent({
+            translation: item.translation,
+            references: item.references_text,
+            passage_text: passage.text,
+            plan_theme: plan.theme,
+          })
+
+          // 5. Generate share slug
+          const shareSlug = crypto.randomBytes(16).toString('hex')
+
+          // 6. Compile Web Story (including passage text)
+          const storyManifest = storyCompiler.compile(lessonContent, {
+            title: plan.title,
+            reference: passage.canonical,
+            translation: item.translation,
+            quizUrl: `/quiz/${shareSlug}`,
+            passageText: passage.text,
+          })
+
+          // 7. Store canonical lesson (no plan_item_id!)
+          const { data: newLesson, error: lessonError } = await serviceSupabase
+            .from('lessons')
+            .insert({
+              plan_item_id: null, // Canonical lessons aren't owned by any plan_item
+              passage_canonical: passage.canonical,
+              passage_text: passage.text,
+              translation: item.translation,
+              ai_triptych_json: lessonContent,
+              story_manifest_json: storyManifest,
+              quiz_json: lessonContent.quiz,
+              share_slug: shareSlug,
+              published_at: new Date().toISOString(),
+            })
+            .select()
+            .single()
+
+          if (lessonError) {
+            console.error('Error creating canonical lesson:', lessonError)
+            results.push({ itemId: item.id, status: 'error', error: lessonError.message })
+            continue
+          }
+
+          lessonId = newLesson.id
+          results.push({ itemId: item.id, status: 'created_canonical', lessonId })
         }
 
-        // 6. Update plan item status
+        // 8. Create plan_item → lesson mapping
+        await serviceSupabase
+          .from('plan_item_lessons')
+          .insert({
+            plan_item_id: item.id,
+            lesson_id: lessonId,
+          })
+
+        // 9. Update plan item status to published
         await serviceSupabase
           .from('plan_items')
           .update({ status: 'published' })
           .eq('id', item.id)
 
-        results.push({ itemId: item.id, status: 'success', lessonId: lesson.id })
       } catch (error: any) {
         console.error(`Error generating lesson for item ${item.id}:`, error)
         results.push({ itemId: item.id, status: 'error', error: error.message })

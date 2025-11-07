@@ -16,6 +16,9 @@ interface FortWorthPlan {
   plan_items: Array<{
     id: string
     status: string
+    plan_item_lessons: Array<{
+      id: string
+    }>
   }>
 }
 
@@ -96,7 +99,10 @@ export function FortWorthPlansList({ plans }: FortWorthPlansListProps) {
 
       <div className="space-y-3">
         {plans.map((plan) => {
-          const publishedCount = plan.plan_items.filter(item => item.status === 'published').length
+          // Count items that have lesson mappings
+          const publishedCount = plan.plan_items.filter(item =>
+            item.plan_item_lessons && item.plan_item_lessons.length > 0
+          ).length
           const totalCount = plan.plan_items.length
           const hasAllLessons = publishedCount === totalCount
           const user = plan.users[0] // Get first user from array

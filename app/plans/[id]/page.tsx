@@ -49,7 +49,9 @@ export default async function PlanPage({ params }: { params: Promise<{ id: strin
       *,
       plan_items(
         *,
-        lessons(*)
+        plan_item_lessons(
+          lessons(*)
+        )
       )
     `)
     .eq('id', id)

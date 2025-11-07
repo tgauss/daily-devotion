@@ -59,7 +59,8 @@ export function PlanDetails({ plan, userId }: PlanDetailsProps) {
 
         <div className="space-y-4">
           {sortedItems.map((item: any, index: number) => {
-            const lesson = item.lessons?.[0]
+            // New structure: plan_item_lessons is a junction table with lessons
+            const lesson = item.plan_item_lessons?.[0]?.lessons
             const hasLesson = !!lesson
 
             return (
