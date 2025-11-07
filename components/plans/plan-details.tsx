@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { BatchLessonGenerator } from './batch-lesson-generator'
+import { SingleLessonGenerator } from './single-lesson-generator'
 
 interface PlanDetailsProps {
   plan: any
@@ -47,9 +48,23 @@ export function PlanDetails({ plan, userId }: PlanDetailsProps) {
           </div>
         </div>
 
-        {/* Generate all lessons */}
+        {/* Lesson generation options */}
         {plan.user_id === userId && (
-          <BatchLessonGenerator planId={plan.id} onComplete={handleGenerationComplete} />
+          <div className="space-y-6">
+            <div className="border-t border-olivewood/20 pt-6">
+              <h3 className="text-lg font-semibold text-charcoal mb-4 font-heading">
+                Quick Generate
+              </h3>
+              <SingleLessonGenerator planId={plan.id} onComplete={handleGenerationComplete} />
+            </div>
+
+            <div className="border-t border-olivewood/20 pt-6">
+              <h3 className="text-lg font-semibold text-charcoal mb-4 font-heading">
+                Batch Generate
+              </h3>
+              <BatchLessonGenerator planId={plan.id} onComplete={handleGenerationComplete} />
+            </div>
+          </div>
         )}
       </div>
 
