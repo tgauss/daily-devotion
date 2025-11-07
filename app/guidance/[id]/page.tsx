@@ -4,12 +4,13 @@ import { GuidanceViewer } from '@/components/guidance/guidance-viewer'
 import Link from 'next/link'
 
 interface GuidancePageProps {
-  params: {
+  params: Promise<{
     id: string
-  }
+  }>
 }
 
 export async function generateMetadata({ params }: GuidancePageProps) {
+  const { id } = await params
   const supabase = await createClient()
   const {
     data: { user },
@@ -24,7 +25,7 @@ export async function generateMetadata({ params }: GuidancePageProps) {
   const { data: guidance } = await supabase
     .from('spiritual_guidance')
     .select('situation_text')
-    .eq('id', params.id)
+    .eq('id', id)
     .eq('user_id', user.id)
     .single()
 
@@ -43,6 +44,7 @@ export async function generateMetadata({ params }: GuidancePageProps) {
 }
 
 export default async function GuidancePage({ params }: GuidancePageProps) {
+  const { id } = await params
   const supabase = await createClient()
   const {
     data: { user },
@@ -56,7 +58,7 @@ export default async function GuidancePage({ params }: GuidancePageProps) {
   const { data: guidance, error } = await supabase
     .from('spiritual_guidance')
     .select('*')
-    .eq('id', params.id)
+    .eq('id', id)
     .eq('user_id', user.id) // Ensure ownership
     .single()
 
