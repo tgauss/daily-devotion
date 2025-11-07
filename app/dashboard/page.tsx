@@ -6,6 +6,7 @@ import { ProgressOverview } from '@/components/dashboard/progress-overview'
 import { NudgeCard } from '@/components/dashboard/nudge-card'
 import { ImportFortWorthButton } from '@/components/plans/import-fort-worth-button'
 import { WelcomeModal } from '@/components/onboarding/welcome-modal'
+import { GuidanceWidget } from '@/components/dashboard/guidance-widget'
 
 export default async function DashboardPage() {
   const supabase = await createClient()
@@ -72,6 +73,9 @@ export default async function DashboardPage() {
 
         {/* Progress overview */}
         <ProgressOverview progress={progress || []} />
+
+        {/* Guidance Guide Widget */}
+        <GuidanceWidget />
 
         {/* Import Fort Worth Bible Plan */}
         <ImportFortWorthButton />

@@ -1,0 +1,681 @@
+[dotenv@17.2.3] injecting env (8) from .env.local -- tip: ✅ audit secrets and track compliance: https://dotenvx.com/ops
+🔍 Finding Fort Worth plan...
+✅ Found plan: Fort Worth Bible Church 2025 - Bible in a Year (Oct-Dec) (18a36cb1-ca50-461f-88dc-a74233db87fa)
+
+📚 Generating 30 lessons...
+
+Total plan items: 188
+Already published: 6
+Remaining: 182
+Generating now: 30
+
+⏰ Started at: 11/7/2025, 8:32:32 AM
+
+
+[1/30] Job 5
+──────────────────────────────────────────────────
+⏳ Fetching passage...
+   ✓ Canonical: Job 5
+🤖 Generating AI content...
+[AI] Generated 4 quiz questions
+[AI] First quiz question: {
+  choices: [ 'Eliphaz', 'Bildad', 'Zophar', 'Elihu' ],
+  answer: 'Eliphaz'
+}
+   ✓ Content generated
+📖 Compiling Web Story...
+   ✓ 11 pages created
+🎙️  Generating audio narration...
+   ✅ Generated audio for 11 pages
+💾 Saving to database...
+✅ Lesson created with audio!
+   View at: http://localhost:3000/s/18f040449cc3d33982ccb41e4f532eeb
+✅ Plan item 7 marked as published
+
+[2/30] Ezekiel 16
+──────────────────────────────────────────────────
+⏳ Fetching passage...
+   ✓ Canonical: Ezekiel 16
+🤖 Generating AI content...
+[AI] Generated 4 quiz questions
+[AI] First quiz question: {
+  choices: [
+    'A faithful servant',
+    'A shepherd',
+    'A faithless bride',
+    'A wandering son'
+  ],
+  answer: 'A faithless bride'
+}
+   ✓ Content generated
+📖 Compiling Web Story...
+   ✓ 24 pages created
+🎙️  Generating audio narration...
+Failed to generate audio for page 0: Error: Failed to upload audio: Unexpected token '<', "<!DOCTYPE "... is not valid JSON
+    at AudioGenerator.generateAudioForPage (/Users/tgauss/Projects/Claude Code/daily devotion/lib/services/audio-generator.ts:108:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async AudioGenerator.generateAudioForLesson (/Users/tgauss/Projects/Claude Code/daily devotion/lib/services/audio-generator.ts:48:31)
+    at async generateFortWorthLessons (/Users/tgauss/Projects/Claude Code/daily devotion/scripts/generate-fort-worth-lessons.ts:174:27)
+   ⚠️  Audio generation failed: Audio generation failed for page 0: Failed to upload audio: Unexpected token '<', "<!DOCTYPE "... is not valid JSON
+   → Continuing without audio...
+💾 Saving to database...
+❌ Error creating lesson: {
+  message: 'TypeError: fetch failed',
+  details: 'TypeError: fetch failed\n' +
+    '    at node:internal/deps/undici/undici:13510:13\n' +
+    '    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n' +
+    '    at async generateFortWorthLessons (/Users/tgauss/Projects/Claude Code/daily devotion/scripts/generate-fort-worth-lessons.ts:186:57)',
+  hint: '',
+  code: ''
+}
+
+[3/30] John 8:31-47
+──────────────────────────────────────────────────
+⏳ Fetching passage...
+❌ Error generating lesson: Failed to fetch ESV passage: fetch failed
+
+[4/30] 2 Peter 3:1-9
+──────────────────────────────────────────────────
+⏳ Fetching passage...
+❌ Error generating lesson: Failed to fetch ESV passage: fetch failed
+
+[5/30] Job 6
+──────────────────────────────────────────────────
+⏳ Fetching passage...
+❌ Error generating lesson: Failed to fetch ESV passage: fetch failed
+
+[6/30] Ezekiel 17-19
+──────────────────────────────────────────────────
+⏳ Fetching passage...
+❌ Error generating lesson: Failed to fetch ESV passage: fetch failed
+
+[7/30] John 8:48-59
+──────────────────────────────────────────────────
+⏳ Fetching passage...
+   ✓ Canonical: John 8:48–59
+🤖 Generating AI content...
+[AI] Generated 4 quiz questions
+[AI] First quiz question: {
+  choices: [
+    'That He was a thief',
+    'That He was a Samaritan and had a demon',
+    'That He was a false prophet',
+    'That He was a magician'
+  ],
+  answer: 'That He was a Samaritan and had a demon'
+}
+   ✓ Content generated
+📖 Compiling Web Story...
+   ✓ 8 pages created
+🎙️  Generating audio narration...
+   ✅ Generated audio for 8 pages
+💾 Saving to database...
+✅ Lesson created with audio!
+   View at: http://localhost:3000/s/136d112bb47b01ce9287899640c44986
+✅ Plan item 13 marked as published
+
+[8/30] 2 Peter 3:10-18
+──────────────────────────────────────────────────
+⏳ Fetching passage...
+   ✓ Canonical: 2 Peter 3:10–18
+🤖 Generating AI content...
+[AI] Generated 5 quiz questions
+[AI] First quiz question: {
+  choices: [
+    'It will come like a thief and the heavens will pass away.',
+    'Everyone will receive a reward.',
+    'All nations will be at peace.',
+    'The earth will become a paradise.'
+  ],
+  answer: 'It will come like a thief and the heavens will pass away.'
+}
+   ✓ Content generated
+📖 Compiling Web Story...
+   ✓ 8 pages created
+🎙️  Generating audio narration...
+   ✅ Generated audio for 8 pages
+💾 Saving to database...
+✅ Lesson created with audio!
+   View at: http://localhost:3000/s/e471ac97bfd4fbe61f29a9b87c9260c0
+✅ Plan item 14 marked as published
+
+[9/30] Job 7
+──────────────────────────────────────────────────
+⏳ Fetching passage...
+   ✓ Canonical: Job 7
+🤖 Generating AI content...
+[AI] Generated 5 quiz questions
+[AI] First quiz question: {
+  choices: [
+    "A soldier's battle",
+    "A hired hand's work",
+    "A king's reign",
+    "A priest's duty"
+  ],
+  answer: "A hired hand's work"
+}
+   ✓ Content generated
+📖 Compiling Web Story...
+   ✓ 9 pages created
+🎙️  Generating audio narration...
+   ✅ Generated audio for 9 pages
+💾 Saving to database...
+✅ Lesson created with audio!
+   View at: http://localhost:3000/s/fc3d2dadcf3648e0fd8c050e65cba47c
+✅ Plan item 15 marked as published
+
+[10/30] Ezekiel 20-21
+──────────────────────────────────────────────────
+⏳ Fetching passage...
+   ✓ Canonical: Ezekiel 20–21
+🤖 Generating AI content...
+[AI] Generated 4 quiz questions
+[AI] First quiz question: {
+  choices: [
+    'The crossing of the Red Sea',
+    'Their time in Egypt',
+    'The building of the Temple',
+    'The fall of Jericho'
+  ],
+  answer: 'Their time in Egypt'
+}
+   ✓ Content generated
+📖 Compiling Web Story...
+   ✓ 30 pages created
+🎙️  Generating audio narration...
+   ✅ Generated audio for 30 pages
+💾 Saving to database...
+✅ Lesson created with audio!
+   View at: http://localhost:3000/s/869a96176714ee52e8efe3871602ef1f
+✅ Plan item 16 marked as published
+
+[11/30] John 9:1-12
+──────────────────────────────────────────────────
+⏳ Fetching passage...
+   ✓ Canonical: John 9:1–12
+🤖 Generating AI content...
+[AI] Generated 5 quiz questions
+[AI] First quiz question: {
+  choices: [
+    'Who sinned, this man or his parents?',
+    'Why is he blind?',
+    'Can he be healed?',
+    'Is he a sinner?'
+  ],
+  answer: 'Who sinned, this man or his parents?'
+}
+   ✓ Content generated
+📖 Compiling Web Story...
+   ✓ 8 pages created
+🎙️  Generating audio narration...
+Failed to generate audio for page 6: Error: Failed to upload audio: Unexpected token '<', "<!DOCTYPE "... is not valid JSON
+    at AudioGenerator.generateAudioForPage (/Users/tgauss/Projects/Claude Code/daily devotion/lib/services/audio-generator.ts:108:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async AudioGenerator.generateAudioForLesson (/Users/tgauss/Projects/Claude Code/daily devotion/lib/services/audio-generator.ts:48:31)
+    at async generateFortWorthLessons (/Users/tgauss/Projects/Claude Code/daily devotion/scripts/generate-fort-worth-lessons.ts:174:27)
+   ⚠️  Audio generation failed: Audio generation failed for page 6: Failed to upload audio: Unexpected token '<', "<!DOCTYPE "... is not valid JSON
+   → Continuing without audio...
+💾 Saving to database...
+✅ Lesson created with audio!
+   View at: http://localhost:3000/s/c38d73cbcb25d6c7c56b5a3896a7b6c7
+✅ Plan item 17 marked as published
+
+[12/30] 1 John 1:1-4
+──────────────────────────────────────────────────
+⏳ Fetching passage...
+   ✓ Canonical: 1 John 1:1–4
+🤖 Generating AI content...
+[AI] Generated 4 quiz questions
+[AI] First quiz question: {
+  choices: [ 'The Apostle Paul', 'Jesus', 'John the Baptist', 'Peter' ],
+  answer: 'Jesus'
+}
+   ✓ Content generated
+📖 Compiling Web Story...
+   ✓ 7 pages created
+🎙️  Generating audio narration...
+   ✅ Generated audio for 7 pages
+💾 Saving to database...
+✅ Lesson created with audio!
+   View at: http://localhost:3000/s/730c3adea4f1a056dd458c729d43213e
+✅ Plan item 18 marked as published
+
+[13/30] Job 8
+──────────────────────────────────────────────────
+⏳ Fetching passage...
+   ✓ Canonical: Job 8
+🤖 Generating AI content...
+[AI] Generated 4 quiz questions
+[AI] First quiz question: {
+  choices: [
+    'Seek God and repent',
+    'Curse God and die',
+    'Ignore his friends',
+    'Blame others for his misfortune'
+  ],
+  answer: 'Seek God and repent'
+}
+   ✓ Content generated
+📖 Compiling Web Story...
+   ✓ 9 pages created
+🎙️  Generating audio narration...
+   ✅ Generated audio for 9 pages
+💾 Saving to database...
+✅ Lesson created with audio!
+   View at: http://localhost:3000/s/3f6ebe6e6adb17af8122f06cdce84f66
+✅ Plan item 19 marked as published
+
+[14/30] Ezekiel 22-23
+──────────────────────────────────────────────────
+⏳ Fetching passage...
+   ✓ Canonical: Ezekiel 22–23
+🤖 Generating AI content...
+[AI] Generated 4 quiz questions
+[AI] First quiz question: {
+  choices: [
+    'Peace and prosperity',
+    'Shedding blood and idolatry',
+    'Kindness and generosity',
+    'Building great temples'
+  ],
+  answer: 'Shedding blood and idolatry'
+}
+   ✓ Content generated
+📖 Compiling Web Story...
+   ✓ 28 pages created
+🎙️  Generating audio narration...
+   ✅ Generated audio for 28 pages
+💾 Saving to database...
+✅ Lesson created with audio!
+   View at: http://localhost:3000/s/f33fa3a44829b21a8fad681f885ce733
+✅ Plan item 20 marked as published
+
+[15/30] John 9:13-25
+──────────────────────────────────────────────────
+⏳ Fetching passage...
+   ✓ Canonical: John 9:13–25
+🤖 Generating AI content...
+[AI] Generated 4 quiz questions
+[AI] First quiz question: {
+  choices: [
+    'The man who was blind',
+    'Jesus',
+    "The man's parents",
+    'The apostles'
+  ],
+  answer: 'The man who was blind'
+}
+   ✓ Content generated
+📖 Compiling Web Story...
+   ✓ 8 pages created
+🎙️  Generating audio narration...
+   ✅ Generated audio for 8 pages
+💾 Saving to database...
+✅ Lesson created with audio!
+   View at: http://localhost:3000/s/7d075a5df5e600e95d3a9439872472c5
+✅ Plan item 21 marked as published
+
+[16/30] 1 John 1:5-10
+──────────────────────────────────────────────────
+⏳ Fetching passage...
+   ✓ Canonical: 1 John 1:5–10
+🤖 Generating AI content...
+[AI] Generated 4 quiz questions
+[AI] First quiz question: {
+  choices: [
+    'God is light, and in him is no darkness at all',
+    'God is love, and in him is no hate',
+    'God is just, and in him is no injustice',
+    'God is peace, and in him is no conflict'
+  ],
+  answer: 'God is light, and in him is no darkness at all'
+}
+   ✓ Content generated
+📖 Compiling Web Story...
+   ✓ 7 pages created
+🎙️  Generating audio narration...
+   ✅ Generated audio for 7 pages
+💾 Saving to database...
+✅ Lesson created with audio!
+   View at: http://localhost:3000/s/ca6cc601dd42698a5521275090386d58
+✅ Plan item 22 marked as published
+
+[17/30] Job 9:1-20
+──────────────────────────────────────────────────
+⏳ Fetching passage...
+   ✓ Canonical: Job 9:1–20
+🤖 Generating AI content...
+[AI] Generated 4 quiz questions
+[AI] First quiz question: {
+  choices: [
+    'Finding an arbiter between him and God',
+    "Proving his friend's opinions wrong",
+    'Justifying his actions to his friends',
+    'Seeking retribution against his accusers'
+  ],
+  answer: 'Finding an arbiter between him and God'
+}
+   ✓ Content generated
+📖 Compiling Web Story...
+   ✓ 9 pages created
+🎙️  Generating audio narration...
+   ✅ Generated audio for 9 pages
+💾 Saving to database...
+✅ Lesson created with audio!
+   View at: http://localhost:3000/s/27274e72b51ad0a7658959a456f8cc3a
+✅ Plan item 23 marked as published
+
+[18/30] Ezekiel 24-26
+──────────────────────────────────────────────────
+⏳ Fetching passage...
+   ✓ Canonical: Ezekiel 24–26
+🤖 Generating AI content...
+[AI] Generated 4 quiz questions
+[AI] First quiz question: {
+  choices: [
+    'A boiling pot',
+    'A barren tree',
+    'A raging fire',
+    'A broken wall'
+  ],
+  answer: 'A boiling pot'
+}
+   ✓ Content generated
+📖 Compiling Web Story...
+   ✓ 26 pages created
+🎙️  Generating audio narration...
+   ✅ Generated audio for 26 pages
+💾 Saving to database...
+✅ Lesson created with audio!
+   View at: http://localhost:3000/s/8aecb69dd9c153fdbeb1490789aefb2b
+✅ Plan item 24 marked as published
+
+[19/30] John 9:26-41
+──────────────────────────────────────────────────
+⏳ Fetching passage...
+   ✓ Canonical: John 9:26–41
+🤖 Generating AI content...
+[AI] Generated 4 quiz questions
+[AI] First quiz question: {
+  choices: [
+    'What is your name?',
+    'How did he open your eyes?',
+    'Where did you meet Jesus?',
+    'Why were you born blind?'
+  ],
+  answer: 'How did he open your eyes?'
+}
+   ✓ Content generated
+📖 Compiling Web Story...
+   ✓ 8 pages created
+🎙️  Generating audio narration...
+   ✅ Generated audio for 8 pages
+💾 Saving to database...
+✅ Lesson created with audio!
+   View at: http://localhost:3000/s/fceb50ca6d86eebe28bae6010608f8f5
+✅ Plan item 25 marked as published
+
+[20/30] 1 John 2:1-11
+──────────────────────────────────────────────────
+⏳ Fetching passage...
+   ✓ Canonical: 1 John 2:1–11
+🤖 Generating AI content...
+[AI] Generated 4 quiz questions
+[AI] First quiz question: {
+  choices: [
+    'The Apostle John',
+    'The Holy Spirit',
+    'Jesus Christ the righteous',
+    'Moses'
+  ],
+  answer: 'Jesus Christ the righteous'
+}
+   ✓ Content generated
+📖 Compiling Web Story...
+   ✓ 8 pages created
+🎙️  Generating audio narration...
+   ✅ Generated audio for 8 pages
+💾 Saving to database...
+✅ Lesson created with audio!
+   View at: http://localhost:3000/s/1acbb4ecc7833f4cf40e9f23c7a466b1
+✅ Plan item 26 marked as published
+
+[21/30] Job 9:21-35
+──────────────────────────────────────────────────
+⏳ Fetching passage...
+   ✓ Canonical: Job 9:21–35
+🤖 Generating AI content...
+[AI] Generated 4 quiz questions
+[AI] First quiz question: {
+  choices: [
+    'He is not wealthy enough',
+    'He believes God destroys both the blameless and the wicked',
+    'He thinks his friends are not supportive',
+    'He wants to travel to a new land'
+  ],
+  answer: 'He believes God destroys both the blameless and the wicked'
+}
+   ✓ Content generated
+📖 Compiling Web Story...
+   ✓ 8 pages created
+🎙️  Generating audio narration...
+   ✅ Generated audio for 8 pages
+💾 Saving to database...
+✅ Lesson created with audio!
+   View at: http://localhost:3000/s/903383fff55491b9217db44c702767cb
+✅ Plan item 27 marked as published
+
+[22/30] Ezekiel 27-28
+──────────────────────────────────────────────────
+⏳ Fetching passage...
+   ✓ Canonical: Ezekiel 27–28
+🤖 Generating AI content...
+[AI] Generated 4 quiz questions
+[AI] First quiz question: {
+  choices: [
+    'Its military strength',
+    'Its wealth and trading',
+    'Its religious influence',
+    'Its agricultural output'
+  ],
+  answer: 'Its wealth and trading'
+}
+   ✓ Content generated
+📖 Compiling Web Story...
+   ✓ 24 pages created
+🎙️  Generating audio narration...
+   ✅ Generated audio for 24 pages
+💾 Saving to database...
+✅ Lesson created with audio!
+   View at: http://localhost:3000/s/46a8cfdf7f7c2deb1b83d4562f7703c6
+✅ Plan item 28 marked as published
+
+[23/30] John 10:1-10
+──────────────────────────────────────────────────
+⏳ Fetching passage...
+   ✓ Canonical: John 10:1–10
+🤖 Generating AI content...
+[AI] Generated 5 quiz questions
+[AI] First quiz question: {
+  choices: [ 'A stranger', 'The shepherd of the sheep', 'A thief', 'A robber' ],
+  answer: 'The shepherd of the sheep'
+}
+   ✓ Content generated
+📖 Compiling Web Story...
+   ✓ 7 pages created
+🎙️  Generating audio narration...
+   ✅ Generated audio for 7 pages
+💾 Saving to database...
+✅ Lesson created with audio!
+   View at: http://localhost:3000/s/07a41f3a2af1fb02b761e62679876bed
+✅ Plan item 29 marked as published
+
+[24/30] 1 John 2:12-17
+──────────────────────────────────────────────────
+⏳ Fetching passage...
+   ✓ Canonical: 1 John 2:12–17
+🤖 Generating AI content...
+[AI] Generated 4 quiz questions
+[AI] First quiz question: {
+  choices: [
+    'Because they have overcome the world',
+    'Because their sins are forgiven for his name’s sake',
+    'Because they know the commandments',
+    'Because they are strong'
+  ],
+  answer: 'Because their sins are forgiven for his name’s sake'
+}
+   ✓ Content generated
+📖 Compiling Web Story...
+   ✓ 8 pages created
+🎙️  Generating audio narration...
+   ✅ Generated audio for 8 pages
+💾 Saving to database...
+✅ Lesson created with audio!
+   View at: http://localhost:3000/s/4bf29fc904b21d417e8422ae1f8c204e
+✅ Plan item 30 marked as published
+
+[25/30] Job 10
+──────────────────────────────────────────────────
+⏳ Fetching passage...
+   ✓ Canonical: Job 10
+🤖 Generating AI content...
+[AI] Generated 4 quiz questions
+[AI] First quiz question: {
+  choices: [
+    "Job's plea for divine justice",
+    "Job's thanksgiving",
+    "Job's praise for creation",
+    "Job's prophecy about the future"
+  ],
+  answer: "Job's plea for divine justice"
+}
+   ✓ Content generated
+📖 Compiling Web Story...
+   ✓ 10 pages created
+🎙️  Generating audio narration...
+   ✅ Generated audio for 10 pages
+💾 Saving to database...
+✅ Lesson created with audio!
+   View at: http://localhost:3000/s/6a7c206074e61abf81f52017d1db8390
+✅ Plan item 31 marked as published
+
+[26/30] Ezekiel 29-30
+──────────────────────────────────────────────────
+⏳ Fetching passage...
+   ✓ Canonical: Ezekiel 29–30
+🤖 Generating AI content...
+[AI] Generated 5 quiz questions
+[AI] First quiz question: {
+  choices: [
+    'They refused to let Israel go.',
+    'They claimed ownership of the Nile.',
+    'They attacked Babylon.',
+    'They worshipped false gods.'
+  ],
+  answer: 'They claimed ownership of the Nile.'
+}
+   ✓ Content generated
+📖 Compiling Web Story...
+   ✓ 20 pages created
+🎙️  Generating audio narration...
+   ✅ Generated audio for 20 pages
+💾 Saving to database...
+✅ Lesson created with audio!
+   View at: http://localhost:3000/s/cf8b6fc9feeb4638dab3bf4aab586673
+✅ Plan item 32 marked as published
+
+[27/30] John 10:11-21
+──────────────────────────────────────────────────
+⏳ Fetching passage...
+   ✓ Canonical: John 10:11–21
+🤖 Generating AI content...
+[AI] Generated 4 quiz questions
+[AI] First quiz question: {
+  choices: [ 'A prophet', 'The Good Shepherd', 'A hired hand', 'A teacher' ],
+  answer: 'The Good Shepherd'
+}
+   ✓ Content generated
+📖 Compiling Web Story...
+   ✓ 8 pages created
+🎙️  Generating audio narration...
+   ✅ Generated audio for 8 pages
+💾 Saving to database...
+✅ Lesson created with audio!
+   View at: http://localhost:3000/s/2db1d700f1a0981e69e9d76bb6643715
+✅ Plan item 33 marked as published
+
+[28/30] 1 John 2:18-23
+──────────────────────────────────────────────────
+⏳ Fetching passage...
+   ✓ Canonical: 1 John 2:18–23
+🤖 Generating AI content...
+[AI] Generated 4 quiz questions
+[AI] First quiz question: {
+  choices: [
+    'The presence of many antichrists',
+    'The rebuilding of the temple',
+    'The coming of a great flood',
+    'The end of persecution'
+  ],
+  answer: 'The presence of many antichrists'
+}
+   ✓ Content generated
+📖 Compiling Web Story...
+   ✓ 7 pages created
+🎙️  Generating audio narration...
+   ✅ Generated audio for 7 pages
+💾 Saving to database...
+✅ Lesson created with audio!
+   View at: http://localhost:3000/s/76d7cdd53a838e93d09bbb2d457ff79f
+✅ Plan item 34 marked as published
+
+[29/30] Job 11
+──────────────────────────────────────────────────
+⏳ Fetching passage...
+   ✓ Canonical: Job 11
+🤖 Generating AI content...
+[AI] Generated 4 quiz questions
+[AI] First quiz question: {
+  choices: [ 'Eliphaz', 'Bildad', 'Zophar', 'Elihu' ],
+  answer: 'Zophar'
+}
+   ✓ Content generated
+📖 Compiling Web Story...
+   ✓ 9 pages created
+🎙️  Generating audio narration...
+   ✅ Generated audio for 9 pages
+💾 Saving to database...
+✅ Lesson created with audio!
+   View at: http://localhost:3000/s/00860bfc531dcdc7983a5d73840a8de8
+✅ Plan item 35 marked as published
+
+[30/30] Ezekiel 31-32
+──────────────────────────────────────────────────
+⏳ Fetching passage...
+   ✓ Canonical: Ezekiel 31–32
+🤖 Generating AI content...
+[AI] Generated 4 quiz questions
+[AI] First quiz question: {
+  choices: [
+    'A lion among beasts',
+    'A dragon in the seas',
+    'A cedar in Lebanon',
+    'A towering mountain'
+  ],
+  answer: 'A cedar in Lebanon'
+}
+   ✓ Content generated
+📖 Compiling Web Story...
+   ✓ 24 pages created
+🎙️  Generating audio narration...
+   ✅ Generated audio for 24 pages
+💾 Saving to database...
+✅ Lesson created with audio!
+   View at: http://localhost:3000/s/987f5a9540ba16b31c5d17964e501eb0
+✅ Plan item 36 marked as published
+
+==================================================
+🎉 Lesson generation complete!
+⏰ Finished at: 11/7/2025, 8:59:40 AM
+==================================================

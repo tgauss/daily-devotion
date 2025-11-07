@@ -149,3 +149,47 @@ export interface LessonContentInput {
 export interface LessonContentOutput extends AiTriptych {
   quiz: QuizQuestion[]
 }
+
+// Spiritual Guidance (Guidance Guide) Types
+export interface PassageSuggestion {
+  reference: string  // e.g., "Psalm 23:1-6"
+  text: string  // Full passage text from ESV API
+  relevance: string  // Why this passage is relevant (AI-generated, 1-2 sentences)
+  translation: string  // e.g., "ESV"
+}
+
+export interface GuidanceContent {
+  opening: string  // Empathetic acknowledgment (2-3 sentences)
+  scriptural_insights: string[]  // One insight per passage, connecting to situation
+  reflections: string[]  // 3-5 practical applications, questions, or action steps
+  prayer_points: string[]  // 3-4 specific prayers grounded in Scripture
+  encouragement: string  // Hopeful closing (2-3 sentences)
+}
+
+export interface SpiritualGuidance {
+  id: string
+  user_id: string
+  situation_text: string  // User's input (max 500 chars)
+  passages: PassageSuggestion[]  // AI-suggested passages (3-5 typically)
+  guidance_content: GuidanceContent  // AI-generated guidance
+  created_at: string
+  updated_at: string
+}
+
+// AI Service Input/Output Types for Guidance Guide
+export interface GuidanceSuggestionInput {
+  situation: string
+}
+
+export interface GuidanceSuggestionOutput {
+  passages: PassageSuggestion[]  // Without full text yet
+}
+
+export interface GuidanceGenerationInput {
+  situation: string
+  passages: PassageSuggestion[]  // With full text from ESV API
+}
+
+export interface GuidanceGenerationOutput {
+  guidance_content: GuidanceContent
+}

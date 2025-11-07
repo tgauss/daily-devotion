@@ -26,19 +26,43 @@ export function DashboardHeader({ user, profile }: DashboardHeaderProps) {
 
   return (
     <header className="bg-white/90 border-b border-olivewood/20 backdrop-blur-sm">
-      <div className="max-w-6xl mx-auto px-4 py-5 flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-heading text-charcoal">MyDailyBread</h1>
-          <p className="text-sm text-olivewood font-sans mt-0.5">
-            Welcome back, {displayName}
-          </p>
+      <div className="max-w-6xl mx-auto px-4 py-5">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-heading text-charcoal">MyDailyBread</h1>
+            <p className="text-sm text-olivewood font-sans mt-0.5">
+              Welcome back, {displayName}
+            </p>
+          </div>
+          <button
+            onClick={handleSignOut}
+            className="px-5 py-2 bg-clay-rose/20 hover:bg-clay-rose/30 text-charcoal rounded-md border border-clay-rose/40 transition-all font-sans"
+          >
+            Sign Out
+          </button>
         </div>
-        <button
-          onClick={handleSignOut}
-          className="px-5 py-2 bg-clay-rose/20 hover:bg-clay-rose/30 text-charcoal rounded-md border border-clay-rose/40 transition-all font-sans"
-        >
-          Sign Out
-        </button>
+
+        {/* Navigation */}
+        <nav className="mt-4 flex gap-2 sm:gap-4 overflow-x-auto">
+          <a
+            href="/dashboard"
+            className="px-4 py-2 text-sm font-medium text-charcoal hover:text-olivewood hover:bg-olivewood/10 rounded-md transition-colors font-sans whitespace-nowrap"
+          >
+            Dashboard
+          </a>
+          <a
+            href="/guidance"
+            className="px-4 py-2 text-sm font-medium text-charcoal hover:text-olivewood hover:bg-olivewood/10 rounded-md transition-colors font-sans whitespace-nowrap"
+          >
+            Seek Guidance
+          </a>
+          <a
+            href="/plans/create"
+            className="px-4 py-2 text-sm font-medium text-charcoal hover:text-olivewood hover:bg-olivewood/10 rounded-md transition-colors font-sans whitespace-nowrap"
+          >
+            Create Plan
+          </a>
+        </nav>
       </div>
     </header>
   )
