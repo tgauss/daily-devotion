@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { DashboardHeader } from '@/components/dashboard/dashboard-header'
+import { DashboardHero } from '@/components/dashboard/dashboard-hero'
 import { PlansList } from '@/components/dashboard/plans-list'
 import { ProgressOverview } from '@/components/dashboard/progress-overview'
 import { NudgeCard } from '@/components/dashboard/nudge-card'
@@ -46,6 +47,16 @@ export default async function DashboardPage() {
     .select('*')
     .eq('user_id', user.id)
 
+  // Calculate stats for hero
+  const totalCompleted = progress?.filter((p) => p.completed_at).length || 0
+  const totalTimeSpent = progress?.reduce((sum, p) => sum + (p.time_spent_sec || 0), 0) || 0
+  const formatTime = (seconds: number) => {
+    const hours = Math.floor(seconds / 3600)
+    const minutes = Math.floor((seconds % 3600) / 60)
+    if (hours > 0) return `${hours}h ${minutes}m`
+    return `${minutes}m`
+  }
+
   return (
     <div
       className="min-h-screen bg-sandstone"
@@ -67,31 +78,47 @@ export default async function DashboardPage() {
         profile={profile}
       />
 
-      <main className="max-w-6xl mx-auto px-4 py-10 space-y-8">
+      <main className="max-w-7xl mx-auto px-4 py-10 space-y-8">
+        {/* Hero Section */}
+        <DashboardHero
+          firstName={profile?.first_name}
+          totalReadings={totalCompleted}
+          totalTime={formatTime(totalTimeSpent)}
+        />
+
         {/* Nudge card for overdue lessons */}
         <NudgeCard userId={user.id} />
 
-        {/* Progress overview */}
-        <ProgressOverview progress={progress || []} />
+        {/* Two Column Layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Main content - 2 columns */}
+          <div className="lg:col-span-2 space-y-8">
+            {/* Plans list */}
+            <div className="bg-white/90 rounded-xl p-8 shadow-lg border border-olivewood/20">
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <h2 className="text-3xl font-heading text-charcoal">Your Reading Plans</h2>
+                  <p className="text-sm text-charcoal/60 font-sans mt-1">Continue your spiritual journey</p>
+                </div>
+              </div>
+              <PlansList plans={plans || []} />
+            </div>
 
-        {/* Guidance Guide Widget */}
-        <GuidanceWidget />
-
-        {/* Import Fort Worth Bible Plan */}
-        <ImportFortWorthButton />
-
-        {/* Plans list */}
-        <div className="bg-white/90 rounded-lg p-8 shadow-lg border border-olivewood/20">
-          <div className="flex items-center justify-between mb-8">
-            <h2 className="text-3xl font-heading text-charcoal">Your Plans</h2>
-            <a
-              href="/plans/create"
-              className="px-6 py-2.5 bg-olivewood hover:bg-olivewood/90 text-white font-medium rounded-md border border-olivewood/50 transition-all shadow-sm hover:shadow font-sans"
-            >
-              + New Plan
-            </a>
+            {/* Import Fort Worth Bible Plan */}
+            <ImportFortWorthButton />
           </div>
-          <PlansList plans={plans || []} />
+
+          {/* Sidebar - 1 column */}
+          <div className="space-y-8">
+            {/* Progress overview */}
+            <div className="bg-white/90 rounded-xl p-6 shadow-lg border border-olivewood/20">
+              <h3 className="text-xl font-heading text-charcoal mb-4">Your Progress</h3>
+              <ProgressOverview progress={progress || []} />
+            </div>
+
+            {/* Guidance Guide Widget */}
+            <GuidanceWidget />
+          </div>
         </div>
       </main>
     </div>
