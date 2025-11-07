@@ -1,7 +1,9 @@
 import { createClient } from '@/lib/supabase/server'
+import { createServiceClient } from '@/lib/supabase/service'
 import { redirect } from 'next/navigation'
 import { CreateUserForm } from '@/components/admin/create-user-form'
 import { UsersList } from '@/components/admin/users-list'
+import { FortWorthPlansList } from '@/components/admin/fort-worth-plans-list'
 
 export default async function AdminPage() {
   const supabase = await createClient()
@@ -17,6 +19,24 @@ export default async function AdminPage() {
   const { data: users } = await supabase
     .from('users')
     .select('*')
+    .order('created_at', { ascending: false })
+
+  // Fetch all Fort Worth plans with lesson counts
+  const serviceClient = createServiceClient()
+  const { data: fortWorthPlans } = await serviceClient
+    .from('plans')
+    .select(`
+      id,
+      title,
+      user_id,
+      created_at,
+      users!inner(email, first_name, last_name),
+      plan_items(
+        id,
+        status
+      )
+    `)
+    .eq('title', 'Fort Worth Bible Church 2025 - Bible in a Year (Oct-Dec)')
     .order('created_at', { ascending: false })
 
   return (
@@ -43,6 +63,15 @@ export default async function AdminPage() {
           >
             ← Back to Dashboard
           </a>
+        </div>
+
+        {/* Fort Worth Plans Management */}
+        <div className="mb-8 bg-white/90 rounded-lg p-8 shadow-lg border border-olivewood/20">
+          <h2 className="text-2xl font-heading font-bold text-charcoal mb-2">Fort Worth Plans</h2>
+          <p className="text-sm text-charcoal/60 font-sans mb-6">
+            Manage Fort Worth Bible plans and copy lessons between users
+          </p>
+          <FortWorthPlansList plans={fortWorthPlans || []} />
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
