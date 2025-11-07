@@ -30,7 +30,6 @@ export default async function AdminPage() {
       title,
       user_id,
       created_at,
-      users!inner(email, first_name, last_name),
       plan_items(
         id,
         status
@@ -38,6 +37,22 @@ export default async function AdminPage() {
     `)
     .eq('title', 'Fort Worth Bible Church 2025 - Bible in a Year (Oct-Dec)')
     .order('created_at', { ascending: false })
+
+  // Fetch user details separately
+  const enrichedPlans = await Promise.all(
+    (fortWorthPlans || []).map(async (plan) => {
+      const { data: userData } = await serviceClient
+        .from('users')
+        .select('email, first_name, last_name')
+        .eq('id', plan.user_id)
+        .single()
+
+      return {
+        ...plan,
+        users: userData ? [userData] : []
+      }
+    })
+  )
 
   return (
     <div
@@ -71,7 +86,7 @@ export default async function AdminPage() {
           <p className="text-sm text-charcoal/60 font-sans mb-6">
             Manage Fort Worth Bible plans and copy lessons between users
           </p>
-          <FortWorthPlansList plans={fortWorthPlans || []} />
+          <FortWorthPlansList plans={enrichedPlans || []} />
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
