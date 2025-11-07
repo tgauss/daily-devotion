@@ -84,11 +84,15 @@ export async function POST(req: NextRequest) {
     for (const item of createdPlanItems) {
       const reference = item.references_text[0]
 
+      // Normalize reference format: convert regular hyphens to en-dashes
+      // Fort Worth plan uses "-" but canonical lessons use "–"
+      const normalizedReference = reference.replace(/-/g, '–')
+
       // Look up canonical lesson for this passage
       const { data: canonicalLesson } = await serviceClient
         .from('lessons')
         .select('id')
-        .eq('passage_canonical', reference)
+        .eq('passage_canonical', normalizedReference)
         .eq('translation', item.translation)
         .single()
 
