@@ -47,7 +47,19 @@ export function FortWorthPlansList({ plans }: FortWorthPlansListProps) {
       }
 
       const result = await response.json()
-      setSuccess(`✅ Successfully copied ${result.lessonsCopied} lessons!`)
+
+      if (result.lessonsCopied === 0 && result.details) {
+        // Show diagnostic info when 0 lessons copied
+        setSuccess(
+          `ℹ️ No lessons copied. Details:\n` +
+          `- Total target items: ${result.details.totalTargetItems}\n` +
+          `- Already exist: ${result.details.alreadyExist}\n` +
+          `- No source match: ${result.details.noSourceMatch}\n` +
+          `- Available source: ${result.details.availableSourceLessons}`
+        )
+      } else {
+        setSuccess(`✅ Successfully copied ${result.lessonsCopied} lessons!`)
+      }
 
       // Refresh page to show updated counts
       setTimeout(() => {
@@ -77,7 +89,7 @@ export function FortWorthPlansList({ plans }: FortWorthPlansListProps) {
       )}
 
       {success && (
-        <div className="p-4 bg-green-50 border border-green-200 rounded-md text-green-800 text-sm font-sans">
+        <div className="p-4 bg-green-50 border border-green-200 rounded-md text-green-800 text-sm font-sans whitespace-pre-line">
           {success}
         </div>
       )}

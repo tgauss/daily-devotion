@@ -74,31 +74,49 @@ export async function POST(req: NextRequest) {
     // Get plan items with lessons from source
     const { data: sourcePlanItems } = await serviceClient
       .from('plan_items')
-      .select('references_text, lessons(*)')
+      .select('id, references_text, lessons(*)')
       .eq('plan_id', sourcePlanId)
-      .not('lessons', 'is', null)
 
     if (!sourcePlanItems || sourcePlanItems.length === 0) {
       return NextResponse.json({
-        error: 'Source plan has no lessons',
-        message: 'Generate lessons on the source plan first'
+        error: 'Source plan has no plan items',
+        message: 'Source plan is empty'
       }, { status: 404 })
     }
 
-    console.log(`[CopyLessons] Found ${sourcePlanItems.length} source lessons`)
+    console.log(`[CopyLessons] Found ${sourcePlanItems.length} source plan items`)
 
-    // Create map of reference -> lesson
+    // Create map of reference -> lesson (filter items that have lessons)
     const sourceLessonsMap = new Map()
+    let sourceLessonsCount = 0
+
     for (const item of sourcePlanItems) {
       const ref = item.references_text[0]
       if (item.lessons && item.lessons.length > 0) {
         sourceLessonsMap.set(ref, item.lessons[0])
+        sourceLessonsCount++
       }
+    }
+
+    console.log(`[CopyLessons] Found ${sourceLessonsCount} source items with lessons out of ${sourcePlanItems.length} total`)
+
+    if (sourceLessonsCount === 0) {
+      return NextResponse.json({
+        error: 'Source plan has no generated lessons',
+        message: 'Generate lessons on the source plan first',
+        details: {
+          sourcePlanId,
+          totalSourceItems: sourcePlanItems.length,
+          itemsWithLessons: 0
+        }
+      }, { status: 404 })
     }
 
     // Copy lessons for matching references
     const lessonsToCopy = []
     const itemsToUpdate = []
+    let alreadyExistCount = 0
+    let noMatchCount = 0
 
     for (const targetItem of targetPlanItems) {
       const ref = targetItem.references_text[0]
@@ -125,15 +143,27 @@ export async function POST(req: NextRequest) {
             published_at: new Date().toISOString(),
           })
           itemsToUpdate.push(targetItem.id)
+        } else {
+          alreadyExistCount++
         }
+      } else {
+        noMatchCount++
       }
     }
+
+    console.log(`[CopyLessons] Results: ${lessonsToCopy.length} to copy, ${alreadyExistCount} already exist, ${noMatchCount} no source match`)
 
     if (lessonsToCopy.length === 0) {
       return NextResponse.json({
         success: true,
         message: 'All lessons already copied',
-        lessonsCopied: 0
+        lessonsCopied: 0,
+        details: {
+          totalTargetItems: targetPlanItems.length,
+          alreadyExist: alreadyExistCount,
+          noSourceMatch: noMatchCount,
+          availableSourceLessons: sourceLessonsCount
+        }
       })
     }
 
