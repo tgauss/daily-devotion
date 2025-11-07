@@ -8,6 +8,7 @@ import { NudgeCard } from '@/components/dashboard/nudge-card'
 import { ImportFortWorthButton } from '@/components/plans/import-fort-worth-button'
 import { WelcomeModal } from '@/components/onboarding/welcome-modal'
 import { GuidanceWidget } from '@/components/dashboard/guidance-widget'
+import { RecentGuidance } from '@/components/dashboard/recent-guidance'
 
 export default async function DashboardPage() {
   const supabase = await createClient()
@@ -46,6 +47,14 @@ export default async function DashboardPage() {
     .from('progress')
     .select('*')
     .eq('user_id', user.id)
+
+  // Fetch recent guidance
+  const { data: recentGuidance } = await supabase
+    .from('spiritual_guidance')
+    .select('*')
+    .eq('user_id', user.id)
+    .order('created_at', { ascending: false })
+    .limit(3)
 
   // Calculate stats for hero
   const totalCompleted = progress?.filter((p) => p.completed_at).length || 0
@@ -116,8 +125,11 @@ export default async function DashboardPage() {
               <ProgressOverview progress={progress || []} />
             </div>
 
-            {/* Guidance Guide Widget */}
-            <GuidanceWidget />
+            {/* Recent Guidance */}
+            <RecentGuidance guidance={recentGuidance || []} />
+
+            {/* Guidance Guide Widget - Only show if no recent guidance */}
+            {(!recentGuidance || recentGuidance.length === 0) && <GuidanceWidget />}
           </div>
         </div>
       </main>
