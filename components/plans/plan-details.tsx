@@ -1,6 +1,8 @@
 'use client'
 
 import Link from 'next/link'
+import { useState } from 'react'
+import { Loader2 } from 'lucide-react'
 import { BatchLessonGenerator } from './batch-lesson-generator'
 import { SingleLessonGenerator } from './single-lesson-generator'
 
@@ -10,9 +12,36 @@ interface PlanDetailsProps {
 }
 
 export function PlanDetails({ plan, userId }: PlanDetailsProps) {
+  const [buildingItemId, setBuildingItemId] = useState<string | null>(null)
+
   const handleGenerationComplete = () => {
-    // Reload the page to show newly generated lessons
+    // Reload the page to show newly built lessons
     window.location.reload()
+  }
+
+  const buildSpecificLesson = async (planItemId: string) => {
+    setBuildingItemId(planItemId)
+
+    try {
+      const response = await fetch('/api/lessons/build', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ planItemId }),
+      })
+
+      if (!response.ok) {
+        const data = await response.json()
+        throw new Error(data.error || 'Failed to build lesson')
+      }
+
+      // Reload to show the newly built lesson
+      setTimeout(() => {
+        window.location.reload()
+      }, 1000)
+    } catch (err: any) {
+      alert(`Error: ${err.message}`)
+      setBuildingItemId(null)
+    }
   }
 
   const sortedItems = [...plan.plan_items].sort((a: any, b: any) => a.index - b.index)
@@ -48,19 +77,19 @@ export function PlanDetails({ plan, userId }: PlanDetailsProps) {
           </div>
         </div>
 
-        {/* Lesson generation options */}
+        {/* Lesson building options */}
         {plan.user_id === userId && (
           <div className="space-y-6">
             <div className="border-t border-olivewood/20 pt-6">
               <h3 className="text-lg font-semibold text-charcoal mb-4 font-heading">
-                Quick Generate
+                Quick Build
               </h3>
               <SingleLessonGenerator planId={plan.id} onComplete={handleGenerationComplete} />
             </div>
 
             <div className="border-t border-olivewood/20 pt-6">
               <h3 className="text-lg font-semibold text-charcoal mb-4 font-heading">
-                Batch Generate
+                Batch Build
               </h3>
               <BatchLessonGenerator planId={plan.id} onComplete={handleGenerationComplete} />
             </div>
@@ -117,9 +146,28 @@ export function PlanDetails({ plan, userId }: PlanDetailsProps) {
                       </Link>
                     </>
                   ) : (
-                    <span className="px-4 py-2 bg-clay-rose/20 text-charcoal/60 text-sm rounded-md border border-olivewood/20 font-sans">
-                      You're almost there
-                    </span>
+                    <>
+                      {plan.user_id === userId ? (
+                        <button
+                          onClick={() => buildSpecificLesson(item.id)}
+                          disabled={buildingItemId === item.id}
+                          className="px-6 py-2 bg-golden-wheat hover:bg-golden-wheat/90 disabled:bg-golden-wheat/50 text-charcoal font-medium rounded-md border border-golden-wheat/50 transition-colors font-sans flex items-center gap-2"
+                        >
+                          {buildingItemId === item.id ? (
+                            <>
+                              <Loader2 className="w-4 h-4 animate-spin" />
+                              Building...
+                            </>
+                          ) : (
+                            'Build Now'
+                          )}
+                        </button>
+                      ) : (
+                        <span className="px-4 py-2 bg-clay-rose/20 text-charcoal/60 text-sm rounded-md border border-olivewood/20 font-sans">
+                          Not ready yet
+                        </span>
+                      )}
+                    </>
                   )}
                 </div>
               </div>

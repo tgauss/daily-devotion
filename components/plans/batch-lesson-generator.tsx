@@ -8,7 +8,7 @@ interface BatchLessonGeneratorProps {
 }
 
 export function BatchLessonGenerator({ planId, onComplete }: BatchLessonGeneratorProps) {
-  const [isGenerating, setIsGenerating] = useState(false)
+  const [isBuilding, setIsBuilding] = useState(false)
   const [progress, setProgress] = useState({ completed: 0, total: 0, remaining: 0 })
   const [error, setError] = useState<string | null>(null)
   const [logs, setLogs] = useState<string[]>([])
@@ -17,7 +17,7 @@ export function BatchLessonGenerator({ planId, onComplete }: BatchLessonGenerato
     setLogs((prev) => [...prev, `[${new Date().toLocaleTimeString()}] ${message}`])
   }
 
-  const generateBatch = async () => {
+  const buildBatch = async () => {
     try {
       const response = await fetch('/api/lessons/generate-batch', {
         method: 'POST',
@@ -29,7 +29,7 @@ export function BatchLessonGenerator({ planId, onComplete }: BatchLessonGenerato
       })
 
       if (!response.ok) {
-        throw new Error(`Failed to generate batch: ${response.statusText}`)
+        throw new Error(`Failed to build batch: ${response.statusText}`)
       }
 
       const data = await response.json()
@@ -49,15 +49,15 @@ export function BatchLessonGenerator({ planId, onComplete }: BatchLessonGenerato
     }
   }
 
-  const startGeneration = async () => {
-    if (!confirm('Generate all lessons for this plan? This will run in the background and may take 20-40 minutes.')) {
+  const startBuilding = async () => {
+    if (!confirm('Build all lessons for this plan? This will run in the background and may take 20-40 minutes.')) {
       return
     }
 
-    setIsGenerating(true)
+    setIsBuilding(true)
     setError(null)
     setLogs([])
-    addLog('Starting lesson generation...')
+    addLog('Starting lesson building...')
 
     try {
       let completed = false
@@ -67,7 +67,7 @@ export function BatchLessonGenerator({ planId, onComplete }: BatchLessonGenerato
         batchCount++
         addLog(`Processing batch #${batchCount}...`)
 
-        completed = await generateBatch()
+        completed = await buildBatch()
 
         if (!completed) {
           // Small delay between batches to avoid overwhelming the API
@@ -75,19 +75,19 @@ export function BatchLessonGenerator({ planId, onComplete }: BatchLessonGenerato
         }
       }
 
-      addLog('✅ All lessons generated successfully!')
+      addLog('✅ All lessons built successfully!')
       onComplete()
     } catch (err: any) {
       setError(err.message)
-      addLog(`❌ Generation stopped due to error: ${err.message}`)
+      addLog(`❌ Building stopped due to error: ${err.message}`)
     } finally {
-      setIsGenerating(false)
+      setIsBuilding(false)
     }
   }
 
-  const stopGeneration = () => {
-    setIsGenerating(false)
-    addLog('Generation stopped by user')
+  const stopBuilding = () => {
+    setIsBuilding(false)
+    addLog('Building stopped by user')
   }
 
   return (
@@ -95,16 +95,16 @@ export function BatchLessonGenerator({ planId, onComplete }: BatchLessonGenerato
       {/* Control buttons */}
       <div className="flex gap-4">
         <button
-          onClick={startGeneration}
-          disabled={isGenerating}
+          onClick={startBuilding}
+          disabled={isBuilding}
           className="flex-1 px-8 py-4 bg-olivewood hover:bg-olivewood/90 disabled:bg-olivewood/50 text-white font-semibold rounded-md border border-olivewood/50 transition-colors font-sans"
         >
-          {isGenerating ? 'Generating...' : 'Generate All Lessons'}
+          {isBuilding ? 'Building...' : 'Build All Lessons'}
         </button>
 
-        {isGenerating && (
+        {isBuilding && (
           <button
-            onClick={stopGeneration}
+            onClick={stopBuilding}
             className="px-8 py-4 bg-clay-rose hover:bg-clay-rose/90 text-white font-semibold rounded-md border border-clay-rose/50 transition-colors font-sans"
           >
             Stop
@@ -135,7 +135,7 @@ export function BatchLessonGenerator({ planId, onComplete }: BatchLessonGenerato
             <strong>Error:</strong> {error}
           </p>
           <p className="text-red-700 font-sans text-xs mt-2">
-            You can click "Generate All Lessons" again to retry from where it left off.
+            You can click "Build All Lessons" again to retry from where it left off.
           </p>
         </div>
       )}

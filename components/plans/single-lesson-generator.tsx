@@ -9,12 +9,12 @@ interface SingleLessonGeneratorProps {
 }
 
 export function SingleLessonGenerator({ planId, onComplete }: SingleLessonGeneratorProps) {
-  const [isGenerating, setIsGenerating] = useState(false)
+  const [isBuilding, setIsBuilding] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState<string | null>(null)
 
-  const generateNextLesson = async () => {
-    setIsGenerating(true)
+  const buildNextLesson = async () => {
+    setIsBuilding(true)
     setError(null)
     setSuccess(null)
 
@@ -27,17 +27,17 @@ export function SingleLessonGenerator({ planId, onComplete }: SingleLessonGenera
 
       if (!response.ok) {
         const data = await response.json()
-        throw new Error(data.error || `Failed to generate lesson: ${response.statusText}`)
+        throw new Error(data.error || `Failed to build lesson: ${response.statusText}`)
       }
 
       const data = await response.json()
 
       if (data.allComplete) {
-        setSuccess('All lessons have been generated!')
+        setSuccess('All lessons have been built!')
       } else {
         const wasReused = data.lesson.wasReused ? ' (reused existing)' : ' (with audio)'
         setSuccess(
-          `Generated: ${data.lesson.reference}${wasReused} - ${data.progress.completed}/${data.progress.total} complete`
+          `Built: ${data.lesson.reference}${wasReused} - ${data.progress.completed}/${data.progress.total} complete`
         )
       }
 
@@ -48,7 +48,7 @@ export function SingleLessonGenerator({ planId, onComplete }: SingleLessonGenera
     } catch (err: any) {
       setError(err.message)
     } finally {
-      setIsGenerating(false)
+      setIsBuilding(false)
     }
   }
 
@@ -56,21 +56,21 @@ export function SingleLessonGenerator({ planId, onComplete }: SingleLessonGenera
     <div className="space-y-4">
       <div className="flex gap-4 items-center">
         <button
-          onClick={generateNextLesson}
-          disabled={isGenerating}
+          onClick={buildNextLesson}
+          disabled={isBuilding}
           className="px-6 py-3 bg-golden-wheat hover:bg-golden-wheat/90 disabled:bg-golden-wheat/50 text-charcoal font-semibold rounded-md border border-golden-wheat/50 transition-colors font-sans flex items-center gap-2"
         >
-          {isGenerating ? (
+          {isBuilding ? (
             <>
               <Loader2 className="w-4 h-4 animate-spin" />
-              Generating...
+              Building...
             </>
           ) : (
-            'Generate Next Lesson'
+            'Build Next Lesson'
           )}
         </button>
         <p className="text-sm text-charcoal/60 font-sans">
-          Generate the next lesson in your plan with audio narration
+          Build the next lesson in your plan with audio narration
         </p>
       </div>
 
