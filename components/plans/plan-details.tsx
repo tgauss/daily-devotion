@@ -2,16 +2,17 @@
 
 import Link from 'next/link'
 import { useState } from 'react'
-import { Loader2 } from 'lucide-react'
+import { Loader2, CheckCircle2, PlayCircle } from 'lucide-react'
 import { BatchLessonGenerator } from './batch-lesson-generator'
 import { SingleLessonGenerator } from './single-lesson-generator'
 
 interface PlanDetailsProps {
   plan: any
   userId: string | null
+  progress: any
 }
 
-export function PlanDetails({ plan, userId }: PlanDetailsProps) {
+export function PlanDetails({ plan, userId, progress }: PlanDetailsProps) {
   const [buildingItemId, setBuildingItemId] = useState<string | null>(null)
 
   const handleGenerationComplete = () => {
@@ -46,6 +47,26 @@ export function PlanDetails({ plan, userId }: PlanDetailsProps) {
 
   const sortedItems = [...plan.plan_items].sort((a: any, b: any) => a.index - b.index)
 
+  // Helper to check if lesson is completed
+  const isLessonCompleted = (lessonId: string) => {
+    if (!progress) return false
+    return progress.some((p: any) => p.lesson_id === lessonId && p.completed_at)
+  }
+
+  // Helper to check if this is today's lesson
+  const isTodaysLesson = (dateTarget: string) => {
+    if (!dateTarget) return false
+    const today = new Date().toDateString()
+    const target = new Date(dateTarget).toDateString()
+    return today === target
+  }
+
+  // Count completed lessons
+  const completedCount = sortedItems.filter((item: any) => {
+    const lesson = item.plan_item_lessons?.[0]?.lessons
+    return lesson && isLessonCompleted(lesson.id)
+  }).length
+
   return (
     <div className="space-y-8">
       {/* Plan header */}
@@ -71,6 +92,11 @@ export function PlanDetails({ plan, userId }: PlanDetailsProps) {
               {plan.is_public && (
                 <span className="px-4 py-2 bg-sandstone text-olivewood text-sm rounded-md border border-olivewood/30 font-sans">
                   Public
+                </span>
+              )}
+              {progress && (
+                <span className="px-4 py-2 bg-olivewood/10 text-olivewood text-sm rounded-md border border-olivewood/30 font-sans font-semibold">
+                  {completedCount} / {sortedItems.length} completed
                 </span>
               )}
             </div>
@@ -106,14 +132,30 @@ export function PlanDetails({ plan, userId }: PlanDetailsProps) {
             // New structure: plan_item_lessons is a junction table with lessons
             const lesson = item.plan_item_lessons?.[0]?.lessons
             const hasLesson = !!lesson
+            const isCompleted = lesson && isLessonCompleted(lesson.id)
+            const isToday = isTodaysLesson(item.date_target)
 
             return (
               <div
                 key={item.id}
-                className="flex items-center gap-6 p-6 bg-white/50 rounded-lg border border-olivewood/20 hover:border-olivewood/30 transition-all"
+                className={`flex items-center gap-6 p-6 rounded-lg border transition-all ${
+                  isToday
+                    ? 'bg-golden-wheat/10 border-golden-wheat shadow-md'
+                    : isCompleted
+                    ? 'bg-white/30 border-olivewood/10 opacity-70'
+                    : 'bg-white/50 border-olivewood/20 hover:border-olivewood/30'
+                }`}
               >
-                <div className="flex-shrink-0 w-12 h-12 rounded-lg bg-sandstone border border-olivewood/30 flex items-center justify-center">
-                  <span className="text-olivewood font-semibold font-sans text-lg">{index + 1}</span>
+                <div className={`flex-shrink-0 w-12 h-12 rounded-lg flex items-center justify-center border ${
+                  isCompleted
+                    ? 'bg-olivewood/20 border-olivewood'
+                    : 'bg-sandstone border-olivewood/30'
+                }`}>
+                  {isCompleted ? (
+                    <CheckCircle2 className="w-6 h-6 text-olivewood" />
+                  ) : (
+                    <span className="text-olivewood font-semibold font-sans text-lg">{index + 1}</span>
+                  )}
                 </div>
 
                 <div className="flex-1">
@@ -121,6 +163,12 @@ export function PlanDetails({ plan, userId }: PlanDetailsProps) {
                     <p className="text-charcoal font-medium font-sans text-lg">
                       {item.references_text.join(', ')}
                     </p>
+                    {isToday && (
+                      <span className="px-3 py-1 bg-golden-wheat text-white text-xs rounded-md border border-golden-wheat font-sans font-semibold flex items-center gap-1">
+                        <PlayCircle className="w-3 h-3" />
+                        Today
+                      </span>
+                    )}
                     {item.category && (
                       <span className="px-3 py-1 bg-clay-rose/30 text-olivewood text-xs rounded-md border border-olivewood/20 font-sans">
                         {item.category}
@@ -135,14 +183,20 @@ export function PlanDetails({ plan, userId }: PlanDetailsProps) {
                 <div className="flex items-center gap-3">
                   {hasLesson ? (
                     <>
-                      <span className="px-4 py-2 bg-golden-wheat/30 text-olivewood text-sm rounded-md border border-olivewood/30 font-sans">
-                        Ready
-                      </span>
+                      {isCompleted && (
+                        <span className="px-4 py-2 bg-olivewood/10 text-olivewood text-sm rounded-md border border-olivewood/30 font-sans font-semibold">
+                          Completed
+                        </span>
+                      )}
                       <Link
                         href={`/s/${lesson.share_slug}`}
-                        className="px-6 py-2 bg-olivewood hover:bg-olivewood/90 text-white rounded-md border border-olivewood/50 transition-colors font-sans font-medium"
+                        className={`px-6 py-2 rounded-md border transition-colors font-sans font-medium ${
+                          isToday
+                            ? 'bg-golden-wheat hover:bg-golden-wheat/90 text-white border-golden-wheat/50'
+                            : 'bg-olivewood hover:bg-olivewood/90 text-white border-olivewood/50'
+                        }`}
                       >
-                        View
+                        {isToday ? 'Start Today' : isCompleted ? 'Review' : 'View'}
                       </Link>
                     </>
                   ) : (

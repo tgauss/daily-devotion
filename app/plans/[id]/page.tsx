@@ -57,6 +57,16 @@ export default async function PlanPage({ params }: { params: Promise<{ id: strin
     .eq('id', id)
     .single()
 
+  // Fetch progress data if user is logged in
+  let progress = null
+  if (user) {
+    const { data: progressData } = await supabase
+      .from('progress')
+      .select('lesson_id, completed_at')
+      .eq('user_id', user.id)
+    progress = progressData || []
+  }
+
   // If full fetch fails, fall back to showing basic plan info
   if (error || !plan) {
     // Use basic plan data with empty arrays for items
@@ -64,13 +74,13 @@ export default async function PlanPage({ params }: { params: Promise<{ id: strin
       ...planBasic,
       plan_items: []
     }
-    return renderPlanPage(fallbackPlan, user?.id || null)
+    return renderPlanPage(fallbackPlan, user?.id || null, progress)
   }
 
-  return renderPlanPage(plan, user?.id || null)
+  return renderPlanPage(plan, user?.id || null, progress)
 }
 
-function renderPlanPage(plan: any, userId: string | null) {
+function renderPlanPage(plan: any, userId: string | null, progress: any) {
 
   return (
     <div
@@ -93,7 +103,7 @@ function renderPlanPage(plan: any, userId: string | null) {
           </a>
         </div>
 
-        <PlanDetails plan={plan} userId={userId} />
+        <PlanDetails plan={plan} userId={userId} progress={progress} />
       </div>
     </div>
   )
