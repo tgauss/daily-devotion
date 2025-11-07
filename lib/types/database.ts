@@ -43,13 +43,9 @@ export interface AiTriptych {
   intro: string
   body: string
   conclusion: string
-  context: {
-    historical: string | null
-    narrative: string | null
-  }
+  context: string
   key_takeaways: string[]
   reflection_prompts: string[]
-  discussion_questions: string[]
 }
 
 export interface QuizQuestion {

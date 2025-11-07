@@ -20,21 +20,21 @@ export class StoryCompiler {
   ): StoryManifest {
     const pages: StoryPage[] = []
 
-    // 1. Cover page
+    // 1. Cover page with intro preview (COMBINED!)
     pages.push({
       type: 'cover',
       content: {
         title: metadata.title,
-        text: metadata.reference,
+        text: `${metadata.reference}\n\n${lessonContent.intro}`,
       }
     })
 
-    // 2. Preview page (intro)
+    // 2. Context page (BEFORE reading the passage)
     pages.push({
       type: 'content',
       content: {
-        title: 'What You\'re About to Read',
-        text: lessonContent.intro,
+        title: 'Understanding the Context',
+        text: lessonContent.context,
       }
     })
 
@@ -62,28 +62,7 @@ export class StoryCompiler {
       })
     }
 
-    // 4. Context pages (if provided)
-    if (lessonContent.context.historical) {
-      pages.push({
-        type: 'content',
-        content: {
-          title: 'Historical Context',
-          text: lessonContent.context.historical,
-        }
-      })
-    }
-
-    if (lessonContent.context.narrative) {
-      pages.push({
-        type: 'content',
-        content: {
-          title: 'The Bigger Story',
-          text: lessonContent.context.narrative,
-        }
-      })
-    }
-
-    // 5. Message page (body) - split if too long
+    // 4. Message page (body) - split if too long
     const bodyParagraphs = lessonContent.body.split('\n\n')
     if (bodyParagraphs.length > 2) {
       // Split into multiple pages if more than 2 paragraphs
@@ -112,7 +91,7 @@ export class StoryCompiler {
       })
     }
 
-    // 6. Recap page (conclusion)
+    // 5. Conclusion page
     pages.push({
       type: 'content',
       content: {
@@ -121,57 +100,20 @@ export class StoryCompiler {
       }
     })
 
-    // 7. Key takeaways page
+    // 6. Final page: Key Insights & Reflection with Quiz button (COMBINED!)
+    // Combine takeaways and reflection into one bulleted list with a quiz button
+    const combinedBullets = [
+      ...lessonContent.key_takeaways.map(t => `💡 ${t}`),
+      '', // Spacer
+      '🤔 Reflect on This:',
+      ...lessonContent.reflection_prompts,
+    ]
+
     pages.push({
       type: 'takeaways',
       content: {
-        title: 'Key Takeaways',
-        bullets: lessonContent.key_takeaways,
-      }
-    })
-
-    // 8. Reflection prompts page
-    pages.push({
-      type: 'takeaways',
-      content: {
-        title: 'Reflect on This',
-        bullets: lessonContent.reflection_prompts,
-      }
-    })
-
-    // 9. Discussion questions page (if multiple, may split)
-    if (lessonContent.discussion_questions.length > 3) {
-      const midpoint = Math.ceil(lessonContent.discussion_questions.length / 2)
-      pages.push({
-        type: 'takeaways',
-        content: {
-          title: 'Discussion Questions',
-          bullets: lessonContent.discussion_questions.slice(0, midpoint),
-        }
-      })
-      pages.push({
-        type: 'takeaways',
-        content: {
-          title: 'Discussion Questions (cont.)',
-          bullets: lessonContent.discussion_questions.slice(midpoint),
-        }
-      })
-    } else {
-      pages.push({
-        type: 'takeaways',
-        content: {
-          title: 'Discussion Questions',
-          bullets: lessonContent.discussion_questions,
-        }
-      })
-    }
-
-    // 10. Quiz CTA page
-    pages.push({
-      type: 'cta',
-      content: {
-        title: 'Test Your Understanding',
-        text: 'Ready to see how much you remember? Take a short quiz to reinforce what you\'ve learned.',
+        title: 'Key Insights & Reflection',
+        bullets: combinedBullets,
         cta: {
           text: 'Start Quiz',
           href: metadata.quizUrl,

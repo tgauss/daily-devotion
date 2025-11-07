@@ -29,13 +29,24 @@ export function StoryPageComponent({ page, pageNumber, totalPages }: StoryPageCo
     case 'cover':
       return (
         <div className="max-w-2xl mx-auto px-4 sm:px-6 md:px-8 pb-24 text-center">
-          <h1 className="text-3xl sm:text-5xl md:text-7xl font-heading font-bold text-charcoal mb-8 md:mb-12 leading-tight">
+          <h1 className="text-3xl sm:text-5xl md:text-6xl font-heading font-bold text-charcoal mb-6 md:mb-8 leading-tight">
             {page.content.title}
           </h1>
           {page.content.text && (
-            <p className="text-lg sm:text-2xl md:text-3xl text-olivewood font-sans font-light leading-relaxed">
-              {page.content.text}
-            </p>
+            <div className="space-y-6 md:space-y-8">
+              {/* Parse the text - it contains reference + intro separated by \n\n */}
+              {page.content.text.split('\n\n').map((part, idx) => (
+                <p
+                  key={idx}
+                  className={idx === 0
+                    ? "text-2xl sm:text-3xl md:text-4xl text-olivewood font-sans font-semibold leading-tight"
+                    : "text-base sm:text-lg md:text-xl text-charcoal/80 font-sans leading-relaxed"
+                  }
+                >
+                  {part}
+                </p>
+              ))}
+            </div>
           )}
           <p className="mt-12 md:mt-16 text-charcoal/40 text-xs sm:text-sm font-sans">Tap or press → to continue</p>
         </div>
@@ -61,19 +72,49 @@ export function StoryPageComponent({ page, pageNumber, totalPages }: StoryPageCo
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-heading font-bold text-charcoal mb-6 md:mb-10">
             {page.content.title}
           </h2>
-          <ul className="space-y-4 md:space-y-6">
-            {page.content.bullets?.map((bullet, idx) => (
-              <li
-                key={idx}
-                className="flex items-start text-base sm:text-lg md:text-xl text-charcoal leading-relaxed font-sans font-medium"
-              >
-                <span className="flex-shrink-0 w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-golden-wheat/40 border border-golden-wheat flex items-center justify-center mr-3 sm:mr-5 mt-0.5 sm:mt-1">
-                  <span className="text-charcoal font-semibold font-sans text-xs sm:text-sm">{idx + 1}</span>
-                </span>
-                <span>{bullet}</span>
-              </li>
-            ))}
+          <ul className="space-y-4 md:space-y-6 mb-10 md:mb-14">
+            {page.content.bullets?.map((bullet, idx) => {
+              // Empty bullet = spacer
+              if (!bullet) {
+                return <li key={idx} className="h-2"></li>
+              }
+
+              // Check if this is a section header (like "🤔 Reflect on This:")
+              if (bullet.startsWith('🤔') || bullet.startsWith('💡') && bullet.endsWith(':')) {
+                return (
+                  <li key={idx} className="text-lg sm:text-xl md:text-2xl text-olivewood font-semibold font-heading mt-4">
+                    {bullet}
+                  </li>
+                )
+              }
+
+              return (
+                <li
+                  key={idx}
+                  className="flex items-start text-base sm:text-lg md:text-xl text-charcoal leading-relaxed font-sans font-medium"
+                >
+                  <span className="flex-shrink-0 w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-golden-wheat/40 border border-golden-wheat flex items-center justify-center mr-3 sm:mr-5 mt-0.5 sm:mt-1">
+                    <span className="text-charcoal font-semibold font-sans text-xs sm:text-sm">
+                      {bullet.startsWith('💡') ? '💡' : idx + 1}
+                    </span>
+                  </span>
+                  <span>{bullet.startsWith('💡') ? bullet.substring(2).trim() : bullet}</span>
+                </li>
+              )
+            })}
           </ul>
+
+          {/* Quiz button if provided */}
+          {page.content.cta && (
+            <div className="text-center mt-10 md:mt-14">
+              <Link
+                href={page.content.cta.href}
+                className="inline-block px-8 sm:px-12 py-3 sm:py-4 bg-olivewood hover:bg-olivewood/90 text-white text-lg sm:text-xl font-semibold font-sans rounded-lg transition-all shadow-lg hover:shadow-xl"
+              >
+                {page.content.cta.text}
+              </Link>
+            </div>
+          )}
         </div>
       )
 

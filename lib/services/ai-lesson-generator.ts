@@ -4,12 +4,14 @@ import { LessonContentInput, LessonContentOutput } from '@/lib/types/database'
 const SYSTEM_PROMPT = `You generate lesson content for Bible study plans. Be concise, accurate, and pastoral without being preachy. Use friendly, conversational, encouraging, practical language. Never alter the meaning of the text.
 
 Your role is to help readers:
-1. Understand what they're about to read (Preview)
-2. Grasp the main message with practical application (Message)
-3. Remember key points (Recap)
-4. Connect with historical and narrative context
-5. Reflect and discuss deeply
+1. Preview what they're about to read
+2. Understand the context BEFORE reading (historical and narrative background)
+3. Grasp the main message with practical application
+4. Take one actionable step
+5. Remember key insights and reflect personally
 6. Test their understanding
+
+Keep content scannable and mobile-friendly. Avoid long paragraphs - prefer 2-3 sentences max per paragraph.
 
 CRITICAL REQUIREMENT: You MUST generate between 3 and 5 quiz questions (no fewer, no more). This is mandatory.
 
@@ -26,16 +28,12 @@ const USER_PROMPT_TEMPLATE = `Generate lesson content for the following Bible pa
 
 Generate a JSON response with the following structure:
 {
-  "intro": "one short paragraph previewing what the reader is about to read",
-  "body": "2-3 short paragraphs that clearly explain the main message with practical application",
-  "conclusion": "1 short paragraph with a single actionable step",
-  "context": {
-    "historical": "2-4 sentences of historical context when relevant (or null if not applicable)",
-    "narrative": "2-4 sentences connecting this passage with the broader biblical narrative"
-  },
-  "key_takeaways": ["bullet point 1", "bullet point 2", "...up to 5 bullets"],
-  "reflection_prompts": ["open-ended question 1", "open-ended question 2", "2-3 total"],
-  "discussion_questions": ["question 1", "question 2", "...3-5 questions total"],
+  "intro": "One short paragraph (2-3 sentences) previewing what the reader is about to study",
+  "context": "3-5 sentences combining historical background AND how this passage connects to the broader biblical narrative. This prepares the reader BEFORE they read the passage.",
+  "body": "1-2 short paragraphs (2-3 sentences each) that clearly explain the main message with practical application",
+  "conclusion": "1 short paragraph (2-3 sentences) with a single, concrete actionable step",
+  "key_takeaways": ["bullet point 1", "bullet point 2", "bullet point 3", "...3-5 bullets total"],
+  "reflection_prompts": ["open-ended personal question 1", "open-ended personal question 2", "2-3 total"],
   "quiz": [
     {
       "q": "Question text",
@@ -47,19 +45,28 @@ Generate a JSON response with the following structure:
   ]
 }
 
+CRITICAL FORMATTING REQUIREMENTS:
+- Intro: 2-3 sentences max (preview)
+- Context: 3-5 sentences (historical + narrative combined)
+- Body: 1-2 paragraphs, each 2-3 sentences (message + application)
+- Conclusion: 2-3 sentences (one actionable step)
+- Takeaways: 3-5 bullet points (concise)
+- Reflection: 2-3 personal questions
+- Quiz: EXACTLY 3-5 questions with 4 choices each
+
 CRITICAL QUIZ FORMATTING:
 - Generate EXACTLY 3-5 quiz questions (not fewer, not more)
 - Each question must have exactly 4 choices (full text, not just letters)
-- The "answer" field must be the EXACT TEXT of one of the choices (not "A", "B", "C", or "D", but the actual choice text)
+- The "answer" field must be the EXACT TEXT of one of the choices (not "A", "B", "C", or "D")
 - Example: if choices are ["Jesus wept", "Jesus laughed", "Jesus danced", "Jesus sang"], answer must be "Jesus wept" (not "A")
+- Include specific verse references in quiz explanations
 
 Important guidelines:
-- Keep each Web Story page scannable - avoid long paragraphs
+- Keep everything scannable and mobile-friendly
 - Be warm, encouraging, and practical
-- Include specific verse references in quiz explanations
 - Make quiz questions test understanding, not just recall
-- Ensure historical context is accurate and relevant
-- Connect passages to the broader biblical story`
+- Ensure context is accurate and helps understanding
+- Connect passages to God's redemptive story`
 
 export class AILessonGenerator {
   private openai: OpenAI
@@ -152,7 +159,6 @@ export class AILessonGenerator {
       'context',
       'key_takeaways',
       'reflection_prompts',
-      'discussion_questions',
       'quiz'
     ]
 
@@ -162,20 +168,17 @@ export class AILessonGenerator {
       }
     }
 
-    if (!content.context.historical && !content.context.narrative) {
-      throw new Error('At least one of historical or narrative context must be provided')
+    // Context is now a string (combined historical + narrative)
+    if (typeof content.context !== 'string' || content.context.length === 0) {
+      throw new Error('Context must be a non-empty string combining historical and narrative background')
     }
 
-    if (content.key_takeaways.length === 0 || content.key_takeaways.length > 5) {
-      throw new Error('key_takeaways must have 1-5 items')
+    if (content.key_takeaways.length < 3 || content.key_takeaways.length > 5) {
+      throw new Error('key_takeaways must have 3-5 items')
     }
 
     if (content.reflection_prompts.length < 2 || content.reflection_prompts.length > 3) {
       throw new Error('reflection_prompts must have 2-3 items')
-    }
-
-    if (content.discussion_questions.length < 3 || content.discussion_questions.length > 5) {
-      throw new Error('discussion_questions must have 3-5 items')
     }
 
     if (content.quiz.length < 3 || content.quiz.length > 5) {
