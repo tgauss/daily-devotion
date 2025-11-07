@@ -77,6 +77,23 @@ export interface StoryManifest {
   }
 }
 
+export interface AudioPageMetadata {
+  pageIndex: number
+  pageType: 'cover' | 'passage' | 'content' | 'takeaways' | 'cta'
+  audioUrl: string
+  duration: number  // Duration in seconds
+  fileSize: number  // File size in bytes
+  textHash: string  // MD5 hash of narrated text for cache validation
+}
+
+export interface AudioManifest {
+  version: string  // Format version (e.g., "1.0")
+  generated_at: string  // ISO timestamp
+  teaching_voice_id: string  // ElevenLabs voice ID for teaching content
+  scripture_voice_id: string  // ElevenLabs voice ID for scripture passages
+  pages: AudioPageMetadata[]
+}
+
 export interface Lesson {
   id: string
   plan_item_id: string
@@ -86,6 +103,7 @@ export interface Lesson {
   ai_triptych_json: AiTriptych
   story_manifest_json: StoryManifest
   quiz_json: QuizQuestion[]
+  audio_manifest_json: AudioManifest | null
   share_slug: string
   published_at: string | null
   created_at: string

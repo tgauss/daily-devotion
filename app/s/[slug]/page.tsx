@@ -28,6 +28,7 @@ export default async function StoryPage({ params }: { params: Promise<{ slug: st
     <>
       <WebStory
         manifest={lesson.story_manifest_json}
+        audioManifest={lesson.audio_manifest_json}
         lessonId={lesson.id}
       />
       {user && <StoryProgressTracker userId={user.id} lessonId={lesson.id} />}

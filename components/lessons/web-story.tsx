@@ -1,18 +1,21 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { StoryManifest, StoryPage } from '@/lib/types/database'
+import { motion, AnimatePresence } from 'framer-motion'
+import { StoryManifest, StoryPage, AudioManifest } from '@/lib/types/database'
 import { StoryPageComponent } from './story-page'
 
 interface WebStoryProps {
   manifest: StoryManifest
+  audioManifest?: AudioManifest | null
   onComplete?: () => void
   lessonId?: string
 }
 
-export function WebStory({ manifest, onComplete, lessonId }: WebStoryProps) {
+export function WebStory({ manifest, audioManifest, onComplete, lessonId }: WebStoryProps) {
   const [currentPage, setCurrentPage] = useState(0)
   const [startTime] = useState(Date.now())
+  const [direction, setDirection] = useState(0) // 1 for next, -1 for previous
 
   const totalPages = manifest.pages.length
   const isLastPage = currentPage === totalPages - 1
@@ -27,12 +30,14 @@ export function WebStory({ manifest, onComplete, lessonId }: WebStoryProps) {
 
   const handleNext = () => {
     if (currentPage < totalPages - 1) {
+      setDirection(1)
       setCurrentPage(currentPage + 1)
     }
   }
 
   const handlePrevious = () => {
     if (currentPage > 0) {
+      setDirection(-1)
       setCurrentPage(currentPage - 1)
     }
   }
@@ -45,6 +50,27 @@ export function WebStory({ manifest, onComplete, lessonId }: WebStoryProps) {
       e.preventDefault()
       handlePrevious()
     }
+  }
+
+  // Subtle page transition
+  const pageVariants = {
+    enter: (direction: number) => ({
+      x: direction > 0 ? 20 : -20,
+      opacity: 0,
+    }),
+    center: {
+      x: 0,
+      opacity: 1,
+    },
+    exit: (direction: number) => ({
+      x: direction > 0 ? -20 : 20,
+      opacity: 0,
+    }),
+  }
+
+  const pageTransition = {
+    duration: 0.3,
+    ease: 'easeInOut',
   }
 
   return (
@@ -62,25 +88,42 @@ export function WebStory({ manifest, onComplete, lessonId }: WebStoryProps) {
     >
       {/* Progress bar */}
       <div className="absolute top-0 left-0 right-0 h-1 bg-clay-rose/30 z-20">
-        <div
-          className="h-full bg-golden-wheat transition-all duration-300"
-          style={{ width: `${((currentPage + 1) / totalPages) * 100}%` }}
+        <motion.div
+          className="h-full bg-golden-wheat"
+          animate={{ width: `${((currentPage + 1) / totalPages) * 100}%` }}
+          transition={{ duration: 0.3 }}
         />
       </div>
 
-      {/* Story page */}
-      <div className="absolute inset-0 flex items-center justify-center overflow-y-auto">
-        <div className="w-full py-4">
-          <StoryPageComponent
-            page={manifest.pages[currentPage]}
-            pageNumber={currentPage + 1}
-            totalPages={totalPages}
-          />
+      {/* Story page with smooth transitions */}
+      <div className="absolute inset-0 overflow-y-auto">
+        <div className="min-h-full flex items-center justify-center py-8">
+          <AnimatePresence mode="wait" custom={direction}>
+            <motion.div
+              key={currentPage}
+              custom={direction}
+              variants={pageVariants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              transition={pageTransition}
+              className="w-full"
+            >
+              <StoryPageComponent
+                page={manifest.pages[currentPage]}
+                pageNumber={currentPage + 1}
+                totalPages={totalPages}
+                audioUrl={audioManifest?.pages.find(p => p.pageIndex === currentPage)?.audioUrl}
+                autoPlayAudio={currentPage > 0}
+              />
+            </motion.div>
+          </AnimatePresence>
         </div>
       </div>
 
-      {/* Navigation areas - disabled on CTA pages to allow button clicks */}
-      {manifest.pages[currentPage].type !== 'cta' && (
+      {/* Navigation areas - disabled on CTA pages and takeaways with quiz button to allow button clicks */}
+      {manifest.pages[currentPage].type !== 'cta' &&
+       !(manifest.pages[currentPage].type === 'takeaways' && manifest.pages[currentPage].content.cta) && (
         <div className="absolute inset-0 flex">
           {/* Left tap area - previous */}
           {currentPage > 0 && (

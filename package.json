@@ -13,6 +13,8 @@
     "@supabase/supabase-js": "^2.79.0",
     "ai": "^5.0.88",
     "date-fns": "^4.1.0",
+    "dotenv": "^17.2.3",
+    "framer-motion": "^12.23.24",
     "lucide-react": "^0.552.0",
     "next": "16.0.1",
     "openai": "^6.8.1",
@@ -28,6 +30,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.0.1",
     "tailwindcss": "^4",
+    "tsx": "^4.20.6",
     "typescript": "^5"
   }
 }

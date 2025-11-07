@@ -1,60 +1,132 @@
 'use client'
 
+import { motion } from 'framer-motion'
 import { StoryPage } from '@/lib/types/database'
 import Link from 'next/link'
+import { AudioPlayer } from './audio-player'
 
 interface StoryPageComponentProps {
   page: StoryPage
   pageNumber: number
   totalPages: number
+  audioUrl?: string
+  autoPlayAudio?: boolean
 }
 
-export function StoryPageComponent({ page, pageNumber, totalPages }: StoryPageComponentProps) {
+export function StoryPageComponent({ page, pageNumber, totalPages, audioUrl, autoPlayAudio = false }: StoryPageComponentProps) {
+  // Subtle fade-in animation only
+  const fadeIn = {
+    initial: { opacity: 0 },
+    animate: { opacity: 1 },
+    transition: { duration: 0.4, ease: 'easeOut' }
+  }
+
+  // Create unique paper texture variation for each passage page
+  const getPaperTransform = (pageNum: number) => {
+    const variations = [
+      'scaleX(1) scaleY(1)',      // normal
+      'scaleX(-1) scaleY(1)',     // flip horizontal
+      'scaleX(1) scaleY(-1)',     // flip vertical
+      'scaleX(-1) scaleY(-1)',    // flip both
+    ]
+    return variations[pageNum % variations.length]
+  }
+
   switch (page.type) {
     case 'passage':
       return (
-        <div className="max-w-2xl mx-auto px-4 sm:px-6 md:px-8 pb-24">
+        <motion.div {...fadeIn} className="max-w-2xl mx-auto px-4 sm:px-6 md:px-8 pb-24 relative">
+          {/* Audio player in top-right */}
+          {audioUrl && (
+            <div className="absolute top-0 right-4 sm:right-6 md:right-8 z-10">
+              <AudioPlayer audioUrl={audioUrl} autoPlay={autoPlayAudio} />
+            </div>
+          )}
           <h2 className="text-xl sm:text-2xl md:text-3xl font-heading font-bold text-charcoal mb-6 md:mb-8 text-center">
             {page.content.title}
           </h2>
-          <div className="text-base sm:text-lg md:text-xl text-charcoal leading-relaxed font-sans font-medium bg-white/70 p-5 sm:p-8 md:p-10 rounded-lg border border-clay-rose/30 shadow-md">
-            {page.content.text}
+          <div
+            className="relative text-base sm:text-lg md:text-xl text-charcoal leading-relaxed font-sans font-medium p-5 sm:p-8 md:p-10 rounded-lg border border-clay-rose/30 shadow-md overflow-hidden"
+            style={{
+              backgroundImage: 'url(/paper-page.jpeg)',
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+            }}
+          >
+            {/* Paper texture layer with transform for variation */}
+            <div
+              className="absolute inset-0 opacity-90"
+              style={{
+                backgroundImage: 'url(/paper-page.jpeg)',
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                transform: getPaperTransform(pageNumber),
+              }}
+            />
+            {/* Text content with slight background for readability */}
+            <div className="relative z-10 bg-white/30 p-4 sm:p-5 rounded">
+              {page.content.text}
+            </div>
           </div>
-          <p className="mt-6 md:mt-8 text-center text-charcoal/50 text-xs sm:text-sm font-sans">
-            The Holy Bible, English Standard Version
-          </p>
-        </div>
+        </motion.div>
       )
 
     case 'cover':
       return (
-        <div className="max-w-2xl mx-auto px-4 sm:px-6 md:px-8 pb-24 text-center">
-          <h1 className="text-3xl sm:text-5xl md:text-6xl font-heading font-bold text-charcoal mb-6 md:mb-8 leading-tight">
-            {page.content.title}
-          </h1>
-          {page.content.text && (
-            <div className="space-y-6 md:space-y-8">
-              {/* Parse the text - it contains reference + intro separated by \n\n */}
-              {page.content.text.split('\n\n').map((part, idx) => (
-                <p
-                  key={idx}
-                  className={idx === 0
-                    ? "text-2xl sm:text-3xl md:text-4xl text-olivewood font-sans font-semibold leading-tight"
-                    : "text-base sm:text-lg md:text-xl text-charcoal/80 font-sans leading-relaxed"
-                  }
-                >
-                  {part}
-                </p>
-              ))}
+        <motion.div
+          {...fadeIn}
+          className="relative min-h-screen flex items-center justify-center px-4 sm:px-6 md:px-8 -mt-8"
+          style={{
+            backgroundImage: 'url(/lesson-cover.jpeg)',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat'
+          }}
+        >
+          {/* Overlay for better text readability */}
+          <div className="absolute inset-0 bg-charcoal/30" />
+
+          {/* Audio player in top-right */}
+          {audioUrl && (
+            <div className="absolute top-8 right-4 sm:right-6 md:right-8 z-20">
+              <AudioPlayer audioUrl={audioUrl} autoPlay={autoPlayAudio} />
             </div>
           )}
-          <p className="mt-12 md:mt-16 text-charcoal/40 text-xs sm:text-sm font-sans">Tap or press → to continue</p>
-        </div>
+
+          <div className="relative max-w-2xl text-center z-10">
+            <h1 className="text-3xl sm:text-5xl md:text-6xl font-heading font-bold text-white mb-6 md:mb-8 leading-tight drop-shadow-lg">
+              {page.content.title}
+            </h1>
+            {page.content.text && (
+              <div className="space-y-6 md:space-y-8">
+                {/* Parse the text - it contains reference + intro separated by \n\n */}
+                {page.content.text.split('\n\n').map((part, idx) => (
+                  <p
+                    key={idx}
+                    className={idx === 0
+                      ? "text-2xl sm:text-3xl md:text-4xl text-golden-wheat font-sans font-semibold leading-tight drop-shadow-md"
+                      : "text-base sm:text-lg md:text-xl text-white/90 font-sans leading-relaxed drop-shadow-md"
+                    }
+                  >
+                    {part}
+                  </p>
+                ))}
+              </div>
+            )}
+            <p className="mt-12 md:mt-16 text-white/60 text-xs sm:text-sm font-sans drop-shadow-md">Tap or press → to continue</p>
+          </div>
+        </motion.div>
       )
 
     case 'content':
       return (
-        <div className="max-w-2xl mx-auto px-4 sm:px-6 md:px-8 pb-24">
+        <motion.div {...fadeIn} className="max-w-2xl mx-auto px-4 sm:px-6 md:px-8 pb-24 relative">
+          {/* Audio player in top-right */}
+          {audioUrl && (
+            <div className="absolute top-0 right-4 sm:right-6 md:right-8 z-10">
+              <AudioPlayer audioUrl={audioUrl} autoPlay={autoPlayAudio} />
+            </div>
+          )}
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-heading font-bold text-charcoal mb-6 md:mb-10">
             {page.content.title}
           </h2>
@@ -63,12 +135,18 @@ export function StoryPageComponent({ page, pageNumber, totalPages }: StoryPageCo
               <p key={idx}>{paragraph}</p>
             ))}
           </div>
-        </div>
+        </motion.div>
       )
 
     case 'takeaways':
       return (
-        <div className="max-w-2xl mx-auto px-4 sm:px-6 md:px-8 pb-24">
+        <motion.div {...fadeIn} className="max-w-2xl mx-auto px-4 sm:px-6 md:px-8 pb-24 relative">
+          {/* Audio player in top-right */}
+          {audioUrl && (
+            <div className="absolute top-0 right-4 sm:right-6 md:right-8 z-10">
+              <AudioPlayer audioUrl={audioUrl} autoPlay={autoPlayAudio} />
+            </div>
+          )}
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-heading font-bold text-charcoal mb-6 md:mb-10">
             {page.content.title}
           </h2>
@@ -79,11 +157,14 @@ export function StoryPageComponent({ page, pageNumber, totalPages }: StoryPageCo
                 return <li key={idx} className="h-2"></li>
               }
 
-              // Check if this is a section header (like "🤔 Reflect on This:")
-              if (bullet.startsWith('🤔') || bullet.startsWith('💡') && bullet.endsWith(':')) {
+              // Strip any leading emojis and clean up text
+              const cleanBullet = bullet.replace(/^(💡|🤔)\s*/, '').trim()
+
+              // Check if this is a section header (ends with colon)
+              if (cleanBullet.endsWith(':')) {
                 return (
                   <li key={idx} className="text-lg sm:text-xl md:text-2xl text-olivewood font-semibold font-heading mt-4">
-                    {bullet}
+                    {cleanBullet}
                   </li>
                 )
               }
@@ -95,32 +176,56 @@ export function StoryPageComponent({ page, pageNumber, totalPages }: StoryPageCo
                 >
                   <span className="flex-shrink-0 w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-golden-wheat/40 border border-golden-wheat flex items-center justify-center mr-3 sm:mr-5 mt-0.5 sm:mt-1">
                     <span className="text-charcoal font-semibold font-sans text-xs sm:text-sm">
-                      {bullet.startsWith('💡') ? '💡' : idx + 1}
+                      {idx + 1}
                     </span>
                   </span>
-                  <span>{bullet.startsWith('💡') ? bullet.substring(2).trim() : bullet}</span>
+                  <span>{cleanBullet}</span>
                 </li>
               )
             })}
           </ul>
 
-          {/* Quiz button if provided */}
+          {/* Quiz CTA section */}
           {page.content.cta && (
-            <div className="text-center mt-10 md:mt-14">
-              <Link
-                href={page.content.cta.href}
-                className="inline-block px-8 sm:px-12 py-3 sm:py-4 bg-olivewood hover:bg-olivewood/90 text-white text-lg sm:text-xl font-semibold font-sans rounded-lg transition-all shadow-lg hover:shadow-xl"
-              >
-                {page.content.cta.text}
-              </Link>
+            <div className="text-center mt-10 md:mt-14 space-y-6">
+              <div>
+                <h3 className="text-xl sm:text-2xl font-heading font-bold text-charcoal mb-3">
+                  Ready to Deepen Your Understanding?
+                </h3>
+                <p className="text-base sm:text-lg text-charcoal/70 font-sans mb-6">
+                  Reflect on what you've learned with a few thoughtful questions
+                </p>
+                <Link
+                  href={page.content.cta.href}
+                  className="inline-block px-8 sm:px-12 py-3 sm:py-4 bg-olivewood hover:bg-olivewood/90 text-white text-lg sm:text-xl font-semibold font-sans rounded-lg transition-all shadow-lg hover:shadow-xl"
+                >
+                  {page.content.cta.text}
+                </Link>
+              </div>
+
+              <div className="pt-4 border-t border-clay-rose/20">
+                <Link
+                  href="/dashboard"
+                  className="inline-flex items-center gap-2 text-charcoal/60 hover:text-charcoal text-sm sm:text-base font-sans transition-colors"
+                >
+                  <span>←</span>
+                  <span>Return to Dashboard</span>
+                </Link>
+              </div>
             </div>
           )}
-        </div>
+        </motion.div>
       )
 
     case 'cta':
       return (
-        <div className="max-w-2xl mx-auto px-4 sm:px-6 md:px-8 pb-24 text-center">
+        <motion.div {...fadeIn} className="max-w-2xl mx-auto px-4 sm:px-6 md:px-8 pb-24 text-center relative">
+          {/* Audio player in top-right */}
+          {audioUrl && (
+            <div className="absolute top-0 right-4 sm:right-6 md:right-8 z-10">
+              <AudioPlayer audioUrl={audioUrl} autoPlay={autoPlayAudio} />
+            </div>
+          )}
           <h2 className="text-2xl sm:text-4xl md:text-5xl font-heading font-bold text-charcoal mb-6 md:mb-8">
             {page.content.title}
           </h2>
@@ -137,14 +242,14 @@ export function StoryPageComponent({ page, pageNumber, totalPages }: StoryPageCo
               {page.content.cta.text}
             </Link>
           )}
-        </div>
+        </motion.div>
       )
 
     default:
       return (
-        <div className="max-w-2xl mx-auto px-8 text-center">
+        <motion.div {...fadeIn} className="max-w-2xl mx-auto px-8 text-center">
           <p className="text-charcoal">Unknown page type</p>
-        </div>
+        </motion.div>
       )
   }
 }

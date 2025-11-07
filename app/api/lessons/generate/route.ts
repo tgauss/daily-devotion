@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getPassageAdapter } from '@/lib/services/passage-adapter'
 import { getAILessonGenerator } from '@/lib/services/ai-lesson-generator'
 import { getStoryCompiler } from '@/lib/services/story-compiler'
+import { getAudioGenerator } from '@/lib/services/audio-generator'
 import crypto from 'crypto'
 
 export async function POST(request: NextRequest) {
@@ -48,6 +49,7 @@ export async function POST(request: NextRequest) {
     const passageAdapter = getPassageAdapter('ESV')
     const aiGenerator = getAILessonGenerator()
     const storyCompiler = getStoryCompiler()
+    const audioGenerator = getAudioGenerator()
 
     // Generate lessons for each plan item
     const results = []
@@ -108,7 +110,22 @@ export async function POST(request: NextRequest) {
             passageText: passage.text,
           })
 
-          // 7. Store canonical lesson (no plan_item_id!)
+          // 7. Generate audio for all pages
+          let audioManifest = null
+          try {
+            // Generate a temporary lesson ID for audio file paths
+            const tempLessonId = crypto.randomBytes(16).toString('hex')
+            audioManifest = await audioGenerator.generateAudioForLesson(
+              tempLessonId,
+              storyManifest
+            )
+            console.log(`Generated audio for lesson (${audioManifest.pages.length} pages)`)
+          } catch (audioError) {
+            console.error('Audio generation failed, continuing without audio:', audioError)
+            // Continue without audio - don't fail the entire lesson creation
+          }
+
+          // 8. Store canonical lesson (no plan_item_id!)
           const { data: newLesson, error: lessonError } = await serviceSupabase
             .from('lessons')
             .insert({
@@ -119,6 +136,7 @@ export async function POST(request: NextRequest) {
               ai_triptych_json: lessonContent,
               story_manifest_json: storyManifest,
               quiz_json: lessonContent.quiz,
+              audio_manifest_json: audioManifest,
               share_slug: shareSlug,
               published_at: new Date().toISOString(),
             })
@@ -135,7 +153,7 @@ export async function POST(request: NextRequest) {
           results.push({ itemId: item.id, status: 'created_canonical', lessonId })
         }
 
-        // 8. Create plan_item → lesson mapping
+        // 9. Create plan_item → lesson mapping
         await serviceSupabase
           .from('plan_item_lessons')
           .insert({
@@ -143,7 +161,7 @@ export async function POST(request: NextRequest) {
             lesson_id: lessonId,
           })
 
-        // 9. Update plan item status to published
+        // 10. Update plan item status to published
         await serviceSupabase
           .from('plan_items')
           .update({ status: 'published' })

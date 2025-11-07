@@ -103,9 +103,9 @@ export class StoryCompiler {
     // 6. Final page: Key Insights & Reflection with Quiz button (COMBINED!)
     // Combine takeaways and reflection into one bulleted list with a quiz button
     const combinedBullets = [
-      ...lessonContent.key_takeaways.map(t => `💡 ${t}`),
+      ...lessonContent.key_takeaways,
       '', // Spacer
-      '🤔 Reflect on This:',
+      'Reflect on This:',
       ...lessonContent.reflection_prompts,
     ]
 
@@ -115,7 +115,7 @@ export class StoryCompiler {
         title: 'Key Insights & Reflection',
         bullets: combinedBullets,
         cta: {
-          text: 'Start Quiz',
+          text: 'Test Your Understanding',
           href: metadata.quizUrl,
         }
       }
