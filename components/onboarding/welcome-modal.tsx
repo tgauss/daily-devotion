@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { X } from 'lucide-react'
+import Image from 'next/image'
 
 interface WelcomeModalProps {
   firstName?: string | null
@@ -45,6 +46,15 @@ export function WelcomeModal({ firstName, userEmail }: WelcomeModalProps) {
       title: 'Welcome to MyDailyBread',
       content: (
         <div className="space-y-4">
+          <div className="flex justify-center mb-6">
+            <Image
+              src="/my-daily-break-logo.png"
+              alt="MyDailyBread Logo"
+              width={80}
+              height={80}
+              className="w-20 h-20"
+            />
+          </div>
           <p className="text-lg text-charcoal/80 font-sans">
             We're delighted to have you here, <span className="font-semibold text-olivewood">{displayName}</span>!
           </p>

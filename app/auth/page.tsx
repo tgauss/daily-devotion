@@ -1,4 +1,5 @@
 import { AuthForm } from '@/components/auth/auth-form'
+import Image from 'next/image'
 
 export default function AuthPage() {
   return (
@@ -14,6 +15,15 @@ export default function AuthPage() {
     >
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
+          <div className="flex justify-center mb-6">
+            <Image
+              src="/my-daily-break-logo.png"
+              alt="MyDailyBread Logo"
+              width={80}
+              height={80}
+              className="w-20 h-20"
+            />
+          </div>
           <h1 className="text-5xl font-heading text-charcoal mb-3 tracking-tight">
             MyDailyBread
           </h1>
