@@ -162,9 +162,6 @@ export function PlanDetails({ plan, userId, progress }: PlanDetailsProps) {
             )}
             <div className="flex gap-3 flex-wrap">
               <span className="px-4 py-2 bg-sandstone text-olivewood text-sm rounded-md border border-olivewood/30 font-sans">
-                {plan.source}
-              </span>
-              <span className="px-4 py-2 bg-sandstone text-olivewood text-sm rounded-md border border-olivewood/30 font-sans">
                 {plan.schedule_type}
               </span>
               {plan.theme && (
