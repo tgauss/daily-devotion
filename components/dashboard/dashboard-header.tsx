@@ -61,6 +61,12 @@ export function DashboardHeader({ user, profile }: DashboardHeaderProps) {
             Dashboard
           </a>
           <a
+            href="/library"
+            className="px-4 py-2 text-sm font-medium text-charcoal hover:text-olivewood hover:bg-olivewood/10 rounded-md transition-colors font-sans whitespace-nowrap"
+          >
+            Plan Library
+          </a>
+          <a
             href="/guidance"
             className="px-4 py-2 text-sm font-medium text-charcoal hover:text-olivewood hover:bg-olivewood/10 rounded-md transition-colors font-sans whitespace-nowrap"
           >
