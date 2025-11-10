@@ -8,9 +8,10 @@ interface AudioPlayerProps {
   autoPlay?: boolean
   className?: string
   onAudioEnded?: () => void
+  onAudioPaused?: () => void
 }
 
-export function AudioPlayer({ audioUrl, autoPlay = false, className = '', onAudioEnded }: AudioPlayerProps) {
+export function AudioPlayer({ audioUrl, autoPlay = false, className = '', onAudioEnded, onAudioPaused }: AudioPlayerProps) {
   const audioRef = useRef<HTMLAudioElement>(null)
   const [isPlaying, setIsPlaying] = useState(false)
   const [error, setError] = useState(false)
@@ -20,7 +21,13 @@ export function AudioPlayer({ audioUrl, autoPlay = false, className = '', onAudi
     if (!audio) return
 
     const handlePlay = () => setIsPlaying(true)
-    const handlePause = () => setIsPlaying(false)
+    const handlePause = () => {
+      setIsPlaying(false)
+      // Notify parent that user paused
+      if (onAudioPaused) {
+        onAudioPaused()
+      }
+    }
     const handleEnded = () => {
       setIsPlaying(false)
       // Auto-advance to next page when audio finishes
@@ -53,7 +60,7 @@ export function AudioPlayer({ audioUrl, autoPlay = false, className = '', onAudi
       audio.removeEventListener('ended', handleEnded)
       audio.removeEventListener('error', handleError)
     }
-  }, [autoPlay, error, onAudioEnded])
+  }, [autoPlay, error, onAudioEnded, onAudioPaused])
 
   // Reset error state when audio URL changes
   useEffect(() => {

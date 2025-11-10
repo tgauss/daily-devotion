@@ -16,6 +16,7 @@ export function WebStory({ manifest, audioManifest, onComplete, lessonId }: WebS
   const [currentPage, setCurrentPage] = useState(0)
   const [startTime] = useState(Date.now())
   const [direction, setDirection] = useState(0) // 1 for next, -1 for previous
+  const [audioEnabled, setAudioEnabled] = useState(true) // Track if user wants audio
 
   const totalPages = manifest.pages.length
   const isLastPage = currentPage === totalPages - 1
@@ -114,8 +115,9 @@ export function WebStory({ manifest, audioManifest, onComplete, lessonId }: WebS
                 pageNumber={currentPage + 1}
                 totalPages={totalPages}
                 audioUrl={audioManifest?.pages.find(p => p.pageIndex === currentPage)?.audioUrl}
-                autoPlayAudio={currentPage > 0}
-                onAudioEnded={handleNext}
+                autoPlayAudio={currentPage > 0 && audioEnabled}
+                onAudioEnded={audioEnabled ? handleNext : undefined}
+                onAudioPaused={() => setAudioEnabled(false)}
               />
             </motion.div>
           </AnimatePresence>

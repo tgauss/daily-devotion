@@ -14,9 +14,10 @@ interface StoryPageComponentProps {
   audioUrl?: string
   autoPlayAudio?: boolean
   onAudioEnded?: () => void
+  onAudioPaused?: () => void
 }
 
-export function StoryPageComponent({ page, pageNumber, totalPages, audioUrl, autoPlayAudio = false, onAudioEnded }: StoryPageComponentProps) {
+export function StoryPageComponent({ page, pageNumber, totalPages, audioUrl, autoPlayAudio = false, onAudioEnded, onAudioPaused }: StoryPageComponentProps) {
   // Subtle fade-in animation only
   const fadeIn = {
     initial: { opacity: 0 },
@@ -42,7 +43,7 @@ export function StoryPageComponent({ page, pageNumber, totalPages, audioUrl, aut
           {/* Audio player in top-right */}
           {audioUrl && (
             <div className="absolute top-0 right-4 sm:right-6 md:right-8 z-10">
-              <AudioPlayer audioUrl={audioUrl} autoPlay={autoPlayAudio} onAudioEnded={onAudioEnded} />
+              <AudioPlayer audioUrl={audioUrl} autoPlay={autoPlayAudio} onAudioEnded={onAudioEnded} onAudioPaused={onAudioPaused} />
             </div>
           )}
           <h2 className="text-xl sm:text-2xl md:text-3xl font-heading font-bold text-charcoal mb-6 md:mb-8 text-center">
@@ -85,6 +86,7 @@ export function StoryPageComponent({ page, pageNumber, totalPages, audioUrl, aut
           if (isPlaying) {
             audioRef.current.pause()
             setIsPlaying(false)
+            if (onAudioPaused) onAudioPaused()
           } else {
             audioRef.current.play()
             setIsPlaying(true)
@@ -116,7 +118,10 @@ export function StoryPageComponent({ page, pageNumber, totalPages, audioUrl, aut
                 if (onAudioEnded) onAudioEnded()
               }}
               onPlay={() => setIsPlaying(true)}
-              onPause={() => setIsPlaying(false)}
+              onPause={() => {
+                setIsPlaying(false)
+                if (onAudioPaused) onAudioPaused()
+              }}
             />
           )}
 
@@ -174,7 +179,7 @@ export function StoryPageComponent({ page, pageNumber, totalPages, audioUrl, aut
           {/* Audio player in top-right */}
           {audioUrl && (
             <div className="absolute top-0 right-4 sm:right-6 md:right-8 z-10">
-              <AudioPlayer audioUrl={audioUrl} autoPlay={autoPlayAudio} onAudioEnded={onAudioEnded} />
+              <AudioPlayer audioUrl={audioUrl} autoPlay={autoPlayAudio} onAudioEnded={onAudioEnded} onAudioPaused={onAudioPaused} />
             </div>
           )}
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-heading font-bold text-charcoal mb-6 md:mb-10">
@@ -194,7 +199,7 @@ export function StoryPageComponent({ page, pageNumber, totalPages, audioUrl, aut
           {/* Audio player in top-right */}
           {audioUrl && (
             <div className="absolute top-0 right-4 sm:right-6 md:right-8 z-10">
-              <AudioPlayer audioUrl={audioUrl} autoPlay={autoPlayAudio} onAudioEnded={onAudioEnded} />
+              <AudioPlayer audioUrl={audioUrl} autoPlay={autoPlayAudio} onAudioEnded={onAudioEnded} onAudioPaused={onAudioPaused} />
             </div>
           )}
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-heading font-bold text-charcoal mb-6 md:mb-10">
@@ -273,7 +278,7 @@ export function StoryPageComponent({ page, pageNumber, totalPages, audioUrl, aut
           {/* Audio player in top-right */}
           {audioUrl && (
             <div className="absolute top-0 right-4 sm:right-6 md:right-8 z-10">
-              <AudioPlayer audioUrl={audioUrl} autoPlay={autoPlayAudio} onAudioEnded={onAudioEnded} />
+              <AudioPlayer audioUrl={audioUrl} autoPlay={autoPlayAudio} onAudioEnded={onAudioEnded} onAudioPaused={onAudioPaused} />
             </div>
           )}
           <h2 className="text-2xl sm:text-4xl md:text-5xl font-heading font-bold text-charcoal mb-6 md:mb-8">
