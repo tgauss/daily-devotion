@@ -14,10 +14,11 @@ interface StoryPageComponentProps {
   audioUrl?: string
   autoPlayAudio?: boolean
   onAudioEnded?: () => void
+  onAudioPlay?: () => void
   onAudioPaused?: () => void
 }
 
-export function StoryPageComponent({ page, pageNumber, totalPages, audioUrl, autoPlayAudio = false, onAudioEnded, onAudioPaused }: StoryPageComponentProps) {
+export function StoryPageComponent({ page, pageNumber, totalPages, audioUrl, autoPlayAudio = false, onAudioEnded, onAudioPlay, onAudioPaused }: StoryPageComponentProps) {
   // Subtle fade-in animation only
   const fadeIn = {
     initial: { opacity: 0 },
@@ -43,7 +44,7 @@ export function StoryPageComponent({ page, pageNumber, totalPages, audioUrl, aut
           {/* Audio player in top-right */}
           {audioUrl && (
             <div className="absolute top-0 right-4 sm:right-6 md:right-8 z-10">
-              <AudioPlayer audioUrl={audioUrl} autoPlay={autoPlayAudio} onAudioEnded={onAudioEnded} onAudioPaused={onAudioPaused} />
+              <AudioPlayer audioUrl={audioUrl} autoPlay={autoPlayAudio} onAudioEnded={onAudioEnded} onAudioPlay={onAudioPlay} onAudioPaused={onAudioPaused} />
             </div>
           )}
           <h2 className="text-xl sm:text-2xl md:text-3xl font-heading font-bold text-charcoal mb-6 md:mb-8 text-center">
@@ -90,6 +91,7 @@ export function StoryPageComponent({ page, pageNumber, totalPages, audioUrl, aut
           } else {
             audioRef.current.play()
             setIsPlaying(true)
+            if (onAudioPlay) onAudioPlay()
           }
         }
       }
@@ -117,7 +119,10 @@ export function StoryPageComponent({ page, pageNumber, totalPages, audioUrl, aut
                 setIsPlaying(false)
                 if (onAudioEnded) onAudioEnded()
               }}
-              onPlay={() => setIsPlaying(true)}
+              onPlay={() => {
+                setIsPlaying(true)
+                if (onAudioPlay) onAudioPlay()
+              }}
               onPause={() => {
                 setIsPlaying(false)
                 if (onAudioPaused) onAudioPaused()
@@ -179,7 +184,7 @@ export function StoryPageComponent({ page, pageNumber, totalPages, audioUrl, aut
           {/* Audio player in top-right */}
           {audioUrl && (
             <div className="absolute top-0 right-4 sm:right-6 md:right-8 z-10">
-              <AudioPlayer audioUrl={audioUrl} autoPlay={autoPlayAudio} onAudioEnded={onAudioEnded} onAudioPaused={onAudioPaused} />
+              <AudioPlayer audioUrl={audioUrl} autoPlay={autoPlayAudio} onAudioEnded={onAudioEnded} onAudioPlay={onAudioPlay} onAudioPaused={onAudioPaused} />
             </div>
           )}
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-heading font-bold text-charcoal mb-6 md:mb-10">
@@ -199,7 +204,7 @@ export function StoryPageComponent({ page, pageNumber, totalPages, audioUrl, aut
           {/* Audio player in top-right */}
           {audioUrl && (
             <div className="absolute top-0 right-4 sm:right-6 md:right-8 z-10">
-              <AudioPlayer audioUrl={audioUrl} autoPlay={autoPlayAudio} onAudioEnded={onAudioEnded} onAudioPaused={onAudioPaused} />
+              <AudioPlayer audioUrl={audioUrl} autoPlay={autoPlayAudio} onAudioEnded={onAudioEnded} onAudioPlay={onAudioPlay} onAudioPaused={onAudioPaused} />
             </div>
           )}
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-heading font-bold text-charcoal mb-6 md:mb-10">
@@ -278,7 +283,7 @@ export function StoryPageComponent({ page, pageNumber, totalPages, audioUrl, aut
           {/* Audio player in top-right */}
           {audioUrl && (
             <div className="absolute top-0 right-4 sm:right-6 md:right-8 z-10">
-              <AudioPlayer audioUrl={audioUrl} autoPlay={autoPlayAudio} onAudioEnded={onAudioEnded} onAudioPaused={onAudioPaused} />
+              <AudioPlayer audioUrl={audioUrl} autoPlay={autoPlayAudio} onAudioEnded={onAudioEnded} onAudioPlay={onAudioPlay} onAudioPaused={onAudioPaused} />
             </div>
           )}
           <h2 className="text-2xl sm:text-4xl md:text-5xl font-heading font-bold text-charcoal mb-6 md:mb-8">
