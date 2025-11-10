@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json()
-    const { userId, title, description, theme, source, references, scheduleType } = body
+    const { userId, title, description, theme, source, references, scheduleType, startDate, depthLevel, isPublic } = body
 
     // Validate request
     if (!title || !references || references.length === 0) {
@@ -39,7 +39,8 @@ export async function POST(request: NextRequest) {
         theme,
         source: source || 'custom',
         schedule_type: scheduleType || 'daily',
-        is_public: false,
+        depth_level: depthLevel || 'moderate',
+        is_public: isPublic || false,
       })
       .select()
       .single()
@@ -50,18 +51,18 @@ export async function POST(request: NextRequest) {
     }
 
     // Create plan items
+    const baseStartDate = startDate ? new Date(startDate) : new Date()
     const planItems = references.map((ref: string, index: number) => {
       // Calculate target date based on schedule type
-      const startDate = new Date()
       let targetDate: Date
 
       if (scheduleType === 'weekly') {
-        targetDate = new Date(startDate)
-        targetDate.setDate(startDate.getDate() + index * 7)
+        targetDate = new Date(baseStartDate)
+        targetDate.setDate(baseStartDate.getDate() + index * 7)
       } else {
         // daily
-        targetDate = new Date(startDate)
-        targetDate.setDate(startDate.getDate() + index)
+        targetDate = new Date(baseStartDate)
+        targetDate.setDate(baseStartDate.getDate() + index)
       }
 
       return {

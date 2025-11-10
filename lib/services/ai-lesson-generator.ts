@@ -198,6 +198,86 @@ export class AILessonGenerator {
       }
     }
   }
+
+  async generateAIPlan(input: {
+    theme: string
+    bookContext?: string
+    depthLevel: 'simple' | 'moderate' | 'deep'
+  }): Promise<{
+    title: string
+    description: string
+    passages: string[]
+    reasoning: string
+    category: string
+  }> {
+    try {
+      const systemPrompt = `You are a Bible study curriculum designer. Based on the user's learning goals, suggest a comprehensive study plan with appropriate Bible passages.`
+
+      const userPrompt = `Create a Bible study plan based on the following:
+
+**Theme:** ${input.theme}
+${input.bookContext ? `**Book/Topic Context:** ${input.bookContext}` : ''}
+**Depth Level:** ${input.depthLevel}
+
+Depth Level Guidelines:
+- Simple: 5-7 passages, core concepts only, 5-7 min reading per lesson
+- Moderate: 7-15 passages, balanced study with context, 10-12 min per lesson
+- Deep: 15-30 passages, comprehensive study with detailed context, 15-20 min per lesson
+
+Generate a JSON response with:
+{
+  "title": "Engaging 3-6 word title for the study plan",
+  "description": "2-3 sentence overview of what learners will discover",
+  "passages": ["Genesis 1:1-31", "Genesis 2:1-25", ...array of Bible passage references],
+  "reasoning": "Brief explanation (2-3 sentences) of why these passages were chosen and how they relate to the theme",
+  "category": "Single word category (e.g., Creation, Wisdom, Gospel, Prophecy, History)"
+}
+
+Guidelines:
+- Choose passages that flow narratively or thematically
+- Adjust passage length based on depth level (simple = shorter passages, deep = longer passages)
+- Ensure passages directly support the learning theme
+- Use standard Bible book abbreviations and verse references
+- Select ${input.depthLevel === 'simple' ? '5-7' : input.depthLevel === 'moderate' ? '7-15' : '15-30'} passages
+- Prioritize passages that work well for the specified depth level`
+
+      const completion = await this.openai.chat.completions.create({
+        model: 'gpt-4o',
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: userPrompt }
+        ],
+        response_format: { type: 'json_object' },
+        temperature: 0.7,
+        max_tokens: 1500
+      })
+
+      const content = completion.choices[0]?.message?.content
+      if (!content) {
+        throw new Error('No content generated from OpenAI')
+      }
+
+      const parsed = JSON.parse(content)
+
+      // Validate the response
+      if (!parsed.title || !parsed.description || !Array.isArray(parsed.passages) || parsed.passages.length === 0) {
+        throw new Error('Invalid AI plan response structure')
+      }
+
+      return {
+        title: parsed.title,
+        description: parsed.description,
+        passages: parsed.passages,
+        reasoning: parsed.reasoning || 'AI selected these passages to best support your learning goals.',
+        category: parsed.category || 'Bible Study'
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error(`Failed to generate AI plan: ${error.message}`)
+      }
+      throw new Error('Failed to generate AI plan: Unknown error')
+    }
+  }
 }
 
 // Singleton instance for reuse
