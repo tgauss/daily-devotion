@@ -80,6 +80,9 @@ export class AudioGenerator {
     // Select voice based on page type
     const voiceId = page.type === 'passage' ? SCRIPTURE_VOICE_ID : TEACHING_VOICE_ID
 
+    // Set speed: slightly faster for teaching voice (1.15x), normal for scripture (1.0x)
+    const speed = page.type === 'passage' ? 1.0 : 1.15
+
     // Generate text hash for cache validation
     const textHash = this.hashText(narratableText)
 
@@ -91,6 +94,7 @@ export class AudioGenerator {
         stability: 0.5,
         similarity_boost: 0.75,
         use_speaker_boost: true,
+        speed,
       }
     )
 
@@ -137,10 +141,8 @@ export class AudioGenerator {
 
     switch (page.type) {
       case 'cover':
-        // Narrate title and text (reference + intro)
-        if (page.content.title) {
-          parts.push(page.content.title)
-        }
+        // Only narrate the text (reference + intro), skip the title as it's often redundant
+        // Title typically duplicates the reference that appears in the text
         if (page.content.text) {
           parts.push(page.content.text)
         }

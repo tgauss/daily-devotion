@@ -6,11 +6,12 @@ import type { WizardFormData } from '../wizard-plan-builder'
 
 interface StepReviewProps {
   formData: WizardFormData
+  userId: string
   onBack: () => void
   onComplete: (planId: string) => void
 }
 
-export function StepReview({ formData, onBack, onComplete }: StepReviewProps) {
+export function StepReview({ formData, userId, onBack, onComplete }: StepReviewProps) {
   const [generating, setGenerating] = useState(false)
   const [progress, setProgress] = useState({ current: 0, total: 0 })
   const [error, setError] = useState('')
@@ -44,6 +45,7 @@ export function StepReview({ formData, onBack, onComplete }: StepReviewProps) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          userId: userId,
           title: formData.title,
           description: formData.description,
           theme: formData.aiCategory || null,
@@ -75,6 +77,7 @@ export function StepReview({ formData, onBack, onComplete }: StepReviewProps) {
             planId,
             batchSize,
             depthLevel: formData.depthLevel,
+            includeAudio: formData.includeAudio,
           }),
         })
 

@@ -12,5 +12,5 @@ export default async function WizardPage() {
     redirect('/auth')
   }
 
-  return <WizardPlanBuilder />
+  return <WizardPlanBuilder userId={user.id} />
 }

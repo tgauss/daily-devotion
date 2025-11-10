@@ -8,6 +8,7 @@ export interface TextToSpeechOptions {
   similarity_boost?: number  // 0.0 to 1.0, default 0.75
   style?: number  // 0.0 to 1.0, default 0.0 (disabled in v1)
   use_speaker_boost?: boolean  // default true
+  speed?: number  // 0.25 to 4.0, default 1.0 (normal speed)
 }
 
 export class ElevenLabsClient {
@@ -38,6 +39,7 @@ export class ElevenLabsClient {
       similarity_boost = 0.75,
       style = 0,
       use_speaker_boost = true,
+      speed = 1.0,
     } = options
 
     const url = `${this.baseUrl}/text-to-speech/${voiceId}`
@@ -58,6 +60,7 @@ export class ElevenLabsClient {
             similarity_boost,
             style,
             use_speaker_boost,
+            speed,
           },
         }),
       })

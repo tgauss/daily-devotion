@@ -157,6 +157,26 @@ export function StepSchedule({ formData, updateFormData, onNext, onBack }: StepS
         </div>
       </div>
 
+      {/* Audio Generation Toggle */}
+      <div>
+        <label className="flex items-start gap-3 p-4 rounded-lg border-2 border-olivewood/30 hover:border-olivewood/50 bg-white cursor-pointer transition-all">
+          <input
+            type="checkbox"
+            checked={formData.includeAudio}
+            onChange={(e) => updateFormData({ includeAudio: e.target.checked })}
+            className="mt-1 w-5 h-5 text-olivewood focus:ring-olivewood rounded"
+          />
+          <div className="flex-1">
+            <div className="font-semibold text-charcoal font-sans mb-1">
+              Generate audio narration
+            </div>
+            <p className="text-sm text-charcoal/70 font-sans">
+              Create AI-powered voiceover for each lesson page. Audio can be generated later if you prefer to start without it. <span className="text-golden-wheat font-medium">(Uses ElevenLabs credits)</span>
+            </p>
+          </div>
+        </label>
+      </div>
+
       {/* Summary Box */}
       <div className="bg-golden-wheat/10 rounded-lg p-4 border border-golden-wheat/30">
         <h3 className="font-semibold text-charcoal font-sans text-sm mb-3">Study Plan Summary</h3>

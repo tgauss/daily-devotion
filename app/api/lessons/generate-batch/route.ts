@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json()
-    const { planId, batchSize = 5 } = body
+    const { planId, batchSize = 5, includeAudio = true } = body
 
     if (!planId) {
       return NextResponse.json({ error: 'Plan ID is required' }, { status: 400 })
@@ -142,17 +142,19 @@ export async function POST(request: NextRequest) {
             passageText: passage.text,
           })
 
-          // 6. Generate audio for all pages
+          // 6. Generate audio for all pages (only if includeAudio is true)
           let audioManifest = null
-          try {
-            const tempLessonId = crypto.randomBytes(16).toString('hex')
-            audioManifest = await audioGenerator.generateAudioForLesson(
-              tempLessonId,
-              storyManifest
-            )
-          } catch (audioError) {
-            console.error('Audio generation failed, continuing without audio:', audioError)
-            // Continue without audio - don't fail the entire lesson creation
+          if (includeAudio) {
+            try {
+              const tempLessonId = crypto.randomBytes(16).toString('hex')
+              audioManifest = await audioGenerator.generateAudioForLesson(
+                tempLessonId,
+                storyManifest
+              )
+            } catch (audioError) {
+              console.error('Audio generation failed, continuing without audio:', audioError)
+              // Continue without audio - don't fail the entire lesson creation
+            }
           }
 
           // 7. Store canonical lesson (no plan_item_id!)

@@ -13,6 +13,10 @@ import { StepReview } from './wizard-steps/step-6-review'
 export type DepthLevel = 'simple' | 'moderate' | 'deep'
 export type ScheduleType = 'daily' | 'weekly'
 
+interface WizardPlanBuilderProps {
+  userId: string
+}
+
 export interface WizardFormData {
   // Step 1: Theme & Goals
   theme: string
@@ -38,11 +42,14 @@ export interface WizardFormData {
   // Step 5: Sharing
   isPublic: boolean
   inviteMessage: string
+
+  // Audio generation
+  includeAudio: boolean
 }
 
 const TOTAL_STEPS = 6
 
-export function WizardPlanBuilder() {
+export function WizardPlanBuilder({ userId }: WizardPlanBuilderProps) {
   const router = useRouter()
   const [currentStep, setCurrentStep] = useState(1)
   const [formData, setFormData] = useState<WizardFormData>({
@@ -61,6 +68,7 @@ export function WizardPlanBuilder() {
     depthLevel: 'moderate',
     isPublic: false,
     inviteMessage: '',
+    includeAudio: false,
   })
 
   const updateFormData = (data: Partial<WizardFormData>) => {
@@ -159,6 +167,7 @@ export function WizardPlanBuilder() {
           {currentStep === 6 && (
             <StepReview
               formData={formData}
+              userId={userId}
               onBack={handleBack}
               onComplete={handleComplete}
             />
