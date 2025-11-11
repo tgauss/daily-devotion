@@ -9,7 +9,7 @@ export default async function WizardPage() {
   } = await supabase.auth.getUser()
 
   if (!user) {
-    redirect('/auth')
+    redirect('/login')
   }
 
   return <WizardPlanBuilder userId={user.id} />

@@ -5,11 +5,13 @@ import { useState } from 'react'
 import { Loader2, CheckCircle2, PlayCircle, AlertCircle, Clock, ChevronDown, ChevronUp } from 'lucide-react'
 import { BatchLessonGenerator } from './batch-lesson-generator'
 import { SingleLessonGenerator } from './single-lesson-generator'
+import { getEffectiveDate, getDaysOffset as getScheduleDaysOffset } from '@/lib/utils/schedule'
 
 interface PlanDetailsProps {
   plan: any
   userId: string | null
   progress: any
+  enrollment: any // User's enrollment data with custom_start_date
 }
 
 type LessonStatus = 'overdue' | 'today' | 'thisWeek' | 'later'
@@ -21,11 +23,26 @@ interface CategorizedLessons {
   later: any[]
 }
 
-export function PlanDetails({ plan, userId, progress }: PlanDetailsProps) {
+export function PlanDetails({ plan, userId, progress, enrollment }: PlanDetailsProps) {
   const [buildingItemId, setBuildingItemId] = useState<string | null>(null)
   const [collapsedSections, setCollapsedSections] = useState<Record<string, boolean>>({
     later: true, // Later section collapsed by default
   })
+
+  // Helper to calculate effective date for a plan item
+  const getItemEffectiveDate = (item: any): string | null => {
+    return getEffectiveDate(
+      {
+        schedule_mode: plan.schedule_mode || 'self-guided',
+        schedule_type: plan.schedule_type || 'daily',
+      },
+      enrollment || null,
+      {
+        index: item.index,
+        date_target: item.date_target,
+      }
+    )
+  }
 
   const handleGenerationComplete = () => {
     // Reload the page to show newly built lessons
@@ -76,16 +93,10 @@ export function PlanDetails({ plan, userId, progress }: PlanDetailsProps) {
     return progressItem?.completed_at
   }
 
-  // Helper to calculate days offset from today
-  const getDaysOffset = (dateTarget: string | null): number | null => {
-    if (!dateTarget) return null
-    const today = new Date()
-    today.setHours(0, 0, 0, 0)
-    const target = new Date(dateTarget)
-    target.setHours(0, 0, 0, 0)
-    const diffTime = target.getTime() - today.getTime()
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-    return diffDays
+  // Helper to calculate days offset from today (uses effective dates)
+  const getDaysOffset = (item: any): number | null => {
+    const effectiveDate = getItemEffectiveDate(item)
+    return getScheduleDaysOffset(effectiveDate)
   }
 
   // Categorize lessons into groups
@@ -101,8 +112,8 @@ export function PlanDetails({ plan, userId, progress }: PlanDetailsProps) {
       const lesson = item.plan_item_lessons?.[0]?.lessons
       const isCompleted = lesson && isLessonCompleted(lesson.id)
 
-      // Skip completed lessons for grouping (they'll show in their date sections but dimmed)
-      const daysOffset = getDaysOffset(item.date_target)
+      // Use effective date (considers enrollment and schedule mode)
+      const daysOffset = getDaysOffset(item)
 
       if (daysOffset === null) {
         categories.later.push(item)
@@ -127,7 +138,7 @@ export function PlanDetails({ plan, userId, progress }: PlanDetailsProps) {
       if (!lesson) continue
       if (isLessonCompleted(lesson.id)) continue
 
-      const daysOffset = getDaysOffset(item.date_target)
+      const daysOffset = getDaysOffset(item)
       if (daysOffset !== null && daysOffset <= 0) {
         return item
       }
@@ -272,6 +283,7 @@ export function PlanDetails({ plan, userId, progress }: PlanDetailsProps) {
               isLessonCompleted={isLessonCompleted}
               getCompletionDate={getCompletionDate}
               getDaysOffset={getDaysOffset}
+              getItemEffectiveDate={getItemEffectiveDate}
               buildSpecificLesson={buildSpecificLesson}
               buildingItemId={buildingItemId}
               plan={plan}
@@ -291,6 +303,7 @@ export function PlanDetails({ plan, userId, progress }: PlanDetailsProps) {
               isLessonCompleted={isLessonCompleted}
               getCompletionDate={getCompletionDate}
               getDaysOffset={getDaysOffset}
+              getItemEffectiveDate={getItemEffectiveDate}
               buildSpecificLesson={buildSpecificLesson}
               buildingItemId={buildingItemId}
               plan={plan}
@@ -310,6 +323,7 @@ export function PlanDetails({ plan, userId, progress }: PlanDetailsProps) {
               isLessonCompleted={isLessonCompleted}
               getCompletionDate={getCompletionDate}
               getDaysOffset={getDaysOffset}
+              getItemEffectiveDate={getItemEffectiveDate}
               buildSpecificLesson={buildSpecificLesson}
               buildingItemId={buildingItemId}
               plan={plan}
@@ -329,6 +343,7 @@ export function PlanDetails({ plan, userId, progress }: PlanDetailsProps) {
               isLessonCompleted={isLessonCompleted}
               getCompletionDate={getCompletionDate}
               getDaysOffset={getDaysOffset}
+              getItemEffectiveDate={getItemEffectiveDate}
               buildSpecificLesson={buildSpecificLesson}
               buildingItemId={buildingItemId}
               plan={plan}
@@ -351,7 +366,8 @@ interface LessonSectionProps {
   progress: any
   isLessonCompleted: (id: string) => boolean
   getCompletionDate: (id: string) => string | null
-  getDaysOffset: (date: string | null) => number | null
+  getDaysOffset: (item: any) => number | null
+  getItemEffectiveDate: (item: any) => string | null
   buildSpecificLesson: (id: string) => void
   buildingItemId: string | null
   plan: any
@@ -368,6 +384,7 @@ function LessonSection({
   isLessonCompleted,
   getCompletionDate,
   getDaysOffset,
+  getItemEffectiveDate,
   buildSpecificLesson,
   buildingItemId,
   plan,
@@ -436,9 +453,12 @@ function LessonSection({
             const hasLesson = !!lesson
             const isCompleted = lesson && isLessonCompleted(lesson.id)
             const completionDate = lesson && getCompletionDate(lesson.id)
-            const daysOffset = getDaysOffset(item.date_target)
 
-            // Format time label
+            // Get effective date for this item
+            const effectiveDate = getItemEffectiveDate(item)
+            const daysOffset = getDaysOffset(item)
+
+            // Format time label with actual date
             let timeLabel = ''
             if (isCompleted && completionDate) {
               const completed = new Date(completionDate)
@@ -447,10 +467,43 @@ function LessonSection({
               if (diffDays === 0) timeLabel = 'Completed today'
               else if (diffDays === 1) timeLabel = 'Completed yesterday'
               else timeLabel = `Completed ${diffDays} days ago`
-            } else if (daysOffset !== null) {
-              if (daysOffset === 0) timeLabel = 'Due today'
-              else if (daysOffset < 0) timeLabel = `${Math.abs(daysOffset)} ${Math.abs(daysOffset) === 1 ? 'day' : 'days'} overdue`
-              else timeLabel = `Due in ${daysOffset} ${daysOffset === 1 ? 'day' : 'days'}`
+            } else if (effectiveDate) {
+              // Show the actual date prominently
+              const date = new Date(effectiveDate + 'T00:00:00') // Add time to avoid timezone issues
+              const today = new Date()
+              today.setHours(0, 0, 0, 0)
+              const tomorrow = new Date(today)
+              tomorrow.setDate(today.getDate() + 1)
+
+              const targetDate = new Date(date)
+              targetDate.setHours(0, 0, 0, 0)
+
+              if (targetDate.getTime() === today.getTime()) {
+                timeLabel = 'Today'
+              } else if (targetDate.getTime() === tomorrow.getTime()) {
+                timeLabel = 'Tomorrow'
+              } else {
+                // Show formatted date
+                const month = date.toLocaleDateString('en-US', { month: 'short' })
+                const day = date.getDate()
+                const year = date.getFullYear()
+                const currentYear = today.getFullYear()
+
+                if (year !== currentYear) {
+                  timeLabel = `${month} ${day}, ${year}`
+                } else {
+                  timeLabel = `${month} ${day}`
+                }
+
+                // Add relative context for overdue/upcoming
+                if (daysOffset !== null) {
+                  if (daysOffset < 0) {
+                    timeLabel += ` (${Math.abs(daysOffset)} ${Math.abs(daysOffset) === 1 ? 'day' : 'days'} overdue)`
+                  } else if (daysOffset > 1 && daysOffset <= 7) {
+                    timeLabel += ` (in ${daysOffset} days)`
+                  }
+                }
+              }
             }
 
             return (

@@ -51,7 +51,7 @@ export default async function GuidancePage({ params }: GuidancePageProps) {
   } = await supabase.auth.getUser()
 
   if (!user) {
-    redirect('/auth')
+    redirect('/login')
   }
 
   // Fetch the specific guidance

@@ -9,7 +9,7 @@ export default async function CreatePlanPage() {
   } = await supabase.auth.getUser()
 
   if (!user) {
-    redirect('/auth')
+    redirect('/login')
   }
 
   return (

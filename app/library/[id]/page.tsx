@@ -10,6 +10,7 @@ interface LibraryPlanPageProps {
 }
 
 export default async function LibraryPlanPage({ params }: LibraryPlanPageProps) {
+  const { id } = await params // Await params in Next.js 15+
   const supabase = await createClient()
   const serviceSupabase = createServiceClient()
 
@@ -18,7 +19,7 @@ export default async function LibraryPlanPage({ params }: LibraryPlanPageProps) 
   } = await supabase.auth.getUser()
 
   if (!user) {
-    redirect(`/auth?redirect=/library/${params.id}`)
+    redirect(`/auth?redirect=/library/${id}`)
   }
 
   // Get public plan
@@ -29,9 +30,12 @@ export default async function LibraryPlanPage({ params }: LibraryPlanPageProps) 
       plan_library_stats (
         participant_count,
         completion_count
+      ),
+      plan_items (
+        id
       )
     `)
-    .eq('id', params.id)
+    .eq('id', id)
     .eq('is_public', true)
     .single()
 

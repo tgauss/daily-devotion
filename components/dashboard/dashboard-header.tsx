@@ -17,7 +17,7 @@ export function DashboardHeader({ user, profile }: DashboardHeaderProps) {
 
   const handleSignOut = async () => {
     await supabase.auth.signOut()
-    router.push('/auth')
+    router.push('/login')
     router.refresh()
   }
 
@@ -32,13 +32,13 @@ export function DashboardHeader({ user, profile }: DashboardHeaderProps) {
           <div className="flex items-center gap-3">
             <Image
               src="/my-daily-break-logo.png"
-              alt="MyDailyBread Logo"
+              alt="My Daily Bread Logo"
               width={48}
               height={48}
               className="w-12 h-12"
             />
             <div>
-              <h1 className="text-3xl font-heading text-charcoal">MyDailyBread</h1>
+              <h1 className="text-3xl font-heading text-charcoal">My Daily Bread</h1>
               <p className="text-sm text-olivewood font-sans mt-0.5">
                 Welcome back, {displayName}
               </p>

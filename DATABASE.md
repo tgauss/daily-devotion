@@ -1,6 +1,6 @@
 # Database Documentation
 
-Complete database schema, relationships, and migration guide for MyDailyBread.faith.
+Complete database schema, relationships, and migration guide for My Daily Bread.faith.
 
 ---
 

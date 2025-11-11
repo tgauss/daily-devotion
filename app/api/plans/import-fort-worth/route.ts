@@ -32,6 +32,7 @@ export async function POST(req: NextRequest) {
         source: 'import',
         theme: 'Complete Bible Reading',
         is_public: makePublic,
+        schedule_mode: 'synchronized', // Fort Worth plans are synchronized - everyone on same schedule
       })
       .select()
       .single()

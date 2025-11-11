@@ -24,7 +24,7 @@ const cormorantGaramond = Cormorant_Garamond({
 });
 
 export const metadata: Metadata = {
-  title: "MyDailyBread.faith - Daily nourishment for the soul",
+  title: "My Daily Bread.faith - Daily nourishment for the soul",
   description: "Feed your faith one day at a time. Daily Bible readings, reflections, and spiritual guidance made simple, beautiful, and personal.",
   icons: {
     icon: '/my-daily-break-logo.png',

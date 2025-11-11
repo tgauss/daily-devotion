@@ -10,6 +10,7 @@ interface JoinPageProps {
 }
 
 export default async function JoinPage({ params }: JoinPageProps) {
+  const { token } = await params // Await params in Next.js 15+
   const supabase = await createClient()
   const serviceSupabase = createServiceClient()
 
@@ -18,7 +19,7 @@ export default async function JoinPage({ params }: JoinPageProps) {
   } = await supabase.auth.getUser()
 
   if (!user) {
-    redirect(`/auth?redirect=/join/${params.token}`)
+    redirect(`/auth?redirect=/join/${token}`)
   }
 
   // Get share link info
@@ -33,10 +34,14 @@ export default async function JoinPage({ params }: JoinPageProps) {
         theme,
         depth_level,
         schedule_type,
-        created_by_name
+        schedule_mode,
+        created_by_name,
+        plan_items (
+          id
+        )
       )
     `)
-    .eq('token', params.token)
+    .eq('token', token)
     .single()
 
   if (error || !shareLink) {
@@ -80,5 +85,5 @@ export default async function JoinPage({ params }: JoinPageProps) {
     )
   }
 
-  return <JoinPlanView shareLink={shareLink as any} token={params.token} userId={user.id} />
+  return <JoinPlanView shareLink={shareLink as any} token={token} userId={user.id} />
 }

@@ -13,7 +13,7 @@ export default async function QuizPage({ params }: { params: Promise<{ slug: str
   } = await supabase.auth.getUser()
 
   if (!user) {
-    redirect('/auth')
+    redirect('/login')
   }
 
   // Fetch lesson by share slug using service client to avoid RLS issues with nested queries

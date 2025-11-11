@@ -1,4 +1,4 @@
-# Claude Code Context - MyDailyBread.faith
+# Claude Code Context - My Daily Bread.faith
 
 > **IMPORTANT**: Read this file first when starting a new Claude Code session on this project.
 
@@ -8,7 +8,7 @@ This document provides everything a new Claude Code session needs to understand 
 
 ## 🎯 Project Overview
 
-**MyDailyBread.faith** is a web platform for daily Bible reading with AI-generated lessons, interactive quizzes, and progress tracking.
+**My Daily Bread.faith** is a web platform for daily Bible reading with AI-generated lessons, interactive quizzes, and progress tracking.
 
 **Tech Stack:**
 - Next.js 16 (App Router, Turbopack)

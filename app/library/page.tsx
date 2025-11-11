@@ -10,7 +10,7 @@ export default async function LibraryPage() {
   } = await supabase.auth.getUser()
 
   if (!user) {
-    redirect('/auth')
+    redirect('/login')
   }
 
   return (

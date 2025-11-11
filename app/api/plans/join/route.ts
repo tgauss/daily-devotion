@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from 'next/server'
 
 /**
  * POST /api/plans/join
- * Joins a shared plan by creating a copy for the current user
+ * Enrolls the current user in a shared plan via invite token (no duplication!)
  * Body: { token: string }
  */
 export async function POST(request: NextRequest) {
@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json()
-    const { token } = body
+    const { token, customStartDate } = body
 
     if (!token) {
       return NextResponse.json({ error: 'Token is required' }, { status: 400 })
@@ -36,11 +36,8 @@ export async function POST(request: NextRequest) {
         plans (
           id,
           title,
-          description,
-          schedule_type,
-          source,
-          theme,
-          depth_level
+          is_public,
+          schedule_mode
         )
       `)
       .eq('token', token)
@@ -55,116 +52,82 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Share link has expired' }, { status: 410 })
     }
 
-    const originalPlan = (shareLink.plans as any)
+    const plan = (shareLink.plans as any)
+    const planId = plan.id
 
-    // Check if user already has this plan (avoid duplicates)
-    const { data: existingPlan } = await supabase
-      .from('plans')
-      .select('id')
+    // Validate custom start date for self-guided plans
+    let startDate: string | null = null
+    if (plan.schedule_mode === 'self-guided') {
+      if (customStartDate) {
+        // Validate date format
+        const dateRegex = /^\d{4}-\d{2}-\d{2}$/
+        if (!dateRegex.test(customStartDate)) {
+          return NextResponse.json({ error: 'Invalid date format (use YYYY-MM-DD)' }, { status: 400 })
+        }
+        startDate = customStartDate
+      }
+      // If no custom start date provided for self-guided, that's okay (pure self-paced)
+    }
+    // For synchronized plans, custom start date should be null
+
+    // Check if user already enrolled (avoid duplicates)
+    const { data: existingEnrollment } = await supabase
+      .from('user_plan_enrollments')
+      .select('id, is_active')
       .eq('user_id', user.id)
-      .eq('title', originalPlan.title)
-      .eq('source', 'ai-theme')
+      .eq('plan_id', planId)
       .single()
 
-    if (existingPlan) {
-      // User already has this plan, just return it
+    if (existingEnrollment) {
+      // User already enrolled - reactivate if archived
+      if (!existingEnrollment.is_active) {
+        await supabase
+          .from('user_plan_enrollments')
+          .update({ is_active: true })
+          .eq('id', existingEnrollment.id)
+
+        // Increment counters
+        await serviceSupabase.rpc('increment_share_link_usage', { p_token: token })
+
+        return NextResponse.json({
+          planId,
+          message: 'Welcome back! Re-activated your enrollment.',
+        })
+      }
+
+      // Already active enrollment
       return NextResponse.json({
-        planId: existingPlan.id,
-        message: 'You already have this plan',
+        planId,
+        message: 'You are already enrolled in this plan',
       })
     }
 
-    // Create a copy of the plan for the current user
-    const { data: newPlan, error: newPlanError } = await supabase
-      .from('plans')
+    // Create enrollment (NO plan duplication!)
+    const { data: enrollment, error: enrollmentError } = await supabase
+      .from('user_plan_enrollments')
       .insert({
         user_id: user.id,
-        title: originalPlan.title,
-        description: originalPlan.description,
-        schedule_type: originalPlan.schedule_type,
-        source: 'ai-theme', // Mark as copied from AI theme
-        theme: originalPlan.theme,
-        depth_level: originalPlan.depth_level || 'moderate',
-        is_public: false, // User's copy is private by default
+        plan_id: planId,
+        enrolled_at: new Date().toISOString(),
+        custom_start_date: startDate,
+        is_active: true,
       })
       .select()
       .single()
 
-    if (newPlanError) {
-      console.error('Error creating plan copy:', newPlanError)
+    if (enrollmentError) {
+      console.error('Error creating enrollment:', enrollmentError)
       return NextResponse.json({ error: 'Failed to join plan' }, { status: 500 })
-    }
-
-    // Get plan items from original plan
-    const { data: originalPlanItems } = await serviceSupabase
-      .from('plan_items')
-      .select('*')
-      .eq('plan_id', originalPlan.id)
-      .order('index', { ascending: true })
-
-    // Copy plan items
-    if (originalPlanItems && originalPlanItems.length > 0) {
-      const newPlanItems = originalPlanItems.map((item: any, idx: number) => ({
-        plan_id: newPlan.id,
-        index: idx,
-        date_target: item.date_target,
-        references_text: item.references_text,
-        category: item.category,
-        translation: item.translation,
-        status: 'published', // Items are already published
-      }))
-
-      // Insert plan items
-      const { error: itemsError } = await serviceSupabase
-        .from('plan_items')
-        .insert(newPlanItems)
-
-      if (itemsError) {
-        console.error('Error copying plan items:', itemsError)
-        // Continue anyway - plan is created
-      }
-
-      // For each plan item, link it to the canonical lesson (if exists)
-      for (let i = 0; i < originalPlanItems.length; i++) {
-        const originalItem = originalPlanItems[i]
-        const newItemIndex = i
-
-        // Get the lesson mapping from the original plan item
-        const { data: lessonMapping } = await serviceSupabase
-          .from('plan_item_lessons')
-          .select('lesson_id')
-          .eq('plan_item_id', originalItem.id)
-          .single()
-
-        if (lessonMapping) {
-          // Get the new plan item ID
-          const { data: newItem } = await serviceSupabase
-            .from('plan_items')
-            .select('id')
-            .eq('plan_id', newPlan.id)
-            .eq('index', newItemIndex)
-            .single()
-
-          if (newItem) {
-            // Create the lesson mapping for the new plan item
-            await serviceSupabase
-              .from('plan_item_lessons')
-              .insert({
-                plan_item_id: newItem.id,
-                lesson_id: lessonMapping.lesson_id,
-              })
-          }
-        }
-      }
     }
 
     // Increment usage counters
     await serviceSupabase.rpc('increment_share_link_usage', { p_token: token })
-    await serviceSupabase.rpc('increment_plan_participant_count', { p_plan_id: originalPlan.id })
+    await serviceSupabase.rpc('increment_plan_participant_count', { p_plan_id: planId })
 
     return NextResponse.json({
-      planId: newPlan.id,
-      message: 'Successfully joined plan!',
+      planId,
+      enrollmentId: enrollment.id,
+      message: 'Successfully enrolled in plan!',
     })
   } catch (error) {
     console.error('Error in join endpoint:', error)

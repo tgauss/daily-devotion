@@ -2,8 +2,9 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Clock, BookOpen, Users, Plus, ArrowLeft } from 'lucide-react'
+import { Clock, BookOpen, Users, Plus, ArrowLeft, Calendar, X } from 'lucide-react'
 import Link from 'next/link'
+import { calculateCompletionDate } from '@/lib/utils/schedule'
 
 interface LibraryPlanPreviewProps {
   plan: {
@@ -13,11 +14,13 @@ interface LibraryPlanPreviewProps {
     theme: string | null
     depth_level: 'simple' | 'moderate' | 'deep'
     schedule_type: 'daily' | 'weekly'
+    schedule_mode: 'self-guided' | 'synchronized'
     created_by_name: string | null
     plan_library_stats: {
       participant_count: number
       completion_count: number
     } | null
+    plan_items: Array<{ id: string }>
   }
   userId: string
 }
@@ -26,6 +29,8 @@ export function LibraryPlanPreview({ plan, userId }: LibraryPlanPreviewProps) {
   const router = useRouter()
   const [joining, setJoining] = useState(false)
   const [error, setError] = useState('')
+  const [showDatePicker, setShowDatePicker] = useState(false)
+  const [startDate, setStartDate] = useState(new Date().toISOString().split('T')[0])
 
   const getDepthLabel = () => {
     switch (plan.depth_level) {
@@ -40,17 +45,33 @@ export function LibraryPlanPreview({ plan, userId }: LibraryPlanPreviewProps) {
     }
   }
 
-  const handleJoinFromLibrary = async () => {
+  const handleJoinClick = () => {
+    // For self-guided plans, show date picker modal
+    // For synchronized plans, join directly
+    if (plan.schedule_mode === 'self-guided') {
+      setShowDatePicker(true)
+    } else {
+      handleJoinFromLibrary()
+    }
+  }
+
+  const handleJoinFromLibrary = async (customStartDate?: string) => {
     setJoining(true)
     setError('')
+    setShowDatePicker(false)
 
     try {
-      // For library plans, we'll copy the plan directly using the plan ID
-      // This is different from invite links which use tokens
+      const requestBody: { planId: string; customStartDate?: string } = { planId: plan.id }
+
+      // Only include customStartDate for self-guided plans if provided
+      if (plan.schedule_mode === 'self-guided' && customStartDate) {
+        requestBody.customStartDate = customStartDate
+      }
+
       const response = await fetch('/api/plans/library/join', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ planId: plan.id }),
+        body: JSON.stringify(requestBody),
       })
 
       const data = await response.json()
@@ -59,7 +80,7 @@ export function LibraryPlanPreview({ plan, userId }: LibraryPlanPreviewProps) {
         throw new Error(data.error || 'Failed to join plan')
       }
 
-      // Redirect to the new plan
+      // Redirect to the enrolled plan
       router.push(`/plans/${data.planId}`)
     } catch (err) {
       console.error('Error joining plan:', err)
@@ -145,26 +166,99 @@ export function LibraryPlanPreview({ plan, userId }: LibraryPlanPreviewProps) {
         )}
 
         <button
-          onClick={handleJoinFromLibrary}
+          onClick={handleJoinClick}
           disabled={joining}
           className="w-full px-8 py-4 bg-gradient-to-r from-olivewood to-golden-wheat hover:opacity-90 disabled:opacity-50 text-white text-lg font-semibold rounded-lg transition-all shadow-lg hover:shadow-xl font-sans flex items-center justify-center gap-2"
         >
           {joining ? (
             <>
               <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-              Adding to Your Plans...
+              Enrolling in Plan...
             </>
           ) : (
             <>
               <Plus className="w-6 h-6" />
-              Add This Plan to My Library
+              Join This Plan
             </>
           )}
         </button>
 
         <p className="text-center text-sm text-charcoal/60 font-sans mt-4">
-          This will create a personalized copy of the plan in your account
+          {plan.schedule_mode === 'synchronized'
+            ? 'Join this community study - everyone studies together on the same schedule'
+            : 'Start this plan on your own schedule and progress at your own pace'
+          }
         </p>
+
+        {/* Start Date Picker Modal (for self-guided plans) */}
+        {showDatePicker && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50" onClick={() => setShowDatePicker(false)}>
+            <div className="bg-white rounded-xl shadow-2xl max-w-md w-full p-8" onClick={(e) => e.stopPropagation()}>
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-2xl font-heading font-bold text-charcoal">When Would You Like to Start?</h3>
+                <button
+                  onClick={() => setShowDatePicker(false)}
+                  className="text-charcoal/40 hover:text-charcoal transition-colors"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
+
+              <p className="text-charcoal/70 font-sans mb-6">
+                Choose your start date, and we'll set up a personalized schedule just for you.
+                You can always adjust your pace as you go!
+              </p>
+
+              <div className="mb-6">
+                <label className="block text-sm font-semibold text-charcoal font-sans mb-2">
+                  Start Date
+                </label>
+                <input
+                  type="date"
+                  value={startDate}
+                  onChange={(e) => setStartDate(e.target.value)}
+                  min={new Date().toISOString().split('T')[0]}
+                  className="w-full px-4 py-3 border-2 border-olivewood/30 rounded-lg font-sans focus:border-olivewood focus:outline-none"
+                />
+              </div>
+
+              {startDate && plan.plan_items && (
+                <div className="bg-olivewood/10 rounded-lg p-4 mb-6">
+                  <div className="flex items-start gap-3">
+                    <Calendar className="w-5 h-5 text-olivewood mt-0.5" />
+                    <div>
+                      <p className="text-sm font-semibold text-charcoal font-sans mb-1">
+                        Your Journey
+                      </p>
+                      <p className="text-sm text-charcoal/70 font-sans">
+                        <span className="font-medium">{plan.plan_items.length} lessons</span> •{' '}
+                        Starting {new Date(startDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                        {' '}• Estimated completion:{' '}
+                        {new Date(calculateCompletionDate(startDate, plan.plan_items.length, plan.schedule_type)).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setShowDatePicker(false)}
+                  className="flex-1 px-6 py-3 border-2 border-charcoal/20 text-charcoal rounded-lg font-sans font-semibold hover:bg-charcoal/5 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => handleJoinFromLibrary(startDate)}
+                  disabled={!startDate}
+                  className="flex-1 px-6 py-3 bg-gradient-to-r from-olivewood to-golden-wheat hover:opacity-90 disabled:opacity-50 text-white rounded-lg font-sans font-semibold transition-opacity"
+                >
+                  Begin Journey
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )

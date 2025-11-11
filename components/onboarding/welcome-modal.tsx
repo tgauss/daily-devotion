@@ -43,13 +43,13 @@ export function WelcomeModal({ firstName, userEmail }: WelcomeModalProps) {
 
   const steps = [
     {
-      title: 'Welcome to MyDailyBread',
+      title: 'Welcome to My Daily Bread',
       content: (
         <div className="space-y-4">
           <div className="flex justify-center mb-6">
             <Image
               src="/my-daily-break-logo.png"
-              alt="MyDailyBread Logo"
+              alt="My Daily Bread Logo"
               width={80}
               height={80}
               className="w-20 h-20"
@@ -59,7 +59,7 @@ export function WelcomeModal({ firstName, userEmail }: WelcomeModalProps) {
             We're delighted to have you here, <span className="font-semibold text-olivewood">{displayName}</span>!
           </p>
           <p className="text-charcoal/70 font-sans">
-            MyDailyBread is your personal companion for daily Bible reading and spiritual growth.
+            My Daily Bread is your personal companion for daily Bible reading and spiritual growth.
             Let's take a quick tour to help you get started.
           </p>
           <div className="bg-clay-rose/10 border border-clay-rose/30 rounded-lg p-4 mt-6">

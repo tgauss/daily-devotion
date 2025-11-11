@@ -41,6 +41,7 @@ export async function POST(request: NextRequest) {
         schedule_type: scheduleType || 'daily',
         depth_level: depthLevel || 'moderate',
         is_public: isPublic || false,
+        schedule_mode: 'self-guided', // AI wizard plans are self-guided by default
       })
       .select()
       .single()

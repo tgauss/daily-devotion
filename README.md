@@ -1,4 +1,4 @@
-# MyDailyBread.faith - Bible Study Web App
+# My Daily Bread.faith - Bible Study Web App
 
 > *"Man shall not live by bread alone, but by every word that comes from the mouth of God."* — Matthew 4:4
 
@@ -17,14 +17,19 @@ A mobile-first Bible study platform that delivers personalized reading plans wit
 - **✅ Comprehension Quizzes**: AI-generated multiple-choice questions with explanations
 - **📊 Progress Tracking**: Visual progress metrics and completion status
 - **🎯 Personalization**: Greetings and experiences tailored to user's name
+- **🔐 Flexible Authentication**: Email/password or Google OAuth sign-in
 
 ### Advanced Features
+- **📚 Public Plan Library**: Browse and join plans created by others
+- **🗓️ Flexible Scheduling**: Choose your own start date for self-guided plans
+- **👥 Synchronized Studies**: Group plans where everyone follows same schedule
 - **🔗 Shareable Lessons**: Public URLs for individual lessons
-- **👥 Lesson Sharing**: Pre-generated lessons shared across users to reduce AI costs
+- **💾 Smart Enrollments**: Join plans without duplication (99% storage savings)
 - **📅 Fort Worth Bible Plan**: 244-reading plan (Oct-Dec 2025) with instant setup
 - **🎓 Onboarding**: Interactive 5-step welcome guide for new users
 - **🔔 Smart Nudges**: In-app reminders for overdue lessons (coming soon: email)
 - **👨‍💼 Admin Panel**: Manual user creation with optional plan pre-loading
+- **🤝 Referral System**: Unique referral links with tracking and stats dashboard
 
 ---
 
@@ -35,7 +40,10 @@ Comprehensive documentation for developers and Claude Code sessions:
 - **[CLAUDE_CODE_CONTEXT.md](CLAUDE_CODE_CONTEXT.md)** - **START HERE** for new Claude Code sessions
 - **[ARCHITECTURE.md](ARCHITECTURE.md)** - System design and infrastructure
 - **[DATABASE.md](DATABASE.md)** - Complete database schema and migrations
+- **[AUTH_SETUP.md](AUTH_SETUP.md)** - Google OAuth and email setup guide
 - **[CHANGELOG.md](CHANGELOG.md)** - Version history and updates
+- **[SESSION_LOG.md](SESSION_LOG.md)** - Detailed development session records
+- **[FLEXIBLE_SCHEDULING_IMPLEMENTATION.md](FLEXIBLE_SCHEDULING_IMPLEMENTATION.md)** - Flexible scheduling feature docs
 - **[README.md](README.md)** - This file (project overview and quick start)
 
 ---

@@ -23,7 +23,7 @@ export default async function PlanPage({ params }: { params: Promise<{ id: strin
   // If plan doesn't exist at all, redirect
   if (basicError || !planBasic) {
     if (!user) {
-      redirect('/auth')
+      redirect('/login')
     }
     redirect('/dashboard')
   }
@@ -32,18 +32,32 @@ export default async function PlanPage({ params }: { params: Promise<{ id: strin
   const isOwner = user && planBasic.user_id === user.id
   const isPublic = planBasic.is_public
 
-  // Allow access if: user owns the plan OR plan is public
-  if (!isOwner && !isPublic) {
+  // Check if user is enrolled in this plan
+  let isEnrolled = false
+  let enrollment = null
+  if (user && !isOwner) {
+    const { data: enrollmentData } = await supabase
+      .from('user_plan_enrollments')
+      .select('id, custom_start_date, enrolled_at')
+      .eq('user_id', user.id)
+      .eq('plan_id', id)
+      .eq('is_active', true)
+      .single()
+    isEnrolled = !!enrollmentData
+    enrollment = enrollmentData
+  }
+
+  // Allow access if: user owns the plan OR user is enrolled OR plan is public
+  if (!isOwner && !isEnrolled && !isPublic) {
     if (!user) {
-      redirect('/auth')
+      redirect('/login')
     }
     redirect('/dashboard')
   }
 
-  // Now fetch full plan with nested data using appropriate client
-  // Use service client for owned plans to ensure all data is accessible
-  const clientToUse = isOwner ? serviceClient : supabase
-  const { data: plan, error } = await clientToUse
+  // Now fetch full plan with nested data
+  // Use service client to bypass RLS for lesson data (lessons are public content)
+  const { data: plan, error } = await serviceClient
     .from('plans')
     .select(`
       *,
@@ -74,13 +88,13 @@ export default async function PlanPage({ params }: { params: Promise<{ id: strin
       ...planBasic,
       plan_items: []
     }
-    return renderPlanPage(fallbackPlan, user?.id || null, progress)
+    return renderPlanPage(fallbackPlan, user?.id || null, progress, enrollment)
   }
 
-  return renderPlanPage(plan, user?.id || null, progress)
+  return renderPlanPage(plan, user?.id || null, progress, enrollment)
 }
 
-function renderPlanPage(plan: any, userId: string | null, progress: any) {
+function renderPlanPage(plan: any, userId: string | null, progress: any, enrollment: any) {
 
   return (
     <div
@@ -103,7 +117,7 @@ function renderPlanPage(plan: any, userId: string | null, progress: any) {
           </a>
         </div>
 
-        <PlanDetails plan={plan} userId={userId} progress={progress} />
+        <PlanDetails plan={plan} userId={userId} progress={progress} enrollment={enrollment} />
       </div>
     </div>
   )

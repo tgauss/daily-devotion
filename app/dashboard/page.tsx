@@ -9,6 +9,7 @@ import { ImportFortWorthButton } from '@/components/plans/import-fort-worth-butt
 import { WelcomeModal } from '@/components/onboarding/welcome-modal'
 import { GuidanceWidget } from '@/components/dashboard/guidance-widget'
 import { RecentGuidance } from '@/components/dashboard/recent-guidance'
+import { ReferralStats } from '@/components/dashboard/referral-stats'
 
 export default async function DashboardPage() {
   const supabase = await createClient()
@@ -17,7 +18,7 @@ export default async function DashboardPage() {
   } = await supabase.auth.getUser()
 
   if (!user) {
-    redirect('/auth')
+    redirect('/login')
   }
 
   // Fetch user profile
@@ -27,8 +28,8 @@ export default async function DashboardPage() {
     .eq('id', user.id)
     .single()
 
-  // Fetch user's plans
-  const { data: plans } = await supabase
+  // Fetch user's owned plans
+  const { data: ownedPlans } = await supabase
     .from('plans')
     .select(`
       *,
@@ -41,6 +42,37 @@ export default async function DashboardPage() {
     `)
     .eq('user_id', user.id)
     .order('created_at', { ascending: false })
+
+  // Fetch enrolled plans (plans user joined from library/invites)
+  const { data: enrollments } = await supabase
+    .from('user_plan_enrollments')
+    .select(`
+      *,
+      plans (
+        *,
+        plan_items(
+          id,
+          index,
+          status,
+          date_target
+        )
+      )
+    `)
+    .eq('user_id', user.id)
+    .eq('is_active', true)
+    .order('enrolled_at', { ascending: false })
+
+  // Combine owned and enrolled plans
+  const enrolledPlans = (enrollments || [])
+    .map((e: any) => ({
+      ...e.plans,
+      enrollment_id: e.id,
+      enrolled_at: e.enrolled_at,
+      is_enrolled: true, // Flag to distinguish from owned plans
+    }))
+    .filter((p: any) => p !== null)
+
+  const plans = [...(ownedPlans || []), ...enrolledPlans]
 
   // Fetch progress
   const { data: progress } = await supabase
@@ -124,6 +156,9 @@ export default async function DashboardPage() {
               <h3 className="text-xl font-heading text-charcoal mb-4">Your Progress</h3>
               <ProgressOverview progress={progress || []} />
             </div>
+
+            {/* Referral Stats */}
+            <ReferralStats />
 
             {/* Recent Guidance */}
             <RecentGuidance guidance={recentGuidance || []} />

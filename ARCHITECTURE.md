@@ -2,7 +2,7 @@
 
 ## System Overview
 
-MyDailyBread.faith is a full-stack web application built with modern serverless architecture, focusing on Bible reading plans with AI-generated supplementary content.
+My Daily Bread.faith is a full-stack web application built with modern serverless architecture, focusing on Bible reading plans with AI-generated supplementary content.
 
 ---
 

@@ -12,7 +12,7 @@ export default async function AdminPage() {
   } = await supabase.auth.getUser()
 
   if (!user) {
-    redirect('/auth')
+    redirect('/login')
   }
 
   // Fetch all users for display

@@ -18,14 +18,14 @@ export default function AuthPage() {
           <div className="flex justify-center mb-6">
             <Image
               src="/my-daily-break-logo.png"
-              alt="MyDailyBread Logo"
+              alt="My Daily Bread Logo"
               width={80}
               height={80}
               className="w-20 h-20"
             />
           </div>
           <h1 className="text-5xl font-heading text-charcoal mb-3 tracking-tight">
-            MyDailyBread
+            My Daily Bread
           </h1>
           <p className="text-lg text-olivewood font-serif italic">
             Daily nourishment for the soul

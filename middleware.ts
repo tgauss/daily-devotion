@@ -31,22 +31,42 @@ export async function middleware(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
-  // Redirect authenticated users from auth page to dashboard
-  if (user && request.nextUrl.pathname === '/auth') {
+  // Redirect /auth to /login for cleaner URLs
+  if (request.nextUrl.pathname === '/auth') {
+    const loginUrl = new URL('/login', request.url)
+    // Preserve query parameters (like ?ref=code or ?redirect=/dashboard)
+    request.nextUrl.searchParams.forEach((value, key) => {
+      loginUrl.searchParams.set(key, value)
+    })
+    return NextResponse.redirect(loginUrl)
+  }
+
+  // Redirect authenticated users from login page to dashboard
+  if (user && request.nextUrl.pathname === '/login') {
     return NextResponse.redirect(new URL('/dashboard', request.url))
   }
 
-  // Redirect unauthenticated users from protected routes to auth
+  // Public routes that don't require authentication
   const pathname = request.nextUrl.pathname
-  const shouldAllow =
-    pathname.startsWith('/auth') ||
-    pathname.startsWith('/s/') ||
-    pathname.startsWith('/plans/') ||
-    pathname.startsWith('/quiz/') ||
-    pathname === '/'
+  const publicRoutes = [
+    '/',                          // Landing page
+    '/login',                     // Login page
+    '/auth/callback',             // OAuth callback (Google, etc.)
+    '/s/',                        // Public story viewer
+    '/plans/',                    // Public plan library
+    '/quiz/',                     // Quiz pages
+    '/join/',                     // Invite link pages
+    '/library/',                  // Public library browser
+    '/api/cron/',                 // Vercel cron jobs
+  ]
 
-  if (!user && !shouldAllow) {
-    return NextResponse.redirect(new URL('/auth', request.url))
+  const isPublicRoute = publicRoutes.some((route) => pathname.startsWith(route) || pathname === route)
+
+  // Redirect unauthenticated users from protected routes to login
+  if (!user && !isPublicRoute) {
+    const redirectUrl = new URL('/login', request.url)
+    redirectUrl.searchParams.set('redirect', pathname)
+    return NextResponse.redirect(redirectUrl)
   }
 
   return supabaseResponse

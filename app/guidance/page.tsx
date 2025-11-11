@@ -16,7 +16,7 @@ export default async function GuidancePage() {
   } = await supabase.auth.getUser()
 
   if (!user) {
-    redirect('/auth')
+    redirect('/login')
   }
 
   // Fetch user profile

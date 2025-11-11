@@ -1,8 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 
 export function AuthForm() {
   const [email, setEmail] = useState('')
@@ -10,8 +10,19 @@ export function AuthForm() {
   const [isLogin, setIsLogin] = useState(true)
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState<{ type: 'error' | 'success'; text: string } | null>(null)
+  const [referralCode, setReferralCode] = useState<string | null>(null)
   const router = useRouter()
+  const searchParams = useSearchParams()
   const supabase = createClient()
+
+  // Capture referral code from URL on mount
+  useEffect(() => {
+    const ref = searchParams.get('ref')
+    if (ref) {
+      setReferralCode(ref)
+      console.log('Referral code detected:', ref)
+    }
+  }, [searchParams])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -31,12 +42,41 @@ export function AuthForm() {
         router.push('/dashboard')
         router.refresh()
       } else {
-        const { error } = await supabase.auth.signUp({
+        // Sign up with referral tracking
+        const { data, error } = await supabase.auth.signUp({
           email,
           password,
+          options: {
+            data: {
+              referred_by_code: referralCode, // Store in metadata for trigger to process
+            },
+          },
         })
 
         if (error) throw error
+
+        // If referral code present, update the user after creation
+        if (referralCode && data.user) {
+          try {
+            // Look up referrer by code
+            const { data: referrer } = await supabase
+              .from('users')
+              .select('id')
+              .eq('referral_code', referralCode)
+              .single()
+
+            if (referrer) {
+              // Update new user's referred_by field
+              await supabase
+                .from('users')
+                .update({ referred_by_user_id: referrer.id })
+                .eq('id', data.user.id)
+            }
+          } catch (error) {
+            console.error('Error tracking referral:', error)
+            // Don't fail signup if referral tracking fails
+          }
+        }
 
         setMessage({
           type: 'success',
@@ -61,6 +101,14 @@ export function AuthForm() {
       <p className="text-sm text-charcoal/60 text-center mb-8 font-sans">
         {isLogin ? "Ready for today's reading?" : "Start your daily practice"}
       </p>
+
+      {referralCode && !isLogin && (
+        <div className="mb-6 p-4 bg-golden-wheat/10 border border-golden-wheat/30 rounded-lg">
+          <p className="text-sm text-charcoal font-sans text-center">
+            You've been invited to join My Daily Bread! 🎉
+          </p>
+        </div>
+      )}
 
       <form onSubmit={handleSubmit} className="space-y-5">
         <div>
