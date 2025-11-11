@@ -6,7 +6,7 @@ export async function FeaturedLessons() {
   const supabase = await createClient()
 
   // Fetch featured lessons (publicly accessible)
-  const { data: featuredLessons } = await supabase
+  const { data: rawLessons } = await supabase
     .from('lessons')
     .select(`
       id,
@@ -14,15 +14,38 @@ export async function FeaturedLessons() {
       scripture_reference,
       content,
       audio_url,
-      plans!inner(id, title)
+      plan_id
     `)
     .eq('is_featured', true)
     .limit(3)
 
   // If no featured lessons, don't show the section
-  if (!featuredLessons || featuredLessons.length === 0) {
+  if (!rawLessons || rawLessons.length === 0) {
     return null
   }
+
+  // Fetch plan details for each lesson
+  const featuredLessons = await Promise.all(
+    rawLessons.map(async (lesson) => {
+      if (!lesson.plan_id) {
+        return {
+          ...lesson,
+          plans: { id: null, title: 'No Plan' }
+        }
+      }
+
+      const { data: planData } = await supabase
+        .from('plans')
+        .select('id, title')
+        .eq('id', lesson.plan_id)
+        .single()
+
+      return {
+        ...lesson,
+        plans: planData || { id: null, title: 'Unknown Plan' }
+      }
+    })
+  )
 
   return (
     <section className="py-20 bg-sandstone">

@@ -59,29 +59,52 @@ export default async function AdminPage() {
   )
 
   // Fetch all lessons for featured lessons management
-  const { data: rawLessons } = await serviceClient
+  const { data: rawLessons, error: lessonsError } = await serviceClient
     .from('lessons')
     .select(`
       id,
       title,
       scripture_reference,
       is_featured,
-      plan_id,
-      plans!inner(title)
+      plan_id
     `)
     .order('created_at', { ascending: false })
     .limit(100)
 
-  // Transform the data to match expected types
-  const allLessons = rawLessons?.map((lesson: any) => ({
-    id: lesson.id,
-    title: lesson.title,
-    scripture_reference: lesson.scripture_reference,
-    is_featured: lesson.is_featured,
-    plans: {
-      title: Array.isArray(lesson.plans) ? lesson.plans[0]?.title : lesson.plans?.title
-    }
-  }))
+  if (lessonsError) {
+    console.error('Error fetching lessons:', lessonsError)
+  }
+
+  // Fetch plan details separately and enrich lessons
+  const allLessons = await Promise.all(
+    (rawLessons || []).map(async (lesson: any) => {
+      if (!lesson.plan_id) {
+        return {
+          id: lesson.id,
+          title: lesson.title,
+          scripture_reference: lesson.scripture_reference,
+          is_featured: lesson.is_featured,
+          plans: { title: 'No Plan' }
+        }
+      }
+
+      const { data: planData } = await serviceClient
+        .from('plans')
+        .select('title')
+        .eq('id', lesson.plan_id)
+        .single()
+
+      return {
+        id: lesson.id,
+        title: lesson.title,
+        scripture_reference: lesson.scripture_reference,
+        is_featured: lesson.is_featured,
+        plans: {
+          title: planData?.title || 'Unknown Plan'
+        }
+      }
+    })
+  )
 
   return (
     <div

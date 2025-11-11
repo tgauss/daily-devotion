@@ -22,7 +22,7 @@ export default async function LessonPreviewPage({
   }
 
   // Fetch the lesson (only if it's featured)
-  const { data: lesson, error } = await supabase
+  const { data: rawLesson, error } = await supabase
     .from('lessons')
     .select(`
       id,
@@ -31,14 +31,30 @@ export default async function LessonPreviewPage({
       content,
       reflection_questions,
       audio_url,
-      plans!inner(id, title, description)
+      plan_id
     `)
     .eq('id', params.id)
     .eq('is_featured', true)
     .single()
 
-  if (error || !lesson) {
+  if (error || !rawLesson) {
     notFound()
+  }
+
+  // Fetch plan details separately
+  let planData = null
+  if (rawLesson.plan_id) {
+    const { data } = await supabase
+      .from('plans')
+      .select('id, title, description')
+      .eq('id', rawLesson.plan_id)
+      .single()
+    planData = data
+  }
+
+  const lesson = {
+    ...rawLesson,
+    plans: planData || { id: null, title: 'No Plan', description: null }
   }
 
   return (
@@ -70,11 +86,11 @@ export default async function LessonPreviewPage({
             <div>
               <p className="text-sm text-olivewood/70 font-sans mb-1">From the plan:</p>
               <h2 className="text-xl font-heading font-bold text-olivewood mb-2">
-                {(lesson.plans as any)?.title || (lesson.plans as any)?.[0]?.title}
+                {lesson.plans.title}
               </h2>
-              {((lesson.plans as any)?.description || (lesson.plans as any)?.[0]?.description) && (
+              {lesson.plans.description && (
                 <p className="text-charcoal/70 font-sans text-sm">
-                  {(lesson.plans as any)?.description || (lesson.plans as any)?.[0]?.description}
+                  {lesson.plans.description}
                 </p>
               )}
             </div>
