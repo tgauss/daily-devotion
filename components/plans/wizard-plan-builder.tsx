@@ -113,10 +113,10 @@ export function WizardPlanBuilder({ userId }: WizardPlanBuilderProps) {
             ← Back to Plan Options
           </a>
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-heading font-bold text-charcoal mb-3">
-            AI-Powered Plan Builder
+            Guided Plan Builder
           </h1>
           <p className="text-base sm:text-lg text-charcoal/70 font-sans max-w-2xl mx-auto">
-            Let AI help you create a personalized Bible study plan based on what you want to learn
+            Get personalized suggestions for your Bible study based on what you want to learn
           </p>
         </div>
 

@@ -45,13 +45,13 @@ export function PlanCreator({ userId }: PlanCreatorProps) {
         <div className="absolute top-3 right-3">
           <Sparkles className="w-5 h-5 text-golden-wheat" />
         </div>
-        <div className="text-4xl mb-6">🤖</div>
+        <div className="text-4xl mb-6">✨</div>
         <h3 className="text-2xl font-bold text-charcoal mb-3 font-heading flex items-center gap-2">
-          AI-Powered Builder
+          Guided Builder
           <span className="px-2 py-0.5 bg-golden-wheat text-white text-xs rounded-full font-sans">New</span>
         </h3>
         <p className="text-charcoal/70 text-sm font-sans leading-relaxed">
-          Let AI create a personalized study plan based on what you want to learn
+          Get tailored study suggestions based on what you want to learn
         </p>
       </button>
 
