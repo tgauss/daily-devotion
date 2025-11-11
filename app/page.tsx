@@ -171,8 +171,14 @@ export default async function Home() {
           <div className="grid md:grid-cols-3 gap-8">
             {/* Step 1 */}
             <div className="bg-white/90 rounded-xl p-8 shadow-lg border border-olivewood/20 text-center">
-              <div className="w-16 h-16 bg-olivewood/10 rounded-full flex items-center justify-center mx-auto mb-6">
-                <span className="text-3xl font-heading font-bold text-olivewood">1</span>
+              <div className="flex items-center justify-center mx-auto mb-6">
+                <Image
+                  src="/how-it-works-1.webp"
+                  alt="Choose Your Plan"
+                  width={120}
+                  height={120}
+                  className="w-28 h-28"
+                />
               </div>
               <h3 className="text-2xl font-heading font-bold text-charcoal mb-4">
                 Choose Your Plan
@@ -185,8 +191,14 @@ export default async function Home() {
 
             {/* Step 2 */}
             <div className="bg-white/90 rounded-xl p-8 shadow-lg border border-olivewood/20 text-center">
-              <div className="w-16 h-16 bg-olivewood/10 rounded-full flex items-center justify-center mx-auto mb-6">
-                <span className="text-3xl font-heading font-bold text-olivewood">2</span>
+              <div className="flex items-center justify-center mx-auto mb-6">
+                <Image
+                  src="/how-it-works-2.webp"
+                  alt="Engage Daily"
+                  width={120}
+                  height={120}
+                  className="w-28 h-28"
+                />
               </div>
               <h3 className="text-2xl font-heading font-bold text-charcoal mb-4">
                 Engage Daily
@@ -199,8 +211,14 @@ export default async function Home() {
 
             {/* Step 3 */}
             <div className="bg-white/90 rounded-xl p-8 shadow-lg border border-olivewood/20 text-center">
-              <div className="w-16 h-16 bg-olivewood/10 rounded-full flex items-center justify-center mx-auto mb-6">
-                <span className="text-3xl font-heading font-bold text-olivewood">3</span>
+              <div className="flex items-center justify-center mx-auto mb-6">
+                <Image
+                  src="/how-it-works-3.webp"
+                  alt="Grow Together"
+                  width={120}
+                  height={120}
+                  className="w-28 h-28"
+                />
               </div>
               <h3 className="text-2xl font-heading font-bold text-charcoal mb-4">
                 Grow Together
