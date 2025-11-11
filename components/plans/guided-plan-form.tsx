@@ -103,7 +103,7 @@ export function GuidedPlanForm({ userId, onBack }: GuidedPlanFormProps) {
         ← Back
       </button>
 
-      <h2 className="text-3xl font-bold text-charcoal mb-8 font-heading">Choose a Guided Plan</h2>
+      <h2 className="text-3xl font-bold text-charcoal mb-8 font-heading">Choose a Pre-Made Plan</h2>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {GUIDED_PLANS.map((plan) => (

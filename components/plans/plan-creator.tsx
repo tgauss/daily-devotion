@@ -31,7 +31,7 @@ export function PlanCreator({ userId }: PlanCreatorProps) {
         className="group p-8 bg-white/90 hover:bg-white backdrop-blur-lg rounded-lg border border-olivewood/20 transition-all shadow-lg hover:shadow-xl hover:border-olivewood/30"
       >
         <div className="text-4xl mb-6">📖</div>
-        <h3 className="text-2xl font-bold text-charcoal mb-3 font-heading">Guided Plan</h3>
+        <h3 className="text-2xl font-bold text-charcoal mb-3 font-heading">Pre-Made Plan</h3>
         <p className="text-charcoal/70 text-sm font-sans leading-relaxed">
           Choose from pre-made plans like "Read the Gospels in 30 Days" or theme-based studies
         </p>
