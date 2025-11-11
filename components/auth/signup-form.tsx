@@ -1,8 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { createClient } from '@/lib/supabase/client'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 // import { GoogleSignInButton } from './google-sign-in-button' // Hidden until Google OAuth is configured
 
 export function SignupForm() {
@@ -13,9 +12,7 @@ export function SignupForm() {
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState<{ type: 'error' | 'success'; text: string } | null>(null)
   const [referralCode, setReferralCode] = useState<string | null>(null)
-  const router = useRouter()
   const searchParams = useSearchParams()
-  const supabase = createClient()
 
   // Capture referral code from URL on mount
   useEffect(() => {
@@ -32,48 +29,35 @@ export function SignupForm() {
     setMessage(null)
 
     try {
-      // Sign up with name metadata and referral tracking
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          data: {
-            first_name: firstName,
-            last_name: lastName,
-            referred_by_code: referralCode,
-          },
-        },
+      // Use custom signup API that sends verification via Resend
+      const response = await fetch('/api/auth/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email,
+          password,
+          firstName,
+          lastName,
+          referralCode,
+        }),
       })
 
-      if (error) throw error
+      const data = await response.json()
 
-      // If referral code present, update the user after creation
-      if (referralCode && data.user) {
-        try {
-          // Look up referrer by code
-          const { data: referrer } = await supabase
-            .from('users')
-            .select('id')
-            .eq('referral_code', referralCode)
-            .single()
-
-          if (referrer) {
-            // Update new user's referred_by field
-            await supabase
-              .from('users')
-              .update({ referred_by_user_id: referrer.id })
-              .eq('id', data.user.id)
-          }
-        } catch (error) {
-          console.error('Error tracking referral:', error)
-          // Don't fail signup if referral tracking fails
-        }
+      if (!response.ok) {
+        throw new Error(data.error || 'Signup failed')
       }
 
       setMessage({
         type: 'success',
-        text: 'Account created! Please check your email to confirm your address.',
+        text: data.message || 'Account created! Please check your email to verify your address.',
       })
+
+      // Clear form
+      setFirstName('')
+      setLastName('')
+      setEmail('')
+      setPassword('')
     } catch (error: any) {
       setMessage({
         type: 'error',

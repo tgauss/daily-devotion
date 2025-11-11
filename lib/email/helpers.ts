@@ -483,3 +483,163 @@ export async function sendWelcomeEmail(
     html: getWelcomeEmailHTML(data),
   })
 }
+
+/**
+ * Email Verification Data
+ */
+export interface EmailVerificationData {
+  firstName: string
+  verificationUrl: string
+}
+
+/**
+ * Email Verification Template
+ */
+export function getEmailVerificationHTML(data: EmailVerificationData): string {
+  const content = `
+    <h2 class="text-dark" style="margin: 0 0 20px 0; color: #000000; font-size: 26px; font-weight: 700; line-height: 1.3;">
+      Welcome to My Daily Bread${data.firstName ? `, ${data.firstName}` : ''}!
+    </h2>
+
+    <p class="text-dark" style="margin: 0 0 30px 0; color: #000000; font-size: 16px; line-height: 1.6;">
+      Thank you for joining our community! We're excited to support your daily spiritual growth journey.
+    </p>
+
+    <p class="text-dark" style="margin: 0 0 30px 0; color: #000000; font-size: 16px; line-height: 1.6;">
+      Click the button below to verify your email address and get started:
+    </p>
+
+    <!-- CTA -->
+    <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+      <tr>
+        <td align="center" style="padding: 0 0 30px 0;">
+          ${getButtonHTML(data.verificationUrl, 'Verify Email Address')}
+        </td>
+      </tr>
+    </table>
+
+    <!-- Alternative Link -->
+    <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" class="card-bg" style="background-color: #f9f9f9; border-radius: 6px; margin: 0 0 30px 0;">
+      <tr>
+        <td style="padding: 20px;">
+          <p class="text-dark" style="margin: 0 0 10px 0; color: #000000; font-size: 14px;">
+            If the button doesn't work, copy and paste this link into your browser:
+          </p>
+          <p style="margin: 0; color: #5a5e3f; font-size: 13px; word-break: break-all;">
+            ${data.verificationUrl}
+          </p>
+        </td>
+      </tr>
+    </table>
+
+    <!-- Scripture Quote -->
+    <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background-color: #fffef5; border-left: 4px solid #d4af37; border-radius: 4px; margin: 0;">
+      <tr>
+        <td style="padding: 20px; text-align: center;">
+          <p class="text-dark" style="margin: 0 0 8px 0; color: #000000; font-size: 16px; line-height: 1.6; font-style: italic;">
+            "Man shall not live by bread alone, but by every word that comes from the mouth of God."
+          </p>
+          <p class="text-dark" style="margin: 0; color: #000000; font-size: 12px; font-weight: bold; letter-spacing: 0.5px;">
+            MATTHEW 4:4
+          </p>
+        </td>
+      </tr>
+    </table>
+  `
+
+  return getEmailTemplate(content)
+}
+
+/**
+ * Password Reset Data
+ */
+export interface PasswordResetData {
+  firstName: string
+  resetUrl: string
+}
+
+/**
+ * Password Reset Template
+ */
+export function getPasswordResetHTML(data: PasswordResetData): string {
+  const content = `
+    <h2 class="text-dark" style="margin: 0 0 20px 0; color: #000000; font-size: 26px; font-weight: 700; line-height: 1.3;">
+      Reset Your Password
+    </h2>
+
+    <p class="text-dark" style="margin: 0 0 30px 0; color: #000000; font-size: 16px; line-height: 1.6;">
+      Hi${data.firstName ? ` ${data.firstName}` : ''},
+    </p>
+
+    <p class="text-dark" style="margin: 0 0 30px 0; color: #000000; font-size: 16px; line-height: 1.6;">
+      We received a request to reset your password. Click the button below to create a new password:
+    </p>
+
+    <!-- CTA -->
+    <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+      <tr>
+        <td align="center" style="padding: 0 0 30px 0;">
+          ${getButtonHTML(data.resetUrl, 'Reset Password')}
+        </td>
+      </tr>
+    </table>
+
+    <!-- Alternative Link -->
+    <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" class="card-bg" style="background-color: #f9f9f9; border-radius: 6px; margin: 0 0 30px 0;">
+      <tr>
+        <td style="padding: 20px;">
+          <p class="text-dark" style="margin: 0 0 10px 0; color: #000000; font-size: 14px;">
+            If the button doesn't work, copy and paste this link into your browser:
+          </p>
+          <p style="margin: 0; color: #5a5e3f; font-size: 13px; word-break: break-all;">
+            ${data.resetUrl}
+          </p>
+        </td>
+      </tr>
+    </table>
+
+    <!-- Security Notice -->
+    <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background-color: #fff3cd; border-left: 4px solid #ffc107; border-radius: 4px; margin: 0 0 20px 0;">
+      <tr>
+        <td style="padding: 20px;">
+          <p class="text-dark" style="margin: 0 0 10px 0; color: #000000; font-size: 14px; font-weight: bold;">
+            Security Notice
+          </p>
+          <p class="text-dark" style="margin: 0; color: #000000; font-size: 14px; line-height: 1.6;">
+            If you didn't request this password reset, please ignore this email or contact us if you have concerns. This link will expire in 1 hour.
+          </p>
+        </td>
+      </tr>
+    </table>
+  `
+
+  return getEmailTemplate(content)
+}
+
+/**
+ * Send email verification
+ */
+export async function sendEmailVerification(
+  to: string,
+  data: EmailVerificationData
+): Promise<boolean> {
+  return sendEmail({
+    to,
+    subject: 'Verify Your Email — My Daily Bread',
+    html: getEmailVerificationHTML(data),
+  })
+}
+
+/**
+ * Send password reset email
+ */
+export async function sendPasswordResetEmail(
+  to: string,
+  data: PasswordResetData
+): Promise<boolean> {
+  return sendEmail({
+    to,
+    subject: 'Reset Your Password — My Daily Bread',
+    html: getPasswordResetHTML(data),
+  })
+}
