@@ -10,11 +10,10 @@ export async function FeaturedLessons() {
     .from('lessons')
     .select(`
       id,
-      title,
-      scripture_reference,
-      content,
-      audio_url,
-      plan_id
+      passage_canonical,
+      ai_triptych_json,
+      audio_manifest_json,
+      story_manifest_json
     `)
     .eq('is_featured', true)
     .limit(3)
@@ -24,28 +23,23 @@ export async function FeaturedLessons() {
     return null
   }
 
-  // Fetch plan details for each lesson
-  const featuredLessons = await Promise.all(
-    rawLessons.map(async (lesson) => {
-      if (!lesson.plan_id) {
-        return {
-          ...lesson,
-          plans: { id: null, title: 'No Plan' }
-        }
-      }
+  // Transform lessons to match expected format
+  const featuredLessons = rawLessons.map((lesson: any) => {
+    const planTitle = lesson.story_manifest_json?.metadata?.title || 'Untitled Lesson'
+    const intro = lesson.ai_triptych_json?.intro || lesson.ai_triptych_json?.body || ''
 
-      const { data: planData } = await supabase
-        .from('plans')
-        .select('id, title')
-        .eq('id', lesson.plan_id)
-        .single()
-
-      return {
-        ...lesson,
-        plans: planData || { id: null, title: 'Unknown Plan' }
+    return {
+      id: lesson.id,
+      title: planTitle,
+      scripture_reference: lesson.passage_canonical || 'No Reference',
+      content: intro,
+      audio_url: lesson.audio_manifest_json?.url || null,
+      plans: {
+        id: null,
+        title: planTitle
       }
-    })
-  )
+    }
+  })
 
   return (
     <section className="py-20 bg-sandstone">

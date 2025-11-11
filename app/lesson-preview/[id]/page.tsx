@@ -26,12 +26,10 @@ export default async function LessonPreviewPage({
     .from('lessons')
     .select(`
       id,
-      title,
-      scripture_reference,
-      content,
-      reflection_questions,
-      audio_url,
-      plan_id
+      passage_canonical,
+      ai_triptych_json,
+      audio_manifest_json,
+      story_manifest_json
     `)
     .eq('id', params.id)
     .eq('is_featured', true)
@@ -41,20 +39,24 @@ export default async function LessonPreviewPage({
     notFound()
   }
 
-  // Fetch plan details separately
-  let planData = null
-  if (rawLesson.plan_id) {
-    const { data } = await supabase
-      .from('plans')
-      .select('id, title, description')
-      .eq('id', rawLesson.plan_id)
-      .single()
-    planData = data
-  }
+  // Transform lesson to match expected format
+  const planTitle = rawLesson.story_manifest_json?.metadata?.title || 'Untitled Lesson'
+  const fullContent = rawLesson.ai_triptych_json?.body || rawLesson.ai_triptych_json?.intro || ''
+  const reflectionPrompts = rawLesson.ai_triptych_json?.reflection_prompts || []
+  const audioUrl = rawLesson.audio_manifest_json?.url || null
 
   const lesson = {
-    ...rawLesson,
-    plans: planData || { id: null, title: 'No Plan', description: null }
+    id: rawLesson.id,
+    title: planTitle,
+    scripture_reference: rawLesson.passage_canonical || 'No Reference',
+    content: fullContent,
+    reflection_questions: reflectionPrompts,
+    audio_url: audioUrl,
+    plans: {
+      id: null,
+      title: planTitle,
+      description: rawLesson.ai_triptych_json?.context || null
+    }
   }
 
   return (

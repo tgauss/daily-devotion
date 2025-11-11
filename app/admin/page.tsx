@@ -63,10 +63,10 @@ export default async function AdminPage() {
     .from('lessons')
     .select(`
       id,
-      title,
-      scripture_reference,
+      passage_canonical,
       is_featured,
-      plan_id
+      plan_item_id,
+      story_manifest_json
     `)
     .order('created_at', { ascending: false })
     .limit(100)
@@ -75,32 +75,19 @@ export default async function AdminPage() {
     console.error('Error fetching lessons:', lessonsError)
   }
 
-  // Fetch plan details separately and enrich lessons
+  // Enrich lessons with plan titles
   const allLessons = await Promise.all(
     (rawLessons || []).map(async (lesson: any) => {
-      if (!lesson.plan_id) {
-        return {
-          id: lesson.id,
-          title: lesson.title,
-          scripture_reference: lesson.scripture_reference,
-          is_featured: lesson.is_featured,
-          plans: { title: 'No Plan' }
-        }
-      }
-
-      const { data: planData } = await serviceClient
-        .from('plans')
-        .select('title')
-        .eq('id', lesson.plan_id)
-        .single()
+      // Extract title from story_manifest_json
+      const planTitle = lesson.story_manifest_json?.metadata?.title || 'Untitled Lesson'
 
       return {
         id: lesson.id,
-        title: lesson.title,
-        scripture_reference: lesson.scripture_reference,
+        title: planTitle,
+        scripture_reference: lesson.passage_canonical || 'No Reference',
         is_featured: lesson.is_featured,
         plans: {
-          title: planData?.title || 'Unknown Plan'
+          title: planTitle
         }
       }
     })
