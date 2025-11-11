@@ -45,7 +45,7 @@ export default async function Home() {
                     Sign In
                   </Link>
                   <Link
-                    href="/login"
+                    href="/signup"
                     className="px-4 py-2 bg-olivewood text-white rounded-lg hover:bg-olivewood/90 transition-colors font-sans"
                   >
                     Get Started
@@ -100,7 +100,7 @@ export default async function Home() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
-                href="/login"
+                href="/signup"
                 className="px-8 py-4 bg-olivewood text-white text-lg rounded-lg hover:bg-olivewood/90 transition-all shadow-lg hover:shadow-xl font-sans"
               >
                 Start Your Journey
@@ -323,7 +323,7 @@ export default async function Home() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
-              href="/login"
+              href="/signup"
               className="px-8 py-4 bg-white text-olivewood text-lg rounded-lg hover:bg-sandstone transition-all shadow-lg font-sans"
             >
               Get Started Free

@@ -84,7 +84,7 @@ export async function FeaturedLessons() {
 
         <div className="text-center mt-12">
           <Link
-            href="/login"
+            href="/signup"
             className="inline-flex items-center gap-2 px-6 py-3 bg-olivewood text-white rounded-lg hover:bg-olivewood/90 transition-all shadow-lg font-sans"
           >
             <BookOpen className="w-5 h-5" />
