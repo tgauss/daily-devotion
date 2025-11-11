@@ -3,8 +3,23 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { BookOpen, Heart, Users, Calendar, Sparkles, HeadphonesIcon } from 'lucide-react'
 import { FeaturedLessons } from '@/components/home/featured-lessons'
+import { redirect } from 'next/navigation'
 
-export default async function Home() {
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: { code?: string; ref?: string }
+}) {
+  // If there's a code parameter, redirect to the auth callback route
+  if (searchParams.code) {
+    const params = new URLSearchParams()
+    params.set('code', searchParams.code)
+    if (searchParams.ref) {
+      params.set('ref', searchParams.ref)
+    }
+    redirect(`/auth/callback?${params.toString()}`)
+  }
+
   const supabase = await createClient()
   const {
     data: { user },
