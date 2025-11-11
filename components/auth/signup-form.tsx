@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { GoogleSignInButton } from './google-sign-in-button'
+// import { GoogleSignInButton } from './google-sign-in-button' // Hidden until Google OAuth is configured
 
 export function SignupForm() {
   const [firstName, setFirstName] = useState('')
@@ -101,8 +101,8 @@ export function SignupForm() {
         </div>
       )}
 
-      {/* Google Sign In */}
-      <div className="mb-6">
+      {/* Google Sign In - Hidden until configured */}
+      {/* <div className="mb-6">
         <GoogleSignInButton />
       </div>
 
@@ -113,7 +113,7 @@ export function SignupForm() {
         <div className="relative flex justify-center text-sm">
           <span className="px-4 bg-white/90 text-charcoal/60 font-sans">Or sign up with email</span>
         </div>
-      </div>
+      </div> */}
 
       <form onSubmit={handleSubmit} className="space-y-5">
         <div className="grid grid-cols-2 gap-4">
