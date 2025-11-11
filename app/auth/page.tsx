@@ -1,5 +1,6 @@
 import { AuthForm } from '@/components/auth/auth-form'
 import Image from 'next/image'
+import { Suspense } from 'react'
 
 export default function AuthPage() {
   return (
@@ -34,7 +35,9 @@ export default function AuthPage() {
             Feed your faith one day at a time.
           </p>
         </div>
-        <AuthForm />
+        <Suspense fallback={<div className="text-center">Loading...</div>}>
+          <AuthForm />
+        </Suspense>
       </div>
     </div>
   )
