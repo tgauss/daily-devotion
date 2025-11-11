@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation'
 import { CreateUserForm } from '@/components/admin/create-user-form'
 import { UsersList } from '@/components/admin/users-list'
 import { FortWorthPlansList } from '@/components/admin/fort-worth-plans-list'
+import { FeaturedLessonsManager } from '@/components/admin/featured-lessons-manager'
 
 export default async function AdminPage() {
   const supabase = await createClient()
@@ -44,7 +45,7 @@ export default async function AdminPage() {
   // Fetch user details separately
   const enrichedPlans = await Promise.all(
     (fortWorthPlans || []).map(async (plan) => {
-      const { data: userData } = await serviceClient
+      const { data: userData} = await serviceClient
         .from('users')
         .select('email, first_name, last_name')
         .eq('id', plan.user_id)
@@ -56,6 +57,31 @@ export default async function AdminPage() {
       }
     })
   )
+
+  // Fetch all lessons for featured lessons management
+  const { data: rawLessons } = await serviceClient
+    .from('lessons')
+    .select(`
+      id,
+      title,
+      scripture_reference,
+      is_featured,
+      plan_id,
+      plans!inner(title)
+    `)
+    .order('created_at', { ascending: false })
+    .limit(100)
+
+  // Transform the data to match expected types
+  const allLessons = rawLessons?.map((lesson: any) => ({
+    id: lesson.id,
+    title: lesson.title,
+    scripture_reference: lesson.scripture_reference,
+    is_featured: lesson.is_featured,
+    plans: {
+      title: Array.isArray(lesson.plans) ? lesson.plans[0]?.title : lesson.plans?.title
+    }
+  }))
 
   return (
     <div
@@ -90,6 +116,15 @@ export default async function AdminPage() {
             Manage Fort Worth Bible plans and copy lessons between users
           </p>
           <FortWorthPlansList plans={enrichedPlans || []} />
+        </div>
+
+        {/* Featured Lessons Management */}
+        <div className="mb-8 bg-white/90 rounded-lg p-8 shadow-lg border border-olivewood/20">
+          <h2 className="text-2xl font-heading font-bold text-charcoal mb-2">Featured Lessons</h2>
+          <p className="text-sm text-charcoal/60 font-sans mb-6">
+            Select lessons to feature on the public homepage for visitor preview
+          </p>
+          <FeaturedLessonsManager lessons={allLessons || []} />
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">

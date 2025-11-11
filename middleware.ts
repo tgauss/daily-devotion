@@ -52,6 +52,7 @@ export async function middleware(request: NextRequest) {
     '/',                          // Landing page
     '/login',                     // Login page
     '/auth/callback',             // OAuth callback (Google, etc.)
+    '/lesson-preview/',           // Public lesson previews
     '/s/',                        // Public story viewer
     '/plans/',                    // Public plan library
     '/quiz/',                     // Quiz pages
