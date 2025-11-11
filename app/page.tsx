@@ -121,15 +121,14 @@ export default async function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
-              {/* IMAGE PLACEHOLDER: Person reading Bible or family studying together */}
-              <div className="w-full aspect-[4/3] bg-sandstone rounded-2xl flex items-center justify-center border-2 border-olivewood/20">
-                <div className="text-center">
-                  <BookOpen className="w-24 h-24 text-olivewood/40 mx-auto mb-4" />
-                  <p className="text-olivewood/60 font-sans">
-                    [Image: Person/family engaged in Bible study]
-                  </p>
-                </div>
-              </div>
+              <Image
+                src="/what-is-my-daily-bread.png"
+                alt="Person studying Bible with coffee and phone"
+                width={600}
+                height={450}
+                className="w-full rounded-2xl shadow-lg"
+                priority
+              />
             </div>
             <div>
               <h2 className="text-4xl sm:text-5xl font-heading font-bold text-charcoal mb-6">
