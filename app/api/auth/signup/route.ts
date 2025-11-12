@@ -28,9 +28,14 @@ export async function POST(request: NextRequest) {
     })
 
     if (signUpError) {
-      console.error('Signup error:', signUpError)
+      console.error('Signup error details:', {
+        message: signUpError.message,
+        status: signUpError.status,
+        name: signUpError.name,
+        email: email,
+      })
       return NextResponse.json(
-        { error: signUpError.message },
+        { error: `Database error saving new user: ${signUpError.message}` },
         { status: 400 }
       )
     }
@@ -42,10 +47,30 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // Manually create the public.users record (since we can't rely on database triggers with Admin API)
+    const { error: publicUserError } = await serviceClient
+      .from('users')
+      .insert({
+        id: user.id,
+        email: email,
+        first_name: firstName || email.split('@')[0],
+        last_name: lastName || '',
+        referral_code: Math.random().toString(36).substring(2, 10), // Generate simple referral code
+        email_notifications: true,
+        email_frequency: 'daily'
+      })
+
+    if (publicUserError) {
+      console.error('Error creating public.users record:', publicUserError)
+      // User exists in auth but not in public.users - they can still use the app
+      // The backfill script will catch this if needed
+    }
+
     // Generate email verification link
     const { data: linkData, error: linkError } = await serviceClient.auth.admin.generateLink({
       type: 'signup',
       email: email,
+      password: password,
       options: {
         redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/callback`,
       },
@@ -61,14 +86,19 @@ export async function POST(request: NextRequest) {
     }
 
     // Send verification email via Resend
+    console.log('Attempting to send verification email to:', email)
+    console.log('Verification URL:', linkData.properties.action_link)
+
     const emailSent = await sendEmailVerification(email, {
       firstName: firstName || email.split('@')[0],
       verificationUrl: linkData.properties.action_link,
     })
 
     if (!emailSent) {
-      console.error('Failed to send verification email')
+      console.error('❌ Failed to send verification email to:', email)
       // User is created but email failed - they can request a new one later
+    } else {
+      console.log('✅ Verification email sent successfully to:', email)
     }
 
     // Handle referral if present

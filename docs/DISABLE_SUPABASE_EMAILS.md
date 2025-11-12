@@ -68,3 +68,11 @@ For now, password resets will still use Supabase's system, but you can migrate t
 - The auth callback route handles the session exchange
 - Check browser console for errors
 - Verify the code parameter is being passed to `/auth/callback`
+
+### "Database error saving new user" on signup?
+This was caused by a failing database trigger on `auth.users`. **Fixed by running:**
+```sql
+DROP FUNCTION IF EXISTS public.handle_new_user() CASCADE;
+```
+
+The signup API now manually creates the `public.users` record instead of relying on database triggers, which is more reliable when using the Admin API.
